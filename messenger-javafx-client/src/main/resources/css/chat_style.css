@@ -1,7 +1,0 @@
-#pane{
-    -fx-background-image: url("../images/chat_background.png");
-    -fx-background-repeat: stretch;   
-    -fx-background-position: center center;
-    -fx-font-family: "Comic Sans MS", cursive, sans-serif;
-    -fx-font-size: 14;
-}
