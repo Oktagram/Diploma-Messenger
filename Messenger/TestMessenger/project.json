@@ -1,0 +1,29 @@
+﻿{
+  "version": "1.0.0-*",
+
+  "dependencies": {
+    "dotnet-test-xunit": "2.2.0-preview2-build1029",
+    "Messenger": {
+      "target": "project",
+      "version": "1.0.0-*"
+    },
+    "Microsoft.NETCore.App": "1.1.0",
+    "Moq": "4.6.38-alpha",
+    "xunit": "2.2.0-beta4-build3444",
+    "Newtonsoft.Json": "9.0.1",
+    "Microsoft.DotNet.InternalAbstractions": "1.0.1-beta-003206",
+    "AutoMapper": "5.2.0"
+  },
+
+  "frameworks": {
+    "netcoreapp1.0": {
+      "imports": [ "dotnet5.6", "portable-net45+win8" ]
+    }
+  },
+
+  "testRunner": "xunit",
+
+  "runtimes": {
+    "win7-x64": {}
+  }
+}
