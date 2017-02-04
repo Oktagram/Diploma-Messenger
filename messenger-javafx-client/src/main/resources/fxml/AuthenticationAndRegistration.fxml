@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane maxHeight="450.0" maxWidth="500.0" minHeight="406.0" minWidth="500.0" prefHeight="406.0" prefWidth="500.0" style="-fx-background-color: #175087;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.elekscamp.messenger_javafx_client.Controllers.AuthenticationAndRegistrationController">
+   <children>
+      <HBox alignment="CENTER" fillHeight="false" maxHeight="406.0" minHeight="406.0" prefHeight="406.0" prefWidth="500.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <VBox StackPane.alignment="TOP_LEFT">
+               <children>
+                  <Text id="loginSignInText" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: #C3E0FF;" text="Login">
+                     <font>
+                        <Font name="Comic Sans MS Bold Italic" size="14.0" />
+                     </font>
+                  </Text>
+                  <TextField fx:id="loginSignInTextField" onKeyPressed="#signInEnterKeyPressed">
+                     <font>
+                        <Font name="Comic Sans MS Bold Italic" size="14.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets bottom="10.0" />
+                     </VBox.margin>
+                  </TextField>
+                  <Text id="passwordSignInText" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: #C3E0FF;" text="Password">
+                     <font>
+                        <Font name="Comic Sans MS Bold Italic" size="14.0" />
+                     </font>
+                  </Text>
+                  <PasswordField fx:id="passwordSignInTextField" onKeyPressed="#signInEnterKeyPressed">
+                     <font>
+                        <Font name="Comic Sans MS Bold Italic" size="14.0" />
+                     </font>
+                  </PasswordField>
+                  <Text fx:id="signInStatusText" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="360.826171875">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </Text>
+                  <HBox alignment="CENTER" prefHeight="20.0" prefWidth="440.0">
+                     <children>
+                        <Button fx:id="signInButton" maxWidth="200.0" minWidth="200.0" mnemonicParsing="false" onAction="#signInButtonAction" prefWidth="200.0" style="-fx-base: #10385E;" text="Sign In">
+                           <font>
+                              <Font name="Comic Sans MS Bold Italic" size="14.0" />
+                           </font>
+                        </Button>
+                     </children>
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                  </HBox>
+                  <Text id="loginSignUpText" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: #C3E0FF;" text="Login">
+                     <font>
+                        <Font name="Comic Sans MS Bold Italic" size="14.0" />
+                     </font>
+                  </Text>
+                  <TextField fx:id="loginSignUpTextField" onKeyPressed="#signUpEnterKeyPressed">
+                     <font>
+                        <Font name="Comic Sans MS Bold Italic" size="14.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets bottom="10.0" />
+                     </VBox.margin>
+                  </TextField>
+                  <Text id="passwordSignUpText" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: #C3E0FF;" text="Password">
+                     <font>
+                        <Font name="Comic Sans MS Bold Italic" size="14.0" />
+                     </font>
+                  </Text>
+                  <PasswordField fx:id="passwordSignUpTextField" onKeyPressed="#signUpEnterKeyPressed">
+                     <font>
+                        <Font name="Comic Sans MS Bold Italic" size="14.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets bottom="10.0" />
+                     </VBox.margin>
+                  </PasswordField>
+                  <Text id="emailSignUpText" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: #C3E0FF;" text="Email">
+                     <font>
+                        <Font name="Comic Sans MS Bold Italic" size="14.0" />
+                     </font>
+                  </Text>
+                  <TextField fx:id="emailSignUpTextField" onKeyPressed="#signUpEnterKeyPressed">
+                     <font>
+                        <Font name="Comic Sans MS Bold Italic" size="14.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                  </TextField>
+                  <Text fx:id="signUpStatusText" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="398.826171875">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </Text>
+                  <HBox alignment="CENTER" prefHeight="0.0" prefWidth="440.0">
+                     <children>
+                        <Button fx:id="signUpButton" maxWidth="200.0" minWidth="200.0" mnemonicParsing="false" onAction="#signUpButtonAction" prefWidth="200.0" style="-fx-base: #10385E;" text="Sign Up">
+                           <font>
+                              <Font name="Comic Sans MS Bold Italic" size="14.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </HBox>
+               </children>
+               <HBox.margin>
+                  <Insets bottom="15.0" left="30.0" right="30.0" top="5.0" />
+               </HBox.margin>
+               <padding>
+                  <Insets top="5.0" />
+               </padding>
+            </VBox>
+         </children>
+      </HBox>
+   </children>
+</AnchorPane>
