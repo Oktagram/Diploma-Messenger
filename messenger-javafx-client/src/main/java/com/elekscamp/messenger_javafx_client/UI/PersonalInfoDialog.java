@@ -34,6 +34,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -75,6 +76,8 @@ public class PersonalInfoDialog {
 	private Image profileImage;
 	private HBox pictureHBox;
 	private int gridRow;
+	private Button btnDeleteProfilePicture;
+	private Button btnRemoveSelectedPicture;
 	
 	public PersonalInfoDialog(String backgroundColor) {
 		
@@ -97,9 +100,13 @@ public class PersonalInfoDialog {
 		pictureNameTooltip = new Tooltip();
 		pictureHBox = new HBox();
 		gridRow = 0;
+		btnDeleteProfilePicture = new Button("Delete Picture");
+		btnRemoveSelectedPicture = new Button("X");
 	}
 	
 	public Optional<Pair<User, PersonalInfo>> show(User user, PersonalInfo info, boolean allowEditing) {
+		
+		btnRemoveSelectedPicture.setPrefWidth(btnRemoveSelectedPicture.getHeight());
 		
 		chooser.setTitle("Profile Picture");
 		chooser.setInitialDirectory(new File(System.getProperty("user.home") + "/Desktop"));                 
@@ -112,6 +119,8 @@ public class PersonalInfoDialog {
 		);
 		
 		btnChangePicture.setMinWidth(128);
+		
+		btnDeleteProfilePicture.setMinWidth(btnChangePicture.getMinWidth());
 		
 		txtPictureName.setMaxWidth(250);
 		txtPictureName.setTooltip(pictureNameTooltip);
@@ -187,7 +196,21 @@ public class PersonalInfoDialog {
 		
 		if (allowEditing) {
 			gridPane.add(btnChangePicture, 0, ++gridRow);
-			gridPane.add(txtPictureName, 1, gridRow);
+			
+			AnchorPane selectedPictureAP = new AnchorPane();
+			
+			selectedPictureAP.getChildren().add(txtPictureName);
+			AnchorPane.setLeftAnchor(txtPictureName, 0d);
+			AnchorPane.setTopAnchor(txtPictureName, 0d);
+			AnchorPane.setBottomAnchor(txtPictureName, 0d);
+			
+			selectedPictureAP.getChildren().add(btnRemoveSelectedPicture);
+			AnchorPane.setRightAnchor(btnRemoveSelectedPicture, 0d);
+			AnchorPane.setTopAnchor(btnRemoveSelectedPicture, 0d);
+			AnchorPane.setBottomAnchor(btnRemoveSelectedPicture, 0d);
+			
+			gridPane.add(selectedPictureAP, 1, gridRow);
+			gridPane.add(btnDeleteProfilePicture, 0, ++gridRow);
 		}
 		
 		gridPane.add(new Text("Username: "), 0, ++gridRow);
@@ -216,8 +239,8 @@ public class PersonalInfoDialog {
 			
 			gridPane.add(new Text("New password: "), 0, ++gridRow);
 			gridPane.add(pfPassword, 1, gridRow);
-			gridPane.add(new Text("*"), 2, 2);
 			gridPane.add(new Text("*"), 2, 3);
+			gridPane.add(new Text("*"), 2, 4);
 		} else {
 			tfUsername.setEditable(false);
 			tfEmail.setEditable(false);
@@ -282,7 +305,8 @@ public class PersonalInfoDialog {
 		});
 		
 		btnChangePicture.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
+            
+			@Override
             public void handle(ActionEvent event) {
             	
             	try {
@@ -299,6 +323,25 @@ public class PersonalInfoDialog {
             	pictureNameTooltip.setText(txtPictureName.getText());
             }
         });
+		
+		btnDeleteProfilePicture.setOnAction(new EventHandler<ActionEvent>() {
+			
+			@Override
+            public void handle(ActionEvent event) {
+				
+				info.setPicture(null);
+			}
+		});
+		
+		btnRemoveSelectedPicture.setOnAction(new EventHandler<ActionEvent>() {
+			
+			@Override
+            public void handle(ActionEvent event) {
+				
+				newProfilePicture = null;
+				txtPictureName.setText(NO_PICTURE_CHOSEN);
+			}
+		});
 		
 		dialog.getDialogPane().setContent(gridPane);
 		
