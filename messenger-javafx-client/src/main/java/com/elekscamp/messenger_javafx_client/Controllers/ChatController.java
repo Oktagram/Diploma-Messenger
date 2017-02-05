@@ -446,7 +446,6 @@ public class ChatController {
 		} catch (HttpErrorCodeException | IOException e) {
 			e.printStackTrace();
 		}
-		System.out.println("-------------------------------------------------------------------------");
 	}
 	
 	public void tfUsersSearchOnKeyPressed(KeyEvent ke) {
@@ -472,6 +471,7 @@ public class ChatController {
 	
 	private void fillUsersListView(List<User> list) {
 		
+		UserListCell.setUsersWithImagesList(generateUsersWithImagesList(list));
 		usersObservableList = FXCollections.observableArrayList();
 		usersObservableList.addAll(list);
 		listViewUsers.setItems(usersObservableList);
