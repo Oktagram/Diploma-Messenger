@@ -9,8 +9,6 @@ import com.elekscamp.messenger_javafx_client.DAL.RequestManager;
 import com.elekscamp.messenger_javafx_client.Entities.Message;
 import com.elekscamp.messenger_javafx_client.Entities.User;
 import com.elekscamp.messenger_javafx_client.Entities.UserWithImage;
-import com.sun.glass.ui.Application;
-
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -23,6 +21,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Rectangle;
 
 public class MessageListCell extends ListCell<Message> {
 
@@ -41,6 +40,7 @@ public class MessageListCell extends ListCell<Message> {
 	private HBox imageHBox;
 	private String attachmentUrl;
 	private Hyperlink attachmentLink;
+	private Rectangle clip;
 	
 	private static List<UserWithImage> usersList;
 	
@@ -66,6 +66,8 @@ public class MessageListCell extends ListCell<Message> {
 		if (item != null) {
 
 			mainHBox = new HBox();
+			mainHBox.setStyle("-fx-border-color: black; -fx-border-radius: 10px;");
+			
         	anchorPane = new AnchorPane();
         	 
         	user = searchUserInListById(item.getUserId());
@@ -76,7 +78,7 @@ public class MessageListCell extends ListCell<Message> {
             image = searchImageInListByUserId(item.getUserId());
     		imageView = new ImageView(image);
     		imageView.setFitHeight(50);
-    		imageView.setFitWidth(50);
+    		
     		imageView.setPreserveRatio(true);
     		
             text = new Label(item.getText());
@@ -88,22 +90,35 @@ public class MessageListCell extends ListCell<Message> {
                  
             date = new Date(item.getSendDate());
             time = new Label(formatter.format(date));
-            time.setStyle("-fx-font-size: 12px;");    
+            time.setStyle("-fx-font-size: 12px; -fx-font-style: italic;");    
             
             imageHBox = new HBox();
             imageHBox.getChildren().add(imageView);
-            imageHBox.setAlignment(Pos.TOP_CENTER);
-            imageHBox.setMinWidth(50);
-            
+             
             if (currentUserId == user.getId()) {
             	anchorPane.getChildren().addAll(time, username);
-	            AnchorPane.setRightAnchor(username, (double)0);
+	            AnchorPane.setRightAnchor(username, 0d);
+	            AnchorPane.setLeftAnchor(time, 2d);
 	            mainHBox.getChildren().addAll(vBox, imageHBox);
+	            imageHBox.setAlignment(Pos.TOP_RIGHT);
             } else {
             	anchorPane.getChildren().addAll(username, time);
-	            AnchorPane.setRightAnchor(time, (double)0);
+	            AnchorPane.setRightAnchor(time, 2d);
 	            mainHBox.getChildren().addAll(imageHBox, vBox);
+	            imageHBox.setAlignment(Pos.TOP_LEFT);
+	            imageView.setFitWidth(50);
+	            imageHBox.setMinWidth(50);   
             }
+            
+            AnchorPane.setTopAnchor(time, 2d);
+            
+            clip = new Rectangle(
+            		imageView.getBoundsInParent().getWidth(), imageView.getBoundsInParent().getHeight()
+            );
+
+            clip.setArcWidth(18);
+            clip.setArcHeight(18);
+            imageView.setClip(clip);
             
             vBox.getChildren().addAll(anchorPane, text);
             
