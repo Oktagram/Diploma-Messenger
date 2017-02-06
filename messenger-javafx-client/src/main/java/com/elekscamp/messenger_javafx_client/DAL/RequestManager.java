@@ -11,6 +11,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
+import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
@@ -181,13 +182,15 @@ public class RequestManager <T> implements RequestService<T> {
             StringBody comment = new StringBody("A binary file of some kind", ContentType.TEXT_PLAIN);
 
             HttpEntity httpEntity = MultipartEntityBuilder.create()
+            		.setMode(HttpMultipartMode.RFC6532)
                     .addPart("files", file)
                     .addPart("comment", comment)
                     .build();
             httpPost.addHeader("Authorization", "Bearer ".concat(token.getAccessToken()));
             httpPost.addHeader("enctype", "multipart/form-data");
+            
             httpPost.setEntity(httpEntity);
-
+            
             System.out.println("executing request " + httpPost.getRequestLine());
             CloseableHttpResponse response = httpClient.execute(httpPost);
             try {

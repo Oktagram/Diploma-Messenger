@@ -45,7 +45,6 @@ public class MessageListCell extends ListCell<Message> {
 	private static List<UserWithImage> usersList;
 	
 	public MessageListCell() {
-		
 		formatter = new SimpleDateFormat("dd/MM/yyyy 'at' HH:mm:ss");
 		attachmentUrl = RequestManager.getRequestApi() + "/files/downloadAttachment/";
 	}
@@ -69,7 +68,7 @@ public class MessageListCell extends ListCell<Message> {
 			mainHBox.setStyle("-fx-border-color: black; -fx-border-radius: 10px;");
 			
         	anchorPane = new AnchorPane();
-        	 
+
         	user = searchUserInListById(item.getUserId());
       
         	username = new Label(user.getLogin());
@@ -86,7 +85,6 @@ public class MessageListCell extends ListCell<Message> {
             text.setStyle("-fx-font-size: 15px;");
                  
             vBox = new VBox();
-            vBox.setPadding(new Insets(0, 5, 5, 5));
                  
             date = new Date(item.getSendDate());
             time = new Label(formatter.format(date));
@@ -96,33 +94,40 @@ public class MessageListCell extends ListCell<Message> {
             imageHBox.getChildren().add(imageView);
              
             if (currentUserId == user.getId()) {
+            	
             	anchorPane.getChildren().addAll(time, username);
+            	vBox.setPadding(new Insets(0, 5, 2, 7));
 	            AnchorPane.setRightAnchor(username, 0d);
-	            AnchorPane.setLeftAnchor(time, 2d);
 	            mainHBox.getChildren().addAll(vBox, imageHBox);
 	            imageHBox.setAlignment(Pos.TOP_RIGHT);
+	            
             } else {
+            	
             	anchorPane.getChildren().addAll(username, time);
 	            AnchorPane.setRightAnchor(time, 2d);
 	            mainHBox.getChildren().addAll(imageHBox, vBox);
 	            imageHBox.setAlignment(Pos.TOP_LEFT);
 	            imageView.setFitWidth(50);
 	            imageHBox.setMinWidth(50);   
+	            
             }
             
             AnchorPane.setTopAnchor(time, 2d);
             
             clip = new Rectangle(
-            		imageView.getBoundsInParent().getWidth(), imageView.getBoundsInParent().getHeight()
-            );
+            		imageView.getBoundsInParent().getWidth(), 
+            		imageView.getBoundsInParent().getHeight()
+            		);
 
             clip.setArcWidth(18);
             clip.setArcHeight(18);
             imageView.setClip(clip);
             
-            vBox.getChildren().addAll(anchorPane, text);
+            vBox.getChildren().add(anchorPane);
+            if (item.getText() != null && !text.getText().isEmpty()) vBox.getChildren().add(text);
             
             if (item.getAttachment() != null) {
+            	
             	attachmentLink = new Hyperlink(getAttachmentName(item.getAttachment()));
             	vBox.getChildren().add(attachmentLink);
             	

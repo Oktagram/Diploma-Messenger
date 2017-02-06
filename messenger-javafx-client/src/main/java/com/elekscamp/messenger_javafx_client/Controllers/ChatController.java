@@ -1,5 +1,6 @@
 package com.elekscamp.messenger_javafx_client.Controllers;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,7 +23,6 @@ import com.elekscamp.messenger_javafx_client.UI.MessageListCell;
 import com.elekscamp.messenger_javafx_client.UI.PersonalInfoDialog;
 import com.elekscamp.messenger_javafx_client.UI.UserListCell;
 
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -42,7 +42,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.util.Callback;
 import javafx.util.Pair;
 
@@ -81,6 +83,8 @@ public class ChatController {
 	private PersonalInfoDialog personalInfoDialog;
 	private Timer timer;
 	private Image profileImage;
+	private File attachmentFile;
+	private FileChooser chooser;
 	
 	@FXML
 	private Text txtCurrentUsername;
@@ -112,11 +116,17 @@ public class ChatController {
 	private ImageView imageViewCurrentUser;
 	@FXML
 	private Button btnUpdate;
+	@FXML
+	private Button btnSmiles;
+	@FXML
+	private Button btnAttachment;
 	
 	public void initData(int currentUserId) {
 		
 		this.currentUserId = currentUserId;
 		provider = new ContentProvider();
+		
+		initializeColors();
 		
 		try {
 			this.currentUser = provider.getUserProvider().getById(currentUserId);
@@ -142,8 +152,25 @@ public class ChatController {
 	        }
 	    }, 2000, 5000);*/
 		
+		chooser = new FileChooser();
+		chooser.setTitle("Attachment");
+		chooser.setInitialDirectory(new File(System.getProperty("user.home") + "/Desktop"));                 
+		chooser.getExtensionFilters().addAll(
+		    new ExtensionFilter("All", "*.jpg", "*.gif", "*.bmp", "*.png", "*.doc", "*.docx", "*.pdf"),
+		    new ExtensionFilter("JPG", "*.jpg"),
+		    new ExtensionFilter("GIF", "*.gif"),
+		    new ExtensionFilter("BMP", "*.bmp"),
+		    new ExtensionFilter("PNG", "*.png"),
+		    new ExtensionFilter("DOC", "*.doc", "*.docx"),
+		    new ExtensionFilter("PDF", "*.pdf")
+		);
+		
+		alert = new Alert(AlertType.INFORMATION);
+		alert.setTitle("Message");
+		alert.setHeaderText(null);
+		alert.getDialogPane().setStyle("-fx-background-color: " + dialogColor);
+		
 		initializeListViews();
-		initializeColors();
 		prepareButtons();
 		btnFriends.fire();
 	}
@@ -257,14 +284,11 @@ public class ChatController {
 		dialogResult = textInputDialog.showAndWait();
 		dialogResult.ifPresent(conversationName -> {
 			if (conversationName.isEmpty()) {
-				alert = new Alert(AlertType.INFORMATION);
-				alert.setTitle("Message");
-				alert.setHeaderText(null);
-				alert.getDialogPane().setStyle("-fx-background-color: " + dialogColor);
 				alert.setContentText("Name of the conversation cannot be empty!");
 				alert.showAndWait();
-			} else 		
+			} else {	
 				createNewConversation(dialogResult.get());
+			}
 		});
 	}
 	
@@ -306,15 +330,34 @@ public class ChatController {
 	}
 
 	public void btnSendOnAction() {
+
+		if (currentConversation == null) {
+			alert.setContentText("Choose conversation first!");
+			alert.showAndWait();
+			return;
+		}
 		
 		messageText = txtAreaMessage.getText();
 		
-		if (currentConversation == null || messageText.isEmpty()) return;
+		if (messageText.isEmpty() && attachmentFile == null) {
+			alert.setContentText("Cannot send empty message!");
+			alert.showAndWait();
+			return;
+		}
 		
 		newMessage = new Message(currentUserId, currentConversationId, messageText);
 		
 		try {
-			provider.getMessageProvider().add(newMessage);
+			int messageId = provider.getMessageProvider().add(newMessage).getId();
+			
+			if (attachmentFile != null) {
+				provider.getFileProvider().uploadAttachment(attachmentFile, messageId);
+				
+				newMessage = provider.getMessageProvider().getById(messageId);
+				
+				attachmentFile = null;
+			}
+			
 			listViewChat.getItems().add(newMessage);
 			txtAreaMessage.clear();
 		} catch (HttpErrorCodeException | IOException e) {
@@ -456,6 +499,19 @@ public class ChatController {
 		}
 	}
 
+	public void btnSmilesOnAction() {
+		
+	}
+	
+	public void btnAttachmentOnAction() {
+		try {
+    		attachmentFile = chooser.showOpenDialog(null);
+    	} catch(IllegalArgumentException ex) {
+    		chooser.setInitialDirectory(new File(System.getProperty("user.home")));
+    		attachmentFile = chooser.showOpenDialog(null);
+    	}
+	}
+	
 	public void btnFindOnAction() {
 		
 		String searchingStr = tfUsersSearch.getText().toLowerCase();
@@ -504,7 +560,9 @@ public class ChatController {
 			button.setStyle("-fx-base: " + passiveButtonsColor);
 		}
 		
-		btnUpdate.setStyle("-fx-font-size: 11.5;" + "-fx-base: " + newConversationColor);
+		btnUpdate.setStyle("-fx-font-size: 11.5; -fx-base: " + newConversationColor);
+		btnAttachment.setStyle("-fx-font-size: 11.5; -fx-base: " + newConversationColor);
+		btnSmiles.setStyle("-fx-font-size: 12; -fx-base: " + newConversationColor);
 		btnLogOut.setStyle("-fx-base: " + logOutColor);
 		btnNewConversation.setStyle("-fx-base: " + newConversationColor);
 		btnSend.setStyle("-fx-base: " + findAndSearchColor);

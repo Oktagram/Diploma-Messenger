@@ -14,12 +14,8 @@ public class FileProvider {
 		path = "/files";
 	}
 	
-	public void uploadAttachment() {
-		
-	}
-	
-	public void downloadAttachment() {
-		
+	public String uploadAttachment(File data, Integer messageId) throws IOException {
+		return service.post(path + "/uploadAttachment/" + messageId.toString(), data);
 	}
 	
 	public String uploadProfilePicture(File data, Integer profileId) throws IOException, HttpErrorCodeException {
@@ -48,26 +44,6 @@ public class FileProvider {
 		int responseCode = conn.getResponseCode();
 		System.out.println("\nSending 'POST' request to URL : " + url);
 		System.out.println("Post parameters : " + urlParameters);
-		System.out.println("Response Code : " + responseCode);
-
-		BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-		String inputLine;
-		StringBuffer response = new StringBuffer();
-
-		while ((inputLine = in.readLine()) != null) {
-			response.append(inputLine);
-		}
-		in.close();*/
-	}
-
-	public void downloadProfilePicture() {
-	/*	conn.setRequestMethod("GET");
-
-		//add request header
-		conn.setRequestProperty("User-Agent", USER_AGENT);
-
-		int responseCode = conn.getResponseCode();
-		System.out.println("\nSending 'GET' request to URL : " + url);
 		System.out.println("Response Code : " + responseCode);
 
 		BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
