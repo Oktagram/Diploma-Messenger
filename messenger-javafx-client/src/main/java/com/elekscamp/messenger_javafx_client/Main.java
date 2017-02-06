@@ -9,8 +9,22 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 
+	private static Main instance;
+	
+	public Main(){ instance = this; }
+	
+	public static Main getInstance() {
+		
+		if (instance == null) {
+			instance = new Main();
+		}
+		
+		return instance;
+	}
+	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
+		
 		RequestManager.setRequestApi("http://localhost:55059/api");
 		
 		Parent root = FXMLLoader.load(getClass().getClassLoader()
