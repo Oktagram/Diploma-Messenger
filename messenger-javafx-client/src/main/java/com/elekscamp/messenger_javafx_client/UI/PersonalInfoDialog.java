@@ -320,6 +320,7 @@ public class PersonalInfoDialog {
             		txtPictureName.setText(newProfilePicture.getName());
             	else
             		txtPictureName.setText(NO_PICTURE_CHOSEN);
+            	
             	pictureNameTooltip.setText(txtPictureName.getText());
             }
         });

@@ -68,7 +68,7 @@
                   <Insets bottom="5.0" left="5.0" top="5.0" />
                </HBox.margin>
             </VBox>
-            <VBox minWidth="500.0" prefHeight="500.0" prefWidth="500.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" HBox.hgrow="ALWAYS">
+            <VBox fx:id="middleVBox" minWidth="500.0" prefHeight="500.0" prefWidth="500.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" HBox.hgrow="ALWAYS">
                <children>
                   <AnchorPane prefHeight="425.0" prefWidth="500.0" VBox.vgrow="ALWAYS">
                      <children>

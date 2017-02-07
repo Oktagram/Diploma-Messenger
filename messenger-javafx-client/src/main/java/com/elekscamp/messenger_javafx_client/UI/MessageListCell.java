@@ -77,7 +77,6 @@ public class MessageListCell extends ListCell<Message> {
             image = searchImageInListByUserId(item.getUserId());
     		imageView = new ImageView(image);
     		imageView.setFitHeight(50);
-    		
     		imageView.setPreserveRatio(true);
     		
             text = new Label(item.getText());

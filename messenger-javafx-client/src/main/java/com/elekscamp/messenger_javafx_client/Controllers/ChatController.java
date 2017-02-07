@@ -25,22 +25,30 @@ import com.elekscamp.messenger_javafx_client.UI.UserListCell;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -85,6 +93,10 @@ public class ChatController {
 	private Image profileImage;
 	private File attachmentFile;
 	private FileChooser chooser;
+	private Tooltip attachmentTooltip;
+	private AnchorPane attachmentAnchor;
+	private Button btnRemoveAttachment;
+	private Label lbAttachmentName;
 	
 	@FXML
 	private Text txtCurrentUsername;
@@ -120,11 +132,37 @@ public class ChatController {
 	private Button btnSmiles;
 	@FXML
 	private Button btnAttachment;
-	
+	@FXML
+	private VBox middleVBox;
+
 	public void initData(int currentUserId) {
 		
 		this.currentUserId = currentUserId;
 		provider = new ContentProvider();
+		attachmentAnchor = new AnchorPane();
+		attachmentTooltip = new Tooltip();
+		
+		btnRemoveAttachment = new Button("X");
+		btnRemoveAttachment.setStyle("-fx-font-size: 12px;");
+		btnRemoveAttachment.setMinHeight(26);
+		btnRemoveAttachment.setMinWidth(26);
+		btnRemoveAttachment.setOnAction(new EventHandler<ActionEvent>() {
+			
+			@Override
+			public void handle(ActionEvent event) {
+				removeAttachment();
+			}
+		});
+		
+		lbAttachmentName = new Label();
+		lbAttachmentName.setTextFill(Color.web("red"));
+		lbAttachmentName.setMaxWidth(450);
+		lbAttachmentName.setTooltip(attachmentTooltip);
+		
+		attachmentAnchor.getChildren().addAll(lbAttachmentName, btnRemoveAttachment);
+
+		AnchorPane.setLeftAnchor(lbAttachmentName, 10d);
+		AnchorPane.setRightAnchor(btnRemoveAttachment, 0d);
 		
 		initializeColors();
 		
@@ -175,6 +213,71 @@ public class ChatController {
 		btnFriends.fire();
 	}
 
+	public void btnSmilesOnAction() {
+		
+	}
+	
+	public void btnAttachmentOnAction() {
+		try {
+    		attachmentFile = chooser.showOpenDialog(null);
+    	} catch(IllegalArgumentException ex) {
+    		chooser.setInitialDirectory(new File(System.getProperty("user.home")));
+    		attachmentFile = chooser.showOpenDialog(null);
+    	}
+		
+		if (attachmentFile != null) {
+			lbAttachmentName.setText(attachmentFile.getName());
+			
+			attachmentTooltip.setText(attachmentFile.getName());
+			
+			middleVBox.getChildren().remove(attachmentAnchor);
+			middleVBox.getChildren().add(attachmentAnchor);
+			
+			VBox.setMargin(attachmentAnchor, new Insets(5));
+		}
+	}
+	
+	public void btnSendOnAction() {
+
+		if (currentConversation == null) {
+			alert.setContentText("Choose conversation first!");
+			alert.showAndWait();
+			return;
+		}
+		
+		messageText = txtAreaMessage.getText();
+		
+		if (messageText.isEmpty() && attachmentFile == null) {
+			alert.setContentText("Cannot send empty message!");
+			alert.showAndWait();
+			return;
+		}
+		
+		newMessage = new Message(currentUserId, currentConversationId, messageText);
+		
+		try {
+			int messageId = provider.getMessageProvider().add(newMessage).getId();
+			
+			if (attachmentFile != null) {
+				provider.getFileProvider().uploadAttachment(attachmentFile, messageId);
+				
+				newMessage = provider.getMessageProvider().getById(messageId);
+				
+				removeAttachment();
+			}
+			
+			listViewChat.getItems().add(newMessage);
+			txtAreaMessage.clear();
+		} catch (HttpErrorCodeException | IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void removeAttachment() {
+		attachmentFile = null;
+		middleVBox.getChildren().remove(attachmentAnchor);
+	}
+	
 	private void initializeColors() {
 		dialogColor = "#ffd272";
 		findAndSearchColor = "#fcc05f";
@@ -329,42 +432,6 @@ public class ChatController {
 		}
 	}
 
-	public void btnSendOnAction() {
-
-		if (currentConversation == null) {
-			alert.setContentText("Choose conversation first!");
-			alert.showAndWait();
-			return;
-		}
-		
-		messageText = txtAreaMessage.getText();
-		
-		if (messageText.isEmpty() && attachmentFile == null) {
-			alert.setContentText("Cannot send empty message!");
-			alert.showAndWait();
-			return;
-		}
-		
-		newMessage = new Message(currentUserId, currentConversationId, messageText);
-		
-		try {
-			int messageId = provider.getMessageProvider().add(newMessage).getId();
-			
-			if (attachmentFile != null) {
-				provider.getFileProvider().uploadAttachment(attachmentFile, messageId);
-				
-				newMessage = provider.getMessageProvider().getById(messageId);
-				
-				attachmentFile = null;
-			}
-			
-			listViewChat.getItems().add(newMessage);
-			txtAreaMessage.clear();
-		} catch (HttpErrorCodeException | IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
 	private void updateMessagesListView() {
 
 		try {
@@ -499,19 +566,6 @@ public class ChatController {
 		}
 	}
 
-	public void btnSmilesOnAction() {
-		
-	}
-	
-	public void btnAttachmentOnAction() {
-		try {
-    		attachmentFile = chooser.showOpenDialog(null);
-    	} catch(IllegalArgumentException ex) {
-    		chooser.setInitialDirectory(new File(System.getProperty("user.home")));
-    		attachmentFile = chooser.showOpenDialog(null);
-    	}
-	}
-	
 	public void btnFindOnAction() {
 		
 		String searchingStr = tfUsersSearch.getText().toLowerCase();
