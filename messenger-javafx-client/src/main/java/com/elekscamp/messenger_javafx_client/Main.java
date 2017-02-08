@@ -25,7 +25,7 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		
-		RequestManager.setRequestApi("http://localhost:55059/api");
+		RequestManager.setRequestApi("http://localhost:5000/api");//("http://localhost:55059/api");
 		
 		Parent root = FXMLLoader.load(getClass().getClassLoader()
 				.getResource("fxml/AuthenticationAndRegistration.fxml")); 

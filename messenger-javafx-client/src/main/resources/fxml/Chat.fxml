@@ -14,12 +14,13 @@
          <children>
             <VBox maxWidth="350.0" minWidth="300.0" prefHeight="500.0" prefWidth="300.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" HBox.hgrow="ALWAYS">
                <children>
-                  <HBox maxHeight="100.0" minHeight="100.0" minWidth="300.0" prefHeight="100.0" prefWidth="300.0">
+                  <HBox alignment="CENTER" maxHeight="100.0" minHeight="100.0" minWidth="300.0" prefHeight="100.0" prefWidth="300.0">
                      <children>
-                        <ImageView fx:id="imageViewCurrentUser" fitHeight="100.0" fitWidth="100.0" onMouseClicked="#imageViewCurrentUserOnMouseClicked" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="imageViewCurrentUser" fitHeight="100.0" fitWidth="100.0" onMouseClicked="#imageViewCurrentUserOnMouseClicked" pickOnBounds="true" preserveRatio="true" style="-fx-background-color: red;">
                            <HBox.margin>
                               <Insets left="5.0" />
-                           </HBox.margin></ImageView>
+                           </HBox.margin>
+                        </ImageView>
                         <VBox alignment="CENTER" minWidth="195.0" prefWidth="195.0" HBox.hgrow="ALWAYS">
                            <children>
                               <AnchorPane maxHeight="60.0" minHeight="60.0" prefHeight="60.0" prefWidth="200.0" VBox.vgrow="ALWAYS">

@@ -1,6 +1,7 @@
 package com.elekscamp.messenger_javafx_client.Controllers;
 
 import java.io.File;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -136,7 +137,7 @@ public class ChatController {
 	private VBox middleVBox;
 
 	public void initData(int currentUserId) {
-		
+
 		this.currentUserId = currentUserId;
 		provider = new ContentProvider();
 		attachmentAnchor = new AnchorPane();
@@ -147,7 +148,6 @@ public class ChatController {
 		btnRemoveAttachment.setMinHeight(26);
 		btnRemoveAttachment.setMinWidth(26);
 		btnRemoveAttachment.setOnAction(new EventHandler<ActionEvent>() {
-			
 			@Override
 			public void handle(ActionEvent event) {
 				removeAttachment();
@@ -408,8 +408,10 @@ public class ChatController {
 			    try {
 					provider.getUserProvider().update(currentUserId, pair.getKey());
 					currentUser = pair.getKey();
-					picture = pair.getValue().getPicture();
+					PersonalInfo personalInfo = pair.getValue();
+					picture = personalInfo.getPicture();
 					provider.getPersonalInfoProvider().update(currentUserId, pair.getValue());
+					imageViewCurrentUser.setImage(new Image(RequestManager.getRequestApi() + "/files/downloadpicture/" + personalInfo.getId()));
 				} catch (HttpErrorCodeException | IOException e) {
 					e.printStackTrace();
 				}

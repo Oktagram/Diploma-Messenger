@@ -70,8 +70,8 @@ public class AuthenticationAndRegistrationController {
 	
 	public void signInButtonAction() {
 		
-		username = "Ananas";//loginSignInTextField.getText();
-		password = "1234";//passwordSignInTextField.getText();
+		username = loginSignInTextField.getText();
+		password = passwordSignInTextField.getText();
 		usernameLength = username.length();
 		passwordLength = password.length();
 		

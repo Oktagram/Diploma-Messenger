@@ -11,8 +11,10 @@ import com.elekscamp.messenger_javafx_client.Entities.User;
 import com.elekscamp.messenger_javafx_client.Entities.UserWithImage;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
@@ -22,6 +24,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
+import javafx.stage.FileChooser.ExtensionFilter;
 
 public class MessageListCell extends ListCell<Message> {
 
@@ -41,6 +44,7 @@ public class MessageListCell extends ListCell<Message> {
 	private String attachmentUrl;
 	private Hyperlink attachmentLink;
 	private Rectangle clip;
+	private HBox attachmentHBox;
 	
 	private static List<UserWithImage> usersList;
 	
@@ -77,6 +81,7 @@ public class MessageListCell extends ListCell<Message> {
             image = searchImageInListByUserId(item.getUserId());
     		imageView = new ImageView(image);
     		imageView.setFitHeight(50);
+    		imageView.autosize();
     		imageView.setPreserveRatio(true);
     		
             text = new Label(item.getText());
@@ -103,11 +108,12 @@ public class MessageListCell extends ListCell<Message> {
             } else {
             	
             	anchorPane.getChildren().addAll(username, time);
+            	vBox.setPadding(new Insets(0, 7, 2, 5));
 	            AnchorPane.setRightAnchor(time, 2d);
 	            mainHBox.getChildren().addAll(imageHBox, vBox);
 	            imageHBox.setAlignment(Pos.TOP_LEFT);
-	            imageView.setFitWidth(50);
-	            imageHBox.setMinWidth(50);   
+	          //  imageView.setFitWidth(50);
+	        //    imageHBox.setMinWidth(50);   
 	            
             }
             
@@ -123,21 +129,60 @@ public class MessageListCell extends ListCell<Message> {
             imageView.setClip(clip);
             
             vBox.getChildren().add(anchorPane);
+            
             if (item.getText() != null && !text.getText().isEmpty()) vBox.getChildren().add(text);
             
             if (item.getAttachment() != null) {
             	
-            	attachmentLink = new Hyperlink(getAttachmentName(item.getAttachment()));
-            	vBox.getChildren().add(attachmentLink);
+            	String fileName = getFileName(item.getAttachment());
+            	String extenstion = getFileExtension(fileName);
             	
+            	attachmentHBox = new HBox();
+            	attachmentLink = new Hyperlink(fileName);
             	attachmentLink.setOnAction(new EventHandler<ActionEvent>() {
-
                     @Override
                     public void handle(ActionEvent t) {
                     	Main.getInstance().getHostServices().showDocument(attachmentUrl + Integer.toString(item.getId()));
                     }
-
                 });
+            	
+            	attachmentHBox.getChildren().add(attachmentLink);
+            	
+            	vBox.getChildren().add(attachmentHBox);
+            	
+            	if (isImageExtension(extenstion)) {
+                	Hyperlink showImageHLink = new Hyperlink("Show");
+                	Hyperlink hideImageHLink = new Hyperlink("Hide");
+                	ImageView attachmentImageView = new ImageView();
+                	
+					showImageHLink.setOnAction(new EventHandler<ActionEvent>() {
+						@Override
+						public void handle(ActionEvent event) {
+							Image attachmentImage = new Image(RequestManager.getRequestApi() + "/files/downloadattachment/" + Integer.toString(item.getId()));
+		                	attachmentImageView.setImage(attachmentImage);
+							attachmentImageView.setFitHeight(200);
+							attachmentImageView.setFitWidth(200);
+							attachmentImageView.setPreserveRatio(true);
+		                	
+							int count = vBox.getChildren().size();
+							vBox.getChildren().add(count - 1, attachmentImageView);
+						
+							attachmentHBox.getChildren().remove(showImageHLink);
+							attachmentHBox.getChildren().add(hideImageHLink);
+						}
+					});
+
+                	hideImageHLink.setOnAction(new EventHandler<ActionEvent>() {
+						@Override
+						public void handle(ActionEvent event) {
+							vBox.getChildren().remove(attachmentImageView);
+							attachmentHBox.getChildren().remove(hideImageHLink);
+							attachmentHBox.getChildren().add(showImageHLink);
+						}
+					});
+					
+                	attachmentHBox.getChildren().add(showImageHLink);
+            	}
             }
             
             anchorPane.prefWidthProperty().bind(this.widthProperty());
@@ -146,6 +191,19 @@ public class MessageListCell extends ListCell<Message> {
 		} else {
             setGraphic(null);
         }
+	}
+	
+	private boolean isImageExtension(String extension) {
+		System.out.println(extension);
+	    switch (extension.toLowerCase()) {
+	    case "jpg":
+	    case "gif":
+	    case "bmp":
+	    case "png":
+	    	return true;
+	    default:
+	    	return false;
+	    }
 	}
 	
 	private User searchUserInListById(int id) {
@@ -157,9 +215,12 @@ public class MessageListCell extends ListCell<Message> {
 		throw new NullPointerException("User is null in MessageListCell.");
 	}
 
-	private String getAttachmentName(String attachmentPath) {
-		
+	private String getFileName(String attachmentPath) {
 		return attachmentPath.substring(attachmentPath.lastIndexOf("\\") + 37);
+	}
+	
+	private String getFileExtension(String attachmentName) {
+		return attachmentName.substring(attachmentName.lastIndexOf(".") + 1);
 	}
 	
 	private Image searchImageInListByUserId(int id) {

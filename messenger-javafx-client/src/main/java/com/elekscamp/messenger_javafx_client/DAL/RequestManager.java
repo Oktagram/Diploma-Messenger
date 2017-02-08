@@ -207,23 +207,8 @@ public class RequestManager <T> implements RequestService<T> {
         } finally {
             httpClient.close();
         }
-		
-		
-	/*	String boundary = Long.toHexString(System.currentTimeMillis()); 
-		header.put("enctype", "multipart/form-data");
-		header.put("Content-Type", "multipart/form-data; boundary=----WebKitFormBoundary" + boundary);
-		header.put("Content-Disposition", "form-data; name=\"files\"; filename=\"screen.JPG\"");
-		
-		try {
-			response = request.execute(requestApi.concat(path), HttpMethod.POST, header, data);
-			if (request.getResponceCode() == 400) 
-				throw new HttpErrorCodeException(response);
-		} catch (IOException e) {
-			exceptionResolver.checkForErrorCodeException(request.getResponceCode(), request.getResponseMessage());
-			throw e;
-		}	
-		*/
-		return "";//response;
+        
+		return "";
 	}
 	
 	public void put(String path, Integer id, T item) throws HttpErrorCodeException, IOException {
