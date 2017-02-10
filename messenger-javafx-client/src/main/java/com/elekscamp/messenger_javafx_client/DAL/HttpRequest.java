@@ -12,9 +12,11 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 public class HttpRequest {
-	
-	public enum HttpMethod { GET, PUT, POST, DELETE };
-	
+
+	public enum HttpMethod {
+		GET, PUT, POST, DELETE
+	};
+
 	private HttpMethod method;
 	private URL url;
 	private HttpURLConnection conn;
@@ -23,80 +25,84 @@ public class HttpRequest {
 	private String response;
 	private String body;
 	private Map<String, String> header;
-	
-	public HttpRequest() { }
 
-/*	public String execute(String urlStr, HttpMethod method, Map<String, String> header, String body) throws IOException {
-		
-		return execute(urlStr, method, header, 
-				(body == null || body.isEmpty()) ? new byte[0] 
-					: body.getBytes(StandardCharsets.UTF_8));
-	}*/
-	
-	public String execute(String urlStr, HttpMethod method, Map<String, String> header, String body) throws IOException {
-		
+	public HttpRequest() {
+	}
+
+	/*
+	 * public String execute(String urlStr, HttpMethod method, Map<String,
+	 * String> header, String body) throws IOException {
+	 * 
+	 * return execute(urlStr, method, header, (body == null || body.isEmpty()) ?
+	 * new byte[0] : body.getBytes(StandardCharsets.UTF_8)); }
+	 */
+
+	public String execute(String urlStr, HttpMethod method, Map<String, String> header, String body)
+			throws IOException {
+
 		this.method = method;
 		this.header = header;
 		this.body = body;
 		System.out.println(urlStr + " body: " + body);
 		responseCode = -1;
-		
+
 		url = new URL(urlStr);
 		conn = (HttpURLConnection) url.openConnection();
-		
+
 		configureConnection();
-		
-		if (conn.getDoOutput()) writeOutput();
-		
+
+		if (conn.getDoOutput())
+			writeOutput();
+
 		readInput();
-		
+
 		conn.disconnect();
 		System.out.println("response: " + response);
 		return response;
 	}
-	
+
 	private void configureConnection() throws ProtocolException {
-		
+
 		conn.setRequestMethod(method.toString());
-		
+
 		if (header != null) {
 			for (Map.Entry<String, String> each : header.entrySet()) {
 				conn.addRequestProperty(each.getKey(), each.getValue());
 			}
 		}
-			
-		if (method == HttpMethod.POST || method == HttpMethod.PUT){
+
+		if (method == HttpMethod.POST || method == HttpMethod.PUT) {
 			conn.setDoOutput(true);
 		} else {
 			conn.setDoOutput(false);
 		}
 	}
-	
+
 	private void writeOutput() throws IOException {
-		
+
 		if (body != null && !body.isEmpty() && conn.getDoOutput()) {
 			try (DataOutputStream outputStream = new DataOutputStream(conn.getOutputStream())) {
 				outputStream.write(body.getBytes(StandardCharsets.UTF_8));
 			}
 		}
 	}
-	
+
 	private void readInput() throws IOException {
-		
+
 		responseCode = conn.getResponseCode();
 		responseMessage = conn.getResponseMessage();
 		response = "";
-		
+
 		InputStream inputStream = responseCode == 400 ? conn.getErrorStream() : conn.getInputStream();
-		
-		try (BufferedReader bufReader = new BufferedReader(new InputStreamReader(inputStream))){
+
+		try (BufferedReader bufReader = new BufferedReader(new InputStreamReader(inputStream))) {
 			String readerLine;
 			while ((readerLine = bufReader.readLine()) != null) {
 				response += readerLine;
 			}
 		}
 	}
-	
+
 	public HttpMethod getMethod() {
 		return method;
 	}
@@ -108,11 +114,11 @@ public class HttpRequest {
 	public int getResponceCode() {
 		return responseCode;
 	}
-	
+
 	public String getResponseMessage() {
 		return responseMessage;
 	}
-	
+
 	public String getResponse() {
 		return response;
 	}

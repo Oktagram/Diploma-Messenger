@@ -1,12 +1,13 @@
 package com.elekscamp.messenger_javafx_client.Entities;
 
 public class UserConversation {
-	
+
 	private int userId;
 	private int conversationId;
-	
-	public UserConversation() { }
-	
+
+	public UserConversation() {
+	}
+
 	public UserConversation(int userId, int conversationId) {
 		this.userId = userId;
 		this.conversationId = conversationId;

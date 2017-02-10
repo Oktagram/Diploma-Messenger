@@ -7,15 +7,15 @@ public class Token {
 	private String accessToken;
 	@JsonProperty("expires_in")
 	private int expiresIn;
-	
+
 	public String getAccessToken() {
 		return accessToken;
 	}
-	
+
 	public int getExpiresIn() {
 		return expiresIn;
 	}
-	
+
 	public void setAccessToken(String accessToken) {
 		this.accessToken = accessToken;
 	}

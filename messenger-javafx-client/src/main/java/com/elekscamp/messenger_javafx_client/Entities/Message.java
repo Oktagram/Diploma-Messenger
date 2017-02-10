@@ -14,9 +14,10 @@ public class Message {
 	private String text;
 	private String attachment;
 	private long sendDate;
-	
-	public Message() { }
-	
+
+	public Message() {
+	}
+
 	public Message(int userId, int conversationId, String text) {
 
 		this.userId = userId;
@@ -30,40 +31,51 @@ public class Message {
 		return "Message [id=" + id + ", userId=" + userId + ", conversationId=" + conversationId + ", text=" + text
 				+ ", attachment=" + attachment + ", sendDate=" + new Timestamp(sendDate) + "]";
 	}
-	
+
 	public int getId() {
 		return id;
 	}
+
 	public void setId(int id) {
 		this.id = id;
 	}
+
 	public int getUserId() {
 		return userId;
 	}
+
 	public void setUserId(int userId) {
 		this.userId = userId;
 	}
+
 	public int getConversationId() {
 		return conversationId;
 	}
+
 	public void setConversationId(int conversationId) {
 		this.conversationId = conversationId;
 	}
+
 	public String getText() {
 		return text;
 	}
+
 	public void setText(String text) {
 		this.text = text;
 	}
+
 	public String getAttachment() {
 		return attachment;
 	}
+
 	public void setAttachment(String attachment) {
 		this.attachment = attachment;
 	}
+
 	public long getSendDate() {
 		return sendDate;
 	}
+
 	public void setSendDate(long sendDate) {
 		this.sendDate = sendDate;
 	}

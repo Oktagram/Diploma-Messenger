@@ -9,13 +9,13 @@ import com.elekscamp.messenger_javafx_client.Exceptions.HttpErrorCodeException;
 public class ConversationProvider extends EntityProvider<Conversation> {
 
 	private final String byUser;
-	
-	public ConversationProvider(RequestService<Conversation> service){
+
+	public ConversationProvider(RequestService<Conversation> service) {
 		this.service = service;
 		path = "/conversations";
 		byUser = "/byUser/";
 	}
-	
+
 	public List<Conversation> getAll() throws HttpErrorCodeException, IOException {
 		return service.get(path);
 	}
@@ -23,7 +23,7 @@ public class ConversationProvider extends EntityProvider<Conversation> {
 	public List<Conversation> getAll(int page, int pageSize) throws HttpErrorCodeException, IOException {
 		return service.get(path, page, pageSize);
 	}
-	
+
 	public Conversation getById(int id) throws HttpErrorCodeException, IOException {
 		return service.get(path, id);
 	}
@@ -31,13 +31,14 @@ public class ConversationProvider extends EntityProvider<Conversation> {
 	public List<Conversation> getByUserId(Integer id) throws HttpErrorCodeException, IOException {
 		return service.get(path + byUser + id.toString());
 	}
-	
-	public List<Conversation> getByUserId(Integer id, int page, int pageSize) throws HttpErrorCodeException, IOException {
+
+	public List<Conversation> getByUserId(Integer id, int page, int pageSize)
+			throws HttpErrorCodeException, IOException {
 		return service.get(path + byUser + id.toString(), page, pageSize);
 	}
-	
+
 	public Conversation add(Conversation item) throws HttpErrorCodeException, IOException {
-		
+
 		response = service.post(path, item);
 		createdItem = objectMapper.readValue(response, Conversation.class);
 		return createdItem;

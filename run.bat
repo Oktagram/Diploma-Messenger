@@ -1,0 +1,1 @@
+start javaw -cp Messenger.jar com.elekscamp.messenger_javafx_client.Main

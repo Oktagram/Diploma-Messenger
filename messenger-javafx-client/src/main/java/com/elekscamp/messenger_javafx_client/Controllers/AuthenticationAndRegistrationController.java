@@ -9,6 +9,7 @@ import com.elekscamp.messenger_javafx_client.Entities.Credential;
 import com.elekscamp.messenger_javafx_client.Entities.User;
 import com.elekscamp.messenger_javafx_client.Exceptions.HttpErrorCodeException;
 
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -17,6 +18,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
@@ -34,7 +36,7 @@ public class AuthenticationAndRegistrationController {
 	private Text signInStatusText;
 	@FXML
 	private Button signInButton;
-	
+
 	@FXML
 	private TextField loginSignUpTextField;
 	@FXML
@@ -45,7 +47,7 @@ public class AuthenticationAndRegistrationController {
 	private Text signUpStatusText;
 	@FXML
 	private Button signUpButton;
-	
+
 	private RegistrationProvider registrationProvider;
 	private Credential credential;
 	private String username;
@@ -62,61 +64,70 @@ public class AuthenticationAndRegistrationController {
 	private Scene scene;
 	private String stylesheet;
 	private ContentProvider provider;
-	
+
 	public AuthenticationAndRegistrationController() {
 		registrationProvider = new RegistrationProvider(new RequestManager<User>(User.class));
 		provider = new ContentProvider();
-	}
-	
-	public void signInButtonAction() {
 		
+		Platform.runLater(new Runnable() {
+			@Override public void run() {
+				Stage stage = (Stage) signInButton.getScene().getWindow();
+				stage.getIcons().add(new Image("/images/icon.png"));
+			}
+		});
+	}
+
+	public void signInButtonAction() {
+
 		username = loginSignInTextField.getText();
 		password = passwordSignInTextField.getText();
 		usernameLength = username.length();
 		passwordLength = password.length();
-		
+
 		signInStatusText.setFill(Color.RED);
 		if (usernameLength == 0 || passwordLength == 0) {
 			signInStatusText.setText("Fields cannot be empty.");
+			loginSignInTextField.requestFocus();
 			return;
 		}
-		
+
 		credential = new Credential(username, password);
-    	
-    	try {
-    		currentUser = RequestManager.authenticateUser(credential);
-    		currentUser.setIsOnline(true);
-    		provider.getUserProvider().update(currentUser.getId(), currentUser);
-		    stage = (Stage) signInButton.getScene().getWindow();
-		    stage.close();
-	
-		    openChatWindow();
-	    } catch (Exception e) {
-	    	signInStatusText.setText(e.getMessage());
-	    	e.printStackTrace();
-	    }
-    }
-	
+
+		try {
+			currentUser = RequestManager.authenticateUser(credential);
+			currentUser.setIsOnline(true);
+			provider.getUserProvider().update(currentUser.getId(), currentUser);
+			stage = (Stage) signInButton.getScene().getWindow();
+			stage.close();
+
+			openChatWindow();
+		} catch (Exception e) {
+			signInStatusText.setText(e.getMessage());
+			loginSignInTextField.requestFocus();
+			e.printStackTrace();
+		}
+	}
+
 	private void openChatWindow() throws IOException {
-		
+
 		loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/Chat.fxml"));
 		root = loader.load();
-		
+
 		controller = loader.<ChatController>getController();
 		controller.initData(currentUser.getId());
-		
+
 		scene = new Scene(root);
 		stylesheet = getClass().getClassLoader().getResource("css/chat_style.css").toExternalForm();
 		scene.getStylesheets().add(stylesheet);
-		
+
 		stage = new Stage();
-		
+
 		stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 			@Override
 			public void handle(WindowEvent event) {
-				
+
 				currentUser.setIsOnline(false);
-				
+
 				try {
 					provider.getUserProvider().update(currentUser.getId(), currentUser);
 				} catch (HttpErrorCodeException | IOException e) {
@@ -125,18 +136,18 @@ public class AuthenticationAndRegistrationController {
 				System.exit(0);
 			}
 		});
-		
+
 		stage.setMinHeight(540);
 		stage.setMinWidth(1116);
-	    stage.setTitle("Messenger");
-        stage.setScene(scene);
-        stage.show();
+		stage.setTitle("Messenger");
+		stage.setScene(scene);
+		stage.show();
 	}
-	
+
 	public void signUpButtonAction() {
-		
+
 		String response;
-		
+
 		username = loginSignUpTextField.getText();
 		password = passwordSignUpTextField.getText();
 		email = emailSignUpTextField.getText();
@@ -149,29 +160,29 @@ public class AuthenticationAndRegistrationController {
 			signUpStatusText.setText("Fields cannot be empty.");
 			return;
 		}
-		
-		if (passwordLength < 8)  {
+
+		if (passwordLength < 8) {
 			signUpStatusText.setText("Password length should be 8 or more.");
 			return;
 		}
-		
+
 		try {
 			registrationProvider = new RegistrationProvider(new RequestManager<User>(User.class));
 			response = registrationProvider.register(new User(username, password, email));
 			signUpStatusText.setFill(Color.GREEN);
 			signUpStatusText.setText(response);
-	    } catch (Exception e) {
-	    	signUpStatusText.setText(e.getMessage());
-	    	e.printStackTrace();
-	    }
+		} catch (Exception e) {
+			signUpStatusText.setText(e.getMessage());
+			e.printStackTrace();
+		}
 	}
-	
+
 	public void signInEnterKeyPressed(KeyEvent ke) {
 		if (ke.getCode() == KeyCode.ENTER) {
 			signInButton.fire();
 		}
 	}
-	
+
 	public void signUpEnterKeyPressed(KeyEvent ke) {
 		if (ke.getCode() == KeyCode.ENTER) {
 			signUpButton.fire();

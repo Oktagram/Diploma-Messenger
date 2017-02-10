@@ -15,6 +15,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.Tooltip;
@@ -26,6 +27,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
+import javafx.stage.Stage;
 
 public class UserListCell extends ListCell<User> {
 
@@ -42,7 +44,7 @@ public class UserListCell extends ListCell<User> {
 	private PersonalInfo userInfo;
 	private PersonalInfoDialog userInfoDialog;
 	private String dialogColor;
-	
+
 	private static int conversationId;
 	private static List<User> usersInCurrentConversation;
 	private static List<UserWithImage> usersWithImages;
@@ -52,27 +54,27 @@ public class UserListCell extends ListCell<User> {
 		this.provider = provider;
 		userInfoDialog = new PersonalInfoDialog(dialogColor);
 	}
-	
+
 	public static void setCurrentConversationId(int id) {
 		UserListCell.conversationId = id;
 	}
-	
+
 	public static void setUsersInCurrentConversation(List<User> usersInCurrentConversation) {
 		UserListCell.usersInCurrentConversation = usersInCurrentConversation;
 	}
-	
+
 	public static void setUsersWithImagesList(List<UserWithImage> list) {
-		
+
 		UserListCell.usersWithImages = list;
 	}
-	
+
 	@Override
-    protected void updateItem(User item, boolean empty) {
-		
+	protected void updateItem(User item, boolean empty) {
+
 		super.updateItem(item, empty);
-		
+
 		if (item != null) {
-			
+
 			alert = new Alert(AlertType.INFORMATION);
 			mainHBox = new HBox();
 			imageView = new ImageView();
@@ -82,45 +84,50 @@ public class UserListCell extends ListCell<User> {
 			username = new Label(item.getLogin());
 			onlineStatus = new Label(item.getIsOnline() ? "[Online]" : "[Offline]");
 			btnAddToConversation = new Button("+");
+
+			DialogPane dialogPane = alert.getDialogPane();
 			
 			alert.setTitle("Message");
 			alert.setHeaderText(null);
-			alert.getDialogPane().setStyle("-fx-background-color: " + dialogColor);
+			dialogPane.setStyle("-fx-background-color: " + dialogColor);
 			alert.setContentText("User is already in this conversation!");
+			
+			Stage stage = (Stage) dialogPane.getScene().getWindow();
+			stage.getIcons().add(new Image("/images/icon.png"));
 
 			imageView = new ImageView(searchImageInUsersWithImageListByUserId(item.getId()));
-    		imageView.setFitHeight(50);
-    		imageView.setFitWidth(50);
-    		imageView.setPreserveRatio(true);
-			
-    		HBox imageHBox = new HBox();
+			imageView.setFitHeight(50);
+			imageView.setFitWidth(50);
+			imageView.setPreserveRatio(true);
+
+			HBox imageHBox = new HBox();
 			imageHBox.getChildren().add(imageView);
 			imageHBox.setAlignment(Pos.CENTER);
 			imageHBox.setMinWidth(50);
-			
+
 			mainHBox.getChildren().addAll(imageHBox, anchorPane);
-			
+
 			anchorPane.getChildren().addAll(usernameAndOnlineStatusHBox, addToConversationVBox);
 			HBox.setHgrow(anchorPane, Priority.ALWAYS);
-			
-			AnchorPane.setRightAnchor(usernameAndOnlineStatusHBox, (double)50);
-			AnchorPane.setLeftAnchor(usernameAndOnlineStatusHBox, (double)0);
-			AnchorPane.setRightAnchor(addToConversationVBox, (double)0);
-			
+
+			AnchorPane.setRightAnchor(usernameAndOnlineStatusHBox, (double) 50);
+			AnchorPane.setLeftAnchor(usernameAndOnlineStatusHBox, (double) 0);
+			AnchorPane.setRightAnchor(addToConversationVBox, (double) 0);
+
 			usernameAndOnlineStatusHBox.setAlignment(Pos.CENTER);
 			usernameAndOnlineStatusHBox.setPrefHeight(50);
 			usernameAndOnlineStatusHBox.setPrefWidth(150);
-			
+
 			addToConversationVBox.setAlignment(Pos.CENTER);
 			addToConversationVBox.setPrefHeight(50);
 			addToConversationVBox.setPrefWidth(50);
-			
+
 			usernameAndOnlineStatusHBox.getChildren().addAll(username, onlineStatus);
-			
+
 			username.setPadding(new Insets(10));
-			
+
 			addToConversationVBox.getChildren().add(btnAddToConversation);
-			
+
 			btnAddToConversation.setPrefWidth(40);
 			btnAddToConversation.setPrefHeight(40);
 			btnAddToConversation.setStyle("-fx-base: #63A388; -fx-text-fill: white; -fx-font-size: 18;");
@@ -129,31 +136,30 @@ public class UserListCell extends ListCell<User> {
 			btnAddToConversation.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
-					
+
 					if (conversationId == 0) {
 						alert.setContentText("Choose conversation.");
 						alert.showAndWait();
 						return;
 					}
-					
+
 					if (searchUserInListById(item.getId()) == null) {
 						try {
-							provider.getUserConversationProvider()
-								.addUser(conversationId, item.getId());
+							provider.getUserConversationProvider().addUser(conversationId, item.getId());
 							usersInCurrentConversation = provider.getUserProvider().getByConversationId(conversationId);
 							alert.setContentText("User successfully aded to conversation.");
 						} catch (HttpErrorCodeException | IOException e) {
 							e.printStackTrace();
 						}
-					} 
+					}
 					alert.showAndWait();
 				}
 			});
-			
+
 			imageView.setOnMouseClicked(new EventHandler<Event>() {
 				@Override
 				public void handle(Event event) {
-					
+
 					try {
 						userInfoDialog = new PersonalInfoDialog(dialogColor);
 						userInfo = provider.getPersonalInfoProvider().getById(item.getId());
@@ -163,28 +169,30 @@ public class UserListCell extends ListCell<User> {
 					}
 				}
 			});
-			
+
 			setGraphic(mainHBox);
 		} else {
 			setGraphic(null);
 		}
 	}
-	
+
 	private User searchUserInListById(int id) {
-		
+
 		for (User user : usersInCurrentConversation) {
-			if (user.getId() == id) return user;
+			if (user.getId() == id)
+				return user;
 		}
-		
+
 		return null;
 	}
-	
-	private Image searchImageInUsersWithImageListByUserId (int id) {
-		
+
+	private Image searchImageInUsersWithImageListByUserId(int id) {
+
 		for (UserWithImage userWithImg : usersWithImages) {
-			if (userWithImg.getUser().getId() == id) return userWithImg.getImage();
+			if (userWithImg.getUser().getId() == id)
+				return userWithImg.getImage();
 		}
-		
+
 		return null;
 	}
 }

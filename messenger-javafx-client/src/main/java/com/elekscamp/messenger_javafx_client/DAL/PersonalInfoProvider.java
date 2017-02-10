@@ -7,12 +7,12 @@ import com.elekscamp.messenger_javafx_client.Entities.PersonalInfo;
 import com.elekscamp.messenger_javafx_client.Exceptions.HttpErrorCodeException;
 
 public class PersonalInfoProvider extends EntityProvider<PersonalInfo> {
-	
+
 	public PersonalInfoProvider(RequestService<PersonalInfo> service) {
 		this.service = service;
 		path = "/personalinfo";
 	}
-	
+
 	public List<PersonalInfo> getAll() throws HttpErrorCodeException, IOException {
 		return service.get(path);
 	}
@@ -20,7 +20,7 @@ public class PersonalInfoProvider extends EntityProvider<PersonalInfo> {
 	public List<PersonalInfo> getAll(int page, int pageSize) throws HttpErrorCodeException, IOException {
 		return service.get(path, page, pageSize);
 	}
-	
+
 	public PersonalInfo getById(int id) throws HttpErrorCodeException, IOException {
 		return service.get(path, id);
 	}

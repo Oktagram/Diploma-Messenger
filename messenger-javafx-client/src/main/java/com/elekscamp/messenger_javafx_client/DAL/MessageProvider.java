@@ -12,7 +12,7 @@ public class MessageProvider extends EntityProvider<Message> {
 		this.service = service;
 		path = "/messages";
 	}
-	
+
 	public List<Message> getAll() throws HttpErrorCodeException, IOException {
 		return service.get(path);
 	}
@@ -20,7 +20,7 @@ public class MessageProvider extends EntityProvider<Message> {
 	public List<Message> getAll(int page, int pageSize) throws HttpErrorCodeException, IOException {
 		return service.get(path, page, pageSize);
 	}
-	
+
 	public Message getById(int id) throws HttpErrorCodeException, IOException {
 		return service.get(path, id);
 	}
@@ -28,13 +28,14 @@ public class MessageProvider extends EntityProvider<Message> {
 	public List<Message> getByConversationId(Integer id) throws HttpErrorCodeException, IOException {
 		return service.get(path + "/byConversation/" + id.toString());
 	}
-	
-	public List<Message> getByConversationId(Integer id, int page, int pageSize) throws HttpErrorCodeException, IOException {
+
+	public List<Message> getByConversationId(Integer id, int page, int pageSize)
+			throws HttpErrorCodeException, IOException {
 		return service.get(path + "/byConversation/" + id.toString(), page, pageSize);
 	}
-	
+
 	public Message add(Message item) throws HttpErrorCodeException, IOException {
-		
+
 		response = service.post(path, item);
 		createdItem = objectMapper.readValue(response, Message.class);
 		return createdItem;
