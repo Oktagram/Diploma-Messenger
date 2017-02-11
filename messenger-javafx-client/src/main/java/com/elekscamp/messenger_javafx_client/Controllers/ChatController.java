@@ -159,6 +159,7 @@ public class ChatController {
 			@Override public void run() { 
 				Platform.runLater(() -> {
 					updateMessagesListView(); 
+					updateConversationsListView();
 				}); 
 			} 
 		}, 2000, 5000);
@@ -431,7 +432,7 @@ public class ChatController {
 
 				listCell.prefWidthProperty().bind(listViewUsers.widthProperty().subtract(50));
 				listCell.initData(currentUserId, conversationsObservableList);
-
+				
 				return listCell;
 			}
 		});
@@ -551,19 +552,23 @@ public class ChatController {
 			e.printStackTrace();
 		}
 
-		Collections.reverse(messagesList);
-
-		messagesObservableList = FXCollections.observableArrayList();
-		messagesObservableList.setAll(messagesList);
-
-		listViewChat.setItems(messagesObservableList);
-
 		int countOfItems = listViewChat.getItems().size();
-
+		
+		if (countOfItems != messagesList.size()) {
+		
+			Collections.reverse(messagesList);
+	
+			messagesObservableList = FXCollections.observableArrayList();
+			messagesObservableList.setAll(messagesList);
+	
+			listViewChat.setItems(messagesObservableList);
+			
+			countOfItems = listViewChat.getItems().size();
+			listViewChat.scrollTo(countOfItems);
+		}
+	
 		if (countOfItems == 0)
 			listViewChat.setPlaceholder(new Text("Send first message in this conversation!"));
-
-		listViewChat.scrollTo(countOfItems);
 	}
 
 	private void updateConversationsListView() {
@@ -573,7 +578,9 @@ public class ChatController {
 		} catch (HttpErrorCodeException | IOException e) {
 			e.printStackTrace();
 		}
-		fillConversationsListView(conversationsList);
+		
+		if (conversationsList.size() != listViewConversations.getItems().size())
+			fillConversationsListView(conversationsList);
 	}
 
 	private void updateCurrentUserPicture() {

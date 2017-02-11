@@ -1,16 +1,27 @@
 package com.elekscamp.messenger_javafx_client.UI;
 
+import java.awt.Desktop;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import javax.imageio.ImageIO;
 
 import com.elekscamp.messenger_javafx_client.Main;
 import com.elekscamp.messenger_javafx_client.DAL.RequestManager;
 import com.elekscamp.messenger_javafx_client.Entities.Message;
 import com.elekscamp.messenger_javafx_client.Entities.User;
 import com.elekscamp.messenger_javafx_client.Entities.UserWithImage;
+
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -46,6 +57,7 @@ public class MessageListCell extends ListCell<Message> {
 	private Rectangle shape;
 	private HBox attachmentHBox;
 	private Message message;
+	private String attachmentExtenstion;
 
 	private static List<UserWithImage> usersList;
 
@@ -76,9 +88,9 @@ public class MessageListCell extends ListCell<Message> {
 		super.updateItem(message, empty);
 
 		if (message != null) {
-			
+
 			this.message = message;
-			
+
 			createObjects();
 
 			String messageText = message.getText();
@@ -97,23 +109,23 @@ public class MessageListCell extends ListCell<Message> {
 			imageView.setFitHeight(50);
 			imageView.autosize();
 			imageView.setPreserveRatio(true);
-			
+
 			double shapeWidth = imageView.getBoundsInParent().getWidth();
 			double shapeHeight = imageView.getBoundsInParent().getHeight();
-			
+
 			shape = new Rectangle(shapeWidth, shapeHeight);
 			shape.setArcWidth(18);
 			shape.setArcHeight(18);
 
 			imageView.setClip(shape);
-			
+
 			imageHBox.getChildren().add(imageView);
 
 			date = new Date(message.getSendDate());
 
 			time = new Label(formatter.format(date));
 			time.setStyle("-fx-font-size: 12px; -fx-font-style: italic;");
-			
+
 			AnchorPane.setTopAnchor(time, 2d);
 
 			if (currentUserId == userId) {
@@ -121,7 +133,7 @@ public class MessageListCell extends ListCell<Message> {
 				AnchorPane.setRightAnchor(username, 0d);
 				messageVBox.setPadding(new Insets(0, 5, 2, 7));
 				imageHBox.setAlignment(Pos.TOP_RIGHT);
-				
+
 				topAnchorPane.getChildren().addAll(time, username);
 				mainHBox.getChildren().addAll(messageVBox, imageHBox);
 
@@ -130,13 +142,13 @@ public class MessageListCell extends ListCell<Message> {
 				AnchorPane.setRightAnchor(time, 2d);
 				messageVBox.setPadding(new Insets(0, 7, 2, 5));
 				imageHBox.setAlignment(Pos.TOP_LEFT);
-				
+
 				topAnchorPane.getChildren().addAll(username, time);
 				mainHBox.getChildren().addAll(imageHBox, messageVBox);
 			}
 
 			topAnchorPane.prefWidthProperty().bind(this.widthProperty());
-			
+
 			messageVBox.getChildren().add(topAnchorPane);
 
 			if (messageText != null && !messageText.isEmpty()) {
@@ -150,7 +162,7 @@ public class MessageListCell extends ListCell<Message> {
 			if (message.getAttachment() != null) {
 				messageVBox.getChildren().add(createAttachmentHBox());
 			}
-			
+
 			setGraphic(mainHBox);
 		} else {
 			setGraphic(null);
@@ -158,15 +170,16 @@ public class MessageListCell extends ListCell<Message> {
 	}
 
 	private HBox createAttachmentHBox() {
-		
+
 		String fileName = getFileName(message.getAttachment());
-		String extenstion = getFileExtension(fileName);
+		attachmentExtenstion = getFileExtension(fileName);
 
 		attachmentLink = new Hyperlink(fileName);
 		attachmentLink.setOnAction(new EventHandler<ActionEvent>() {
-			
-			@Override public void handle(ActionEvent t) {
-				String concreteAttachmentUrl = attachmentUrl + Integer.toString(message.getId());  
+
+			@Override
+			public void handle(ActionEvent t) {
+				String concreteAttachmentUrl = attachmentUrl + Integer.toString(message.getId());
 				Main.getInstance().getHostServices().showDocument(concreteAttachmentUrl);
 			}
 		});
@@ -174,30 +187,92 @@ public class MessageListCell extends ListCell<Message> {
 		attachmentHBox = new HBox();
 		attachmentHBox.getChildren().add(attachmentLink);
 
-		if (isImageExtension(extenstion)) {
+		if (isImageExtension(attachmentExtenstion)) {
 			addHLinkForAttachedImage();
+		} else {
+			addHLinkForOpenAttachment();
 		}
-		
+
 		return attachmentHBox;
 	}
-	
-	private void addHLinkForAttachedImage() {
+
+	private void addHLinkForOpenAttachment() {
+		Hyperlink openAttachmentHLink = new Hyperlink("Open");
+
+		openAttachmentHLink.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+
+				String attachmentUrl = RequestManager.getRequestApi() + "/files/downloadAttachment/"
+						+ Integer.toString(message.getId());
+
+				File file;
+				
+				try {
+					file = File.createTempFile("temp_attachment", "." + attachmentExtenstion);
+					file.deleteOnExit();
+
+					URL url = new URL(attachmentUrl);
+					
+					try (InputStream in = url.openStream()) {
+						
+						try (FileOutputStream out = new FileOutputStream(file)) {
+						
+							byte[] buffer = new byte[1024];
+							int len;
+							
+							while ((len = in.read(buffer)) != -1) {
+								out.write(buffer, 0, len);
+							}
+						} 
+						
+						Desktop.getDesktop().open(file);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		});
 		
+		attachmentHBox.getChildren().add(openAttachmentHLink);
+	}
+
+	private void addHLinkForAttachedImage() {
+
 		Hyperlink showImageHLink = new Hyperlink("Show");
 		Hyperlink hideImageHLink = new Hyperlink("Hide");
 		ImageView attachmentImageView = new ImageView();
 
 		showImageHLink.setOnAction(new EventHandler<ActionEvent>() {
-			
-			@Override public void handle(ActionEvent event) {
-				
-				String attachmentImageUrl = RequestManager.getRequestApi() + "/files/downloadAttachment/" + Integer.toString(message.getId());
+
+			@Override
+			public void handle(ActionEvent event) {
+
+				String attachmentImageUrl = RequestManager.getRequestApi() + "/files/downloadAttachment/"
+						+ Integer.toString(message.getId());
 				Image attachmentImage = new Image(attachmentImageUrl);
-				
+
 				attachmentImageView.setImage(attachmentImage);
 				attachmentImageView.setFitHeight(200);
 				attachmentImageView.setFitWidth(200);
 				attachmentImageView.setPreserveRatio(true);
+				attachmentImageView.setOnMouseClicked(new EventHandler<Event>() {
+					@Override
+					public void handle(Event event) {
+						try {
+							File file = File.createTempFile("temp_image", "." + attachmentExtenstion);
+							file.deleteOnExit();
+
+							BufferedImage bufferedImage = ImageIO.read(new URL(attachmentImageUrl));
+							ImageIO.write(bufferedImage, attachmentExtenstion, file);
+							Desktop.getDesktop().open(file);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
+				});
 
 				int count = messageVBox.getChildren().size();
 				messageVBox.getChildren().add(count - 1, attachmentImageView);
@@ -208,12 +283,13 @@ public class MessageListCell extends ListCell<Message> {
 		});
 
 		hideImageHLink.setOnAction(new EventHandler<ActionEvent>() {
-			
-			@Override public void handle(ActionEvent event) {
-			
-				if (messageVBox.getChildren().contains(attachmentImageView)) 
+
+			@Override
+			public void handle(ActionEvent event) {
+
+				if (messageVBox.getChildren().contains(attachmentImageView))
 					messageVBox.getChildren().remove(attachmentImageView);
-				
+
 				attachmentHBox.getChildren().remove(hideImageHLink);
 				attachmentHBox.getChildren().add(showImageHLink);
 			}
@@ -221,7 +297,7 @@ public class MessageListCell extends ListCell<Message> {
 
 		attachmentHBox.getChildren().add(showImageHLink);
 	}
-	
+
 	private List<Node> messageTextIntoNodes(String text) {
 
 		String[] splittedText = text.split(" ");
@@ -253,7 +329,7 @@ public class MessageListCell extends ListCell<Message> {
 	}
 
 	private Image getSmileImage(String str) {
-		
+
 		switch (str) {
 		case "=)":
 			return new Image("images/friendly-smile.jpg");
@@ -274,7 +350,6 @@ public class MessageListCell extends ListCell<Message> {
 
 		switch (extension.toLowerCase()) {
 		case "jpg":
-		case "gif":
 		case "bmp":
 		case "png":
 			return true;
@@ -286,7 +361,8 @@ public class MessageListCell extends ListCell<Message> {
 	private User searchUserInListById(int id) {
 
 		for (UserWithImage userWithImg : usersList) {
-			if (userWithImg.getUser().getId() == id) return userWithImg.getUser();
+			if (userWithImg.getUser().getId() == id)
+				return userWithImg.getUser();
 		}
 
 		throw new NullPointerException("User is null in MessageListCell.");
@@ -303,7 +379,8 @@ public class MessageListCell extends ListCell<Message> {
 	private Image searchImageInListByUserId(int id) {
 
 		for (UserWithImage userWithImg : usersList) {
-			if (userWithImg.getUser().getId() == id) return userWithImg.getImage();
+			if (userWithImg.getUser().getId() == id)
+				return userWithImg.getImage();
 		}
 
 		throw new NullPointerException("User image is null in MessageListCell.");

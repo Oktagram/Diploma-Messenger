@@ -49,7 +49,7 @@
                   </HBox>
                   <AnchorPane prefHeight="325.0" prefWidth="300.0" VBox.vgrow="ALWAYS">
                      <children>
-                        <ListView fx:id="listViewConversations" onMouseClicked="#listViewConversationsOnMouseClicked" prefHeight="325.0" prefWidth="300.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" />
+                        <ListView fx:id="listViewConversations" layoutX="3.0" layoutY="5.0" onMouseClicked="#listViewConversationsOnMouseClicked" prefHeight="325.0" prefWidth="300.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" />
                      </children>
                   </AnchorPane>
                   <AnchorPane prefWidth="300.0">
@@ -73,7 +73,7 @@
                <children>
                   <AnchorPane prefHeight="425.0" prefWidth="500.0" VBox.vgrow="ALWAYS">
                      <children>
-                        <ListView fx:id="listViewChat" prefHeight="425.0" prefWidth="500.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" VBox.vgrow="ALWAYS" />
+                        <ListView fx:id="listViewChat" layoutX="3.0" layoutY="5.0" prefHeight="425.0" prefWidth="500.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="3.0" AnchorPane.rightAnchor="7.0" AnchorPane.topAnchor="5.0" VBox.vgrow="ALWAYS" />
                      </children>
                   </AnchorPane>
                   <AnchorPane maxHeight="75.0" minHeight="75.0" prefHeight="75.0" prefWidth="500.0" VBox.vgrow="ALWAYS">
@@ -99,7 +99,7 @@
                                     </Button>
                                  </children>
                                  <HBox.margin>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                    <Insets bottom="5.0" left="5.0" top="5.0" />
                                  </HBox.margin>
                               </VBox>
                               <VBox>

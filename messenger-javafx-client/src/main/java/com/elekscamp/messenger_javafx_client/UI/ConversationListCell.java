@@ -38,6 +38,16 @@ public class ConversationListCell extends ListCell<Conversation> {
 
 	public ConversationListCell(ContentProvider provider) {
 		this.provider = provider;
+		
+		alert = new Alert(AlertType.CONFIRMATION);
+		alert.setTitle("Confirm action");
+		alert.setHeaderText(null);
+		alert.setContentText("Are you sure you want to leave the conversation?");
+
+		Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+		stage.getIcons().add(new Image("/images/icon.png"));
+		
+		btnLeaveConversation = new Button("Leave");
 	}
 
 	public void initData(int id, ObservableList<Conversation> conversationsList) {
@@ -52,19 +62,10 @@ public class ConversationListCell extends ListCell<Conversation> {
 
 		if (item != null) {
 
-			alert = new Alert(AlertType.CONFIRMATION);
 			anchorPane = new AnchorPane();
 			usernameHBox = new HBox();
 			leaveConversationVBox = new VBox();
 			conversationName = new Label(item.getName());
-			btnLeaveConversation = new Button("Leave");
-
-			alert.setTitle("Confirm action");
-			alert.setHeaderText(null);
-			alert.setContentText("Are you sure you want to leave the conversation?");
-
-			Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-			stage.getIcons().add(new Image("/images/icon.png"));
 			
 			anchorPane.getChildren().addAll(usernameHBox, leaveConversationVBox);
 

@@ -1,7 +1,10 @@
 package com.elekscamp.messenger_javafx_client.UI;
 
+import java.awt.Desktop;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -9,13 +12,17 @@ import java.time.ZoneId;
 import java.util.Date;
 import java.util.Optional;
 
+import javax.imageio.ImageIO;
+
 import com.elekscamp.messenger_javafx_client.DAL.ContentProvider;
 import com.elekscamp.messenger_javafx_client.DAL.RequestManager;
 import com.elekscamp.messenger_javafx_client.Entities.PersonalInfo;
 import com.elekscamp.messenger_javafx_client.Entities.User;
 import com.elekscamp.messenger_javafx_client.Exceptions.HttpErrorCodeException;
-
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -112,9 +119,11 @@ public class PersonalInfoDialog {
 
 		chooser.setTitle("Profile Picture");
 		chooser.setInitialDirectory(new File(System.getProperty("user.home") + "/Desktop"));
-		chooser.getExtensionFilters().addAll(new ExtensionFilter("All Images", "*.jpg", "*.gif", "*.bmp", "*.png"),
-				new ExtensionFilter("JPG", "*.jpg"), new ExtensionFilter("GIF", "*.gif"),
-				new ExtensionFilter("BMP", "*.bmp"), new ExtensionFilter("PNG", "*.png"));
+		chooser.getExtensionFilters().addAll(
+				new ExtensionFilter("All Images", "*.jpg", "*.bmp", "*.png"),
+				new ExtensionFilter("JPG", "*.jpg"),
+				new ExtensionFilter("BMP", "*.bmp"), 
+				new ExtensionFilter("PNG", "*.png"));
 
 		btnChangePicture.setMinWidth(128);
 
@@ -154,18 +163,33 @@ public class PersonalInfoDialog {
 		txtRegistrationDate = new Text(registrationDateStr);
 
 		txtIsOnline = new Text(user.getIsOnline() ? "Yes" : "No");
-
+		
+		StringProperty imageUrl = new SimpleStringProperty(RequestManager.getRequestApi() + "/files/downloadPicture/" + Integer.toString(user.getId()));
+		
 		if (info.getPicture() == null || info.getPicture().isEmpty())
-			profileImage = new Image("images/default_user_image.png");
-		else
-			profileImage = new Image(
-					RequestManager.getRequestApi() + "/files/downloadPicture/" + Integer.toString(user.getId()));
+			imageUrl.set("images/default_user_image.png");
+		
+		profileImage = new Image(imageUrl.get());
 
 		picture.setImage(profileImage);
 		picture.setFitHeight(150);
 		picture.setFitWidth(150);
 		picture.setPreserveRatio(true);
-
+		picture.setOnMouseClicked(new EventHandler<Event>() {
+			@Override public void handle(Event event) {
+				try {
+					File file = File.createTempFile("temp_image", ".png");	
+					file.deleteOnExit();
+					
+					BufferedImage bufferedImage = ImageIO.read(new URL(imageUrl.get()));
+					ImageIO.write(bufferedImage, "png", file);
+					Desktop.getDesktop().open(file);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		
 		vBox = new VBox();
 		hBox = new HBox();
 		vBox.setAlignment(Pos.CENTER);
