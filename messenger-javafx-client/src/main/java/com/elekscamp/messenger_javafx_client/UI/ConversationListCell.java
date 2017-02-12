@@ -1,7 +1,6 @@
 package com.elekscamp.messenger_javafx_client.UI;
 
 import java.io.IOException;
-
 import com.elekscamp.messenger_javafx_client.DAL.ContentProvider;
 import com.elekscamp.messenger_javafx_client.Entities.Conversation;
 import com.elekscamp.messenger_javafx_client.Exceptions.HttpErrorCodeException;
@@ -37,6 +36,7 @@ public class ConversationListCell extends ListCell<Conversation> {
 	private ObservableList<Conversation> conversationsList;
 
 	public ConversationListCell(ContentProvider provider) {
+		
 		this.provider = provider;
 		
 		alert = new Alert(AlertType.CONFIRMATION);
@@ -65,6 +65,7 @@ public class ConversationListCell extends ListCell<Conversation> {
 			anchorPane = new AnchorPane();
 			usernameHBox = new HBox();
 			leaveConversationVBox = new VBox();
+			
 			conversationName = new Label(item.getName());
 			
 			anchorPane.getChildren().addAll(usernameHBox, leaveConversationVBox);
@@ -74,16 +75,15 @@ public class ConversationListCell extends ListCell<Conversation> {
 			usernameHBox.setPrefHeight(50);
 
 			VBox.setVgrow(usernameHBox, Priority.ALWAYS);
-
+			HBox.setHgrow(anchorPane, Priority.ALWAYS);
+			
 			leaveConversationVBox.setAlignment(Pos.CENTER);
 			leaveConversationVBox.getChildren().add(btnLeaveConversation);
 			leaveConversationVBox.setPrefHeight(50);
 
-			HBox.setHgrow(anchorPane, Priority.ALWAYS);
-
-			AnchorPane.setRightAnchor(usernameHBox, (double) 65);
-			AnchorPane.setLeftAnchor(usernameHBox, (double) 0);
-			AnchorPane.setRightAnchor(leaveConversationVBox, (double) 0);
+			AnchorPane.setRightAnchor(usernameHBox, 65d);
+			AnchorPane.setLeftAnchor(usernameHBox, 0d);
+			AnchorPane.setRightAnchor(leaveConversationVBox, 0d);
 
 			btnLeaveConversation.setMinWidth(60);
 			btnLeaveConversation.setMaxWidth(60);

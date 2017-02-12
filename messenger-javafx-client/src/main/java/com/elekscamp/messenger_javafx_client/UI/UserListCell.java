@@ -64,7 +64,6 @@ public class UserListCell extends ListCell<User> {
 	}
 
 	public static void setUsersWithImagesList(List<UserWithImage> list) {
-
 		UserListCell.usersWithImages = list;
 	}
 
@@ -110,9 +109,9 @@ public class UserListCell extends ListCell<User> {
 			anchorPane.getChildren().addAll(usernameAndOnlineStatusHBox, addToConversationVBox);
 			HBox.setHgrow(anchorPane, Priority.ALWAYS);
 
-			AnchorPane.setRightAnchor(usernameAndOnlineStatusHBox, (double) 50);
-			AnchorPane.setLeftAnchor(usernameAndOnlineStatusHBox, (double) 0);
-			AnchorPane.setRightAnchor(addToConversationVBox, (double) 0);
+			AnchorPane.setRightAnchor(usernameAndOnlineStatusHBox, 50d);
+			AnchorPane.setLeftAnchor(usernameAndOnlineStatusHBox, 0d);
+			AnchorPane.setRightAnchor(addToConversationVBox, 0d);
 
 			usernameAndOnlineStatusHBox.setAlignment(Pos.CENTER);
 			usernameAndOnlineStatusHBox.setPrefHeight(50);

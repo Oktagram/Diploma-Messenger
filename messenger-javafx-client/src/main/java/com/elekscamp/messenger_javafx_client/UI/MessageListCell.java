@@ -153,7 +153,9 @@ public class MessageListCell extends ListCell<Message> {
 
 			if (messageText != null && !messageText.isEmpty()) {
 
-				List<Node> nodesInMessage = messageTextIntoNodes(messageText);
+				List<Node> nodesInMessage = new ArrayList<>();
+				nodesInMessage = messageTextIntoNodes(messageText);
+		
 				textFlowMessage.getChildren().addAll(nodesInMessage);
 				textFlowMessage.setStyle("-fx-font-size: 15px;");
 				messageVBox.getChildren().add(textFlowMessage);
@@ -174,11 +176,10 @@ public class MessageListCell extends ListCell<Message> {
 		String fileName = getFileName(message.getAttachment());
 		attachmentExtenstion = getFileExtension(fileName);
 
-		attachmentLink = new Hyperlink(fileName);
+		attachmentLink = new Hyperlink(fileName);	
 		attachmentLink.setOnAction(new EventHandler<ActionEvent>() {
 
-			@Override
-			public void handle(ActionEvent t) {
+			@Override public void handle(ActionEvent t) {
 				String concreteAttachmentUrl = attachmentUrl + Integer.toString(message.getId());
 				Main.getInstance().getHostServices().showDocument(concreteAttachmentUrl);
 			}
@@ -311,7 +312,7 @@ public class MessageListCell extends ListCell<Message> {
 			smile = getSmileImage(word);
 
 			if (smile == null) {
-				wordLabel = new Label(word.concat(" "));
+				wordLabel = new Label(word);
 				wordLabel.setMaxWidth(wordMaxWidth);
 				wordLabel.setWrapText(true);
 				result.add(wordLabel);

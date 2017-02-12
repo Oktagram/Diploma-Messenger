@@ -26,16 +26,7 @@ public class HttpRequest {
 	private String body;
 	private Map<String, String> header;
 
-	public HttpRequest() {
-	}
-
-	/*
-	 * public String execute(String urlStr, HttpMethod method, Map<String,
-	 * String> header, String body) throws IOException {
-	 * 
-	 * return execute(urlStr, method, header, (body == null || body.isEmpty()) ?
-	 * new byte[0] : body.getBytes(StandardCharsets.UTF_8)); }
-	 */
+	public HttpRequest() { }
 
 	public String execute(String urlStr, HttpMethod method, Map<String, String> header, String body)
 			throws IOException {
@@ -58,7 +49,7 @@ public class HttpRequest {
 
 		conn.disconnect();
 		System.out.println("response: " + response);
-		return response;
+		return new String(response.getBytes(), "UTF-8");
 	}
 
 	private void configureConnection() throws ProtocolException {
