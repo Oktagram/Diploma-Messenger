@@ -3,8 +3,6 @@ using Messenger.Models;
 using Messenger.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using AutoMapper;
 using Messenger.ViewModels;
 using System;
@@ -16,7 +14,7 @@ using Messenger.Paginations;
 
 namespace Messenger.Controllers
 {
-    [Route("api/[controller]")]
+	[Route("api/[controller]")]
     public class ConversationsController : Controller
     {
         private IConversationRepository _converRepo;

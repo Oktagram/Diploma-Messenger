@@ -226,6 +226,7 @@ D:\ДИПЛОМ\Messenger\src\Messenger\Startup.cs
 D:\ДИПЛОМ\Messenger\src\Messenger\Authentication\TokenProviderMiddleware.cs
 D:\ДИПЛОМ\Messenger\src\Messenger\Authentication\TokenProviderOptions.cs
 D:\ДИПЛОМ\Messenger\src\Messenger\Contexts\MessengerContext.cs
+D:\ДИПЛОМ\Messenger\src\Messenger\Controllers\AnnouncementsController.cs
 D:\ДИПЛОМ\Messenger\src\Messenger\Controllers\ConversationsController.cs
 D:\ДИПЛОМ\Messenger\src\Messenger\Controllers\FilesController.cs
 D:\ДИПЛОМ\Messenger\src\Messenger\Controllers\MessagesController.cs
@@ -235,6 +236,7 @@ D:\ДИПЛОМ\Messenger\src\Messenger\Controllers\UserConversationController.c
 D:\ДИПЛОМ\Messenger\src\Messenger\Controllers\UsersController.cs
 D:\ДИПЛОМ\Messenger\src\Messenger\Controllers\ValuesController.cs
 D:\ДИПЛОМ\Messenger\src\Messenger\Core\Extensions.cs
+D:\ДИПЛОМ\Messenger\src\Messenger\Models\Announcement.cs
 D:\ДИПЛОМ\Messenger\src\Messenger\Models\Conversation.cs
 D:\ДИПЛОМ\Messenger\src\Messenger\Models\IEntityBase.cs
 D:\ДИПЛОМ\Messenger\src\Messenger\Models\Message.cs
@@ -247,6 +249,7 @@ D:\ДИПЛОМ\Messenger\src\Messenger\Paginations\IPaginationServices.cs
 D:\ДИПЛОМ\Messenger\src\Messenger\Paginations\Pagination.cs
 D:\ДИПЛОМ\Messenger\src\Messenger\Paginations\PaginationHeader.cs
 D:\ДИПЛОМ\Messenger\src\Messenger\Paginations\PaginationServices.cs
+D:\ДИПЛОМ\Messenger\src\Messenger\Repositories\AnnouncementRepository.cs
 D:\ДИПЛОМ\Messenger\src\Messenger\Repositories\ConversationRepository.cs
 D:\ДИПЛОМ\Messenger\src\Messenger\Repositories\EntityBaseRepository.cs
 D:\ДИПЛОМ\Messenger\src\Messenger\Repositories\IEntityBaseRepository.cs
@@ -255,6 +258,7 @@ D:\ДИПЛОМ\Messenger\src\Messenger\Repositories\MessageRepository.cs
 D:\ДИПЛОМ\Messenger\src\Messenger\Repositories\PersonalInfoRepository.cs
 D:\ДИПЛОМ\Messenger\src\Messenger\Repositories\UserConversationRepository.cs
 D:\ДИПЛОМ\Messenger\src\Messenger\Repositories\UserRepository.cs
+D:\ДИПЛОМ\Messenger\src\Messenger\ViewModels\AnnouncementViewModel.cs
 D:\ДИПЛОМ\Messenger\src\Messenger\ViewModels\ConversationViewModel.cs
 D:\ДИПЛОМ\Messenger\src\Messenger\ViewModels\MessageViewModel.cs
 D:\ДИПЛОМ\Messenger\src\Messenger\ViewModels\PersonalInfoViewModel.cs

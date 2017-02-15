@@ -11,6 +11,7 @@ using System.Net.Http;
 using System.Net;
 using Microsoft.Net.Http.Headers;
 using Microsoft.AspNetCore.Authorization;
+using System.Text;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 

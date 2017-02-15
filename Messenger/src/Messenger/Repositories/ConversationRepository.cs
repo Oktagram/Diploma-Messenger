@@ -9,7 +9,6 @@ namespace Messenger.Repositories
             : base(context)
         { }
 
-
         public void Update(int id,Conversation convObj, Conversation item)
         {
             convObj.Name = item.Name;

@@ -82,7 +82,6 @@ namespace Messenger.Controllers
         [HttpPut("{id}")]
         public IActionResult Update(int id, [FromBody] Message item)
         {
-
             if (item == null)
             {
                 return BadRequest();

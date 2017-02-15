@@ -178,7 +178,6 @@ public class MessageListCell extends ListCell<Message> {
 
 		attachmentLink = new Hyperlink(fileName);	
 		attachmentLink.setOnAction(new EventHandler<ActionEvent>() {
-
 			@Override public void handle(ActionEvent t) {
 				String concreteAttachmentUrl = attachmentUrl + Integer.toString(message.getId());
 				Main.getInstance().getHostServices().showDocument(concreteAttachmentUrl);

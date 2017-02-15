@@ -23,5 +23,6 @@ namespace Messenger.Models
         public PersonalInfo PersonalInfo { get; set; }
         public virtual ICollection<UserConversation> UserConversations { get; set; }
         public virtual ICollection<Message> Messages { get; set; }
+		public virtual ICollection<Announcement> Announcements { get; set; }
     }
 }

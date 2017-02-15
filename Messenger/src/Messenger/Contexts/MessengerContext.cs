@@ -14,6 +14,7 @@ namespace Messenger.Contexts
         public DbSet<Conversation> Conversations { get; set; }
         public DbSet<UserConversation> UserConversations { get; set; }
         public DbSet<Message> Messages { get; set; }
+		public DbSet<Announcement> Announcements { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -53,6 +54,17 @@ namespace Messenger.Contexts
             modelBuilder.Entity<Message>()
                 .Property(m => m.SendDate)
                 .HasDefaultValue(DateTimeOffset.Now.ToUnixTimeMilliseconds());
-        }
+
+			modelBuilder.Entity<Announcement>().ToTable("Announcement");
+			modelBuilder.Entity<Announcement>()
+				.Property(a => a.CreationDate)
+				.IsRequired();
+			modelBuilder.Entity<Announcement>()
+				.Property(a => a.Description)
+				.IsRequired();
+			modelBuilder.Entity<Announcement>()
+				.Property(a => a.IsActive)
+				.IsRequired();
+		}
     }
 }

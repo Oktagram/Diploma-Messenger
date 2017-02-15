@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
 using Messenger.Models;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Messenger.Repositories
 {
-    public interface IUserRepository : IEntityBaseRepository<User>
+	public interface IUserRepository : IEntityBaseRepository<User>
     {
         void Update(int id,User findById,User item);
         IEnumerable<User> FindUsers(string login);
@@ -34,4 +33,8 @@ namespace Messenger.Repositories
         IEnumerable<int> FindFriends(int userId);
     }
 
+	public interface IAnnouncementRepository : IEntityBaseRepository<Announcement>
+	{
+		void Update(int id, Announcement convObj, Announcement item);
+	}
 }

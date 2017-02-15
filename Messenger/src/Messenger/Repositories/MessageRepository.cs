@@ -1,12 +1,11 @@
-﻿using System;
-using Messenger.Contexts;
+﻿using Messenger.Contexts;
 using Messenger.Models;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Messenger.Repositories
 {
-    public class MessageRepository : EntityBaseRepository<Message>, IMessageRepository
+	public class MessageRepository : EntityBaseRepository<Message>, IMessageRepository
     {
         public MessageRepository(MessengerContext context)
             : base(context)

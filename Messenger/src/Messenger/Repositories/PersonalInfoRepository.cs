@@ -1,10 +1,9 @@
-﻿using System;
-using Messenger.Contexts;
+﻿using Messenger.Contexts;
 using Messenger.Models;
 
 namespace Messenger.Repositories
 {
-    public class PersonalInfoRepository : EntityBaseRepository<PersonalInfo>, IPersonalInfoRepository
+	public class PersonalInfoRepository : EntityBaseRepository<PersonalInfo>, IPersonalInfoRepository
     {
         public PersonalInfoRepository(MessengerContext context)
             : base(context)

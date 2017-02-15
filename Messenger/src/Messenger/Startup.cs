@@ -17,12 +17,11 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using AutoMapper;
 using Messenger.Core;
-using Messenger.Controllers;
 using Messenger.Paginations;
 
 namespace Messenger
 {
-    public class Startup
+	public class Startup
     {
         public Startup(IHostingEnvironment env)
         {
@@ -53,6 +52,7 @@ namespace Messenger
             services.AddScoped<IConversationRepository, ConversationRepository>();
             services.AddScoped<IPersonalInfoRepository, PersonalInfoRepository>();
             services.AddScoped<IUserConversationRepository, UserConversationRepository>();
+			services.AddScoped<IAnnouncementRepository, AnnouncementRepository>();
 
             services.AddScoped<IUserPaginationService, UserPaginationService>();
             services.AddScoped<IMessagePaginationService, MessagePaginationService>();
@@ -60,7 +60,8 @@ namespace Messenger
             services.AddScoped<IPersonalInfoPaginationService, PersonalInfoPaginationService>();
 
             services.AddDbContext<MessengerContext>(options =>
-             options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+								options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
+							);
 
             services.AddAutoMapper();
         }
@@ -68,10 +69,11 @@ namespace Messenger
         private static readonly string secretKey = "SuperMAGIKarp2461";
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, MessengerContext messengerContext)
-        {
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+		{
+			MessengerContext messengerContext = app.ApplicationServices.GetService<MessengerContext>();
 
-            app.UseCors("AllowAll");
+			app.UseCors("AllowAll");
 
             app.UseExceptionHandler(
               builder =>

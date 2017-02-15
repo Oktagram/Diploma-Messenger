@@ -15,8 +15,7 @@ public class Message {
 	private String attachment;
 	private long sendDate;
 
-	public Message() {
-	}
+	public Message() { }
 
 	public Message(int userId, int conversationId, String text) {
 
@@ -26,8 +25,7 @@ public class Message {
 		sendDate = new Date().getTime();
 	}
 
-	@Override
-	public String toString() {
+	@Override public String toString() {
 		return "Message [id=" + id + ", userId=" + userId + ", conversationId=" + conversationId + ", text=" + text
 				+ ", attachment=" + attachment + ", sendDate=" + new Timestamp(sendDate) + "]";
 	}

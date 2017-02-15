@@ -19,9 +19,9 @@ namespace Messenger
 
             var users = new User[]
             {
-                new User{ Login="Ananas", Password="1234", Email="aa@i.ua", RegistrationDate = 345435343, IsOnline = true, IsAdmin = true},
-                new User{ Login="Orange", Password="qwerty", Email="aa@i.ua", RegistrationDate = 54236324532, IsOnline = true, IsAdmin = true},
-                new User{ Login="Pineapple", Password="pass", Email="aa@i.ua", RegistrationDate = 542354325423, IsOnline = true, IsAdmin = false},
+                new User{ Login="Ananas", Password="1234", Email="aa@i.ua", RegistrationDate = 345435343, IsOnline = false, IsAdmin = true},
+                new User{ Login="Orange", Password="qwerty", Email="aa@i.ua", RegistrationDate = 54236324532, IsOnline = false, IsAdmin = true},
+                new User{ Login="Pineapple", Password="pass", Email="aa@i.ua", RegistrationDate = 542354325423, IsOnline = false, IsAdmin = false},
             };
             foreach (User u in users)
             {
@@ -78,7 +78,28 @@ namespace Messenger
             {
                 context.Messages.Add(m);
             }
-            context.SaveChanges();
+
+			var announcements = new Announcement[]
+			{
+				new Announcement() {
+					Description = "This is the first announcement.",
+					User = users[0],
+					IsActive = true,
+					CreationDate = DateTimeOffset.Now.ToUnixTimeMilliseconds()
+				},
+				new Announcement() {
+					Description = "This is the second announcement.",
+					User = users[1],
+					IsActive = true,
+					CreationDate = DateTimeOffset.Now.ToUnixTimeMilliseconds()
+				}
+			};
+			foreach (var announcement in announcements)
+			{
+				context.Announcements.Add(announcement);
+			}
+
+			context.SaveChanges();
         }
     }
 }

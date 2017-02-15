@@ -13,17 +13,22 @@ import java.util.stream.Collectors;
 
 import com.elekscamp.messenger_javafx_client.DAL.ContentProvider;
 import com.elekscamp.messenger_javafx_client.DAL.RequestManager;
+import com.elekscamp.messenger_javafx_client.Entities.Announcement;
 import com.elekscamp.messenger_javafx_client.Entities.Conversation;
 import com.elekscamp.messenger_javafx_client.Entities.Message;
 import com.elekscamp.messenger_javafx_client.Entities.PersonalInfo;
 import com.elekscamp.messenger_javafx_client.Entities.User;
 import com.elekscamp.messenger_javafx_client.Entities.UserWithImage;
 import com.elekscamp.messenger_javafx_client.Exceptions.HttpErrorCodeException;
+import com.elekscamp.messenger_javafx_client.UI.ActiveAnnouncementListCell;
+import com.elekscamp.messenger_javafx_client.UI.ClosedAnnouncementsListCell;
 import com.elekscamp.messenger_javafx_client.UI.ConversationListCell;
 import com.elekscamp.messenger_javafx_client.UI.MessageListCell;
 import com.elekscamp.messenger_javafx_client.UI.PersonalInfoDialog;
 import com.elekscamp.messenger_javafx_client.UI.UserListCell;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -33,6 +38,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.geometry.Side;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -41,6 +47,7 @@ import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
@@ -123,6 +130,9 @@ public class ChatController {
 	@FXML private Button btnSmiles;
 	@FXML private Button btnAttachment;
 	@FXML private VBox middleVBox;
+	@FXML private TabPane announcementsTabPane;
+	@FXML private ListView<Announcement> listViewActiveAnnouncements;
+	@FXML private ListView<Announcement> listViewClosedAnnouncements;
 
 	public void initData(int currentUserId) {
 
@@ -171,6 +181,28 @@ public class ChatController {
 		
 		Stage stage = (Stage) dialogPane.getScene().getWindow();
 		stage.getIcons().add(new Image("/images/icon.png"));
+		
+		announcementsTabPane.widthProperty().addListener(new ChangeListener<Number>() {
+            @Override public void changed(ObservableValue<? extends Number> value, Number oldWidth, Number newWidth) {
+                Side side = announcementsTabPane.getSide();
+                int numTabs = announcementsTabPane.getTabs().size();
+                if ((side == Side.BOTTOM || side == Side.TOP) && numTabs != 0) {
+                	announcementsTabPane.setTabMinWidth(newWidth.intValue() / numTabs - (22));
+                	announcementsTabPane.setTabMaxWidth(newWidth.intValue() / numTabs - (22));
+                }
+            }
+        });
+
+		announcementsTabPane.heightProperty().addListener(new ChangeListener<Number>() {
+            @Override public void changed(ObservableValue<? extends Number> value, Number oldHeight, Number newHeight) {
+                Side side = announcementsTabPane.getSide();
+                int numTabs = announcementsTabPane.getTabs().size();
+                if ((side == Side.LEFT || side == Side.RIGHT) && numTabs != 0) {
+                	announcementsTabPane.setTabMinWidth(newHeight.intValue() / numTabs - (22));
+                	announcementsTabPane.setTabMaxWidth(newHeight.intValue() / numTabs - (22));
+               }
+           }
+        });
 	}
 
 	private void prepareData() {
@@ -183,18 +215,44 @@ public class ChatController {
 			updateCurrentUserPicture();
 
 			conversationsList = provider.getConversationProvider().getByUserId(currentUserId);
+			
+			List<Announcement> announcementsList = provider.getAnnouncementProvider().getAll();
+			List<Announcement> activeAnnouncementsList = getActiveAnnouncements(announcementsList);
+			List<Announcement> closedAnnouncemetsList = getClosedAnnouncements(announcementsList);
+			
 			fillConversationsListView(conversationsList);
+			fillAnnouncementsListViews(activeAnnouncementsList, closedAnnouncemetsList);
 		} catch (HttpErrorCodeException | IOException e) {
 			e.printStackTrace();
 		}
 	}
 
+	private List<Announcement> getClosedAnnouncements(List<Announcement> announcementsList) {
+		List<Announcement> result = new ArrayList<>();
+		
+		for (Announcement item : announcementsList) {
+			if (!item.getIsActive()) result.add(item);
+		}
+		
+		return result;
+	}
+	
+	private List<Announcement> getActiveAnnouncements(List<Announcement> announcementsList) {
+		List<Announcement> result = new ArrayList<>();
+		
+		for (Announcement item : announcementsList) {
+			if (item.getIsActive()) result.add(item);
+		}
+		
+		return result;
+	}
+	
 	private void initializeAttachmentControls() {
 		
 		btnRemoveAttachment = new Button("X");
 		btnRemoveAttachment.setStyle("-fx-font-size: 12px;");
-		btnRemoveAttachment.setMinHeight(26);
-		btnRemoveAttachment.setMinWidth(26);
+		btnRemoveAttachment.setMinSize(26, 26);
+		btnRemoveAttachment.setMaxSize(26, 26);
 		btnRemoveAttachment.setOnAction(new EventHandler<ActionEvent>() {
 			@Override public void handle(ActionEvent event) {
 				removeAttachment();
@@ -203,13 +261,13 @@ public class ChatController {
 
 		lbAttachmentName = new Label();
 		lbAttachmentName.setTextFill(Color.web("red"));
-		lbAttachmentName.setMaxWidth(450);
 		lbAttachmentName.setTooltip(attachmentTooltip);
 
 		attachmentAnchor.getChildren().addAll(lbAttachmentName, btnRemoveAttachment);
 
 		AnchorPane.setRightAnchor(btnRemoveAttachment, 0d);
 		AnchorPane.setLeftAnchor(lbAttachmentName, 10d);
+		AnchorPane.setRightAnchor(lbAttachmentName, 30d);
 		
 		fileChooser.setTitle("Attachment");
 		fileChooser.setInitialDirectory(new File(System.getProperty("user.home") + "/Desktop"));
@@ -432,6 +490,30 @@ public class ChatController {
 
 				listCell.prefWidthProperty().bind(listViewUsers.widthProperty().subtract(50));
 				listCell.initData(currentUserId, conversationsObservableList);
+				
+				return listCell;
+			}
+		});
+		
+		listViewActiveAnnouncements.setCellFactory(new Callback<ListView<Announcement>, ListCell<Announcement>>() {
+			
+			@Override public ListCell<Announcement> call(ListView<Announcement> param) {
+
+				ActiveAnnouncementListCell listCell = new ActiveAnnouncementListCell(provider);
+
+				listCell.prefWidthProperty().bind(listViewActiveAnnouncements.widthProperty().subtract(50));
+			
+				return listCell;
+			}
+		});
+		
+		listViewClosedAnnouncements.setCellFactory(new Callback<ListView<Announcement>, ListCell<Announcement>>() {
+			
+			@Override public ListCell<Announcement> call(ListView<Announcement> param) {
+				
+				ClosedAnnouncementsListCell listCell = new ClosedAnnouncementsListCell(provider);
+				
+				listCell.prefWidthProperty().bind(listViewClosedAnnouncements.widthProperty().subtract(50));
 				
 				return listCell;
 			}
@@ -708,10 +790,19 @@ public class ChatController {
 	}
 
 	private void fillConversationsListView(List<Conversation> list) {
-
 		conversationsObservableList = FXCollections.observableArrayList();
 		conversationsObservableList.addAll(list);
 		listViewConversations.setItems(conversationsObservableList);
+	}
+	
+	private void fillAnnouncementsListViews(List<Announcement> active, List<Announcement> closed) {
+		ObservableList<Announcement> activeAnnouncementsObservableList = FXCollections.observableArrayList();
+		activeAnnouncementsObservableList.addAll(active);
+		listViewActiveAnnouncements.setItems(activeAnnouncementsObservableList);
+		
+		ObservableList<Announcement> closedAnnouncementsObservableList = FXCollections.observableArrayList();
+		closedAnnouncementsObservableList.addAll(closed);
+		listViewClosedAnnouncements.setItems(closedAnnouncementsObservableList);
 	}
 
 	private void changeButtonsColors(Button buttonPicked) {

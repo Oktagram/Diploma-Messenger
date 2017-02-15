@@ -1,5 +1,6 @@
 package com.elekscamp.messenger_javafx_client.DAL;
 
+import com.elekscamp.messenger_javafx_client.Entities.Announcement;
 import com.elekscamp.messenger_javafx_client.Entities.Conversation;
 import com.elekscamp.messenger_javafx_client.Entities.Message;
 import com.elekscamp.messenger_javafx_client.Entities.PersonalInfo;
@@ -14,15 +15,16 @@ public class ContentProvider {
 	private ConversationProvider conversationProvider;
 	private UserConversationProvider userConversationProvider;
 	private FileProvider fileProvider;
-
+	private AnnouncementProvider announcementProvider;
+	
 	public ContentProvider() {
 		userProvider = new UserProvider(new RequestManager<User>(User.class));
 		messageProvider = new MessageProvider(new RequestManager<Message>(Message.class));
 		personalInfoProvider = new PersonalInfoProvider(new RequestManager<PersonalInfo>(PersonalInfo.class));
 		conversationProvider = new ConversationProvider(new RequestManager<Conversation>(Conversation.class));
-		userConversationProvider = new UserConversationProvider(
-				new RequestManager<UserConversation>(UserConversation.class));
+		userConversationProvider = new UserConversationProvider(new RequestManager<UserConversation>(UserConversation.class));
 		fileProvider = new FileProvider();
+		announcementProvider = new AnnouncementProvider(new RequestManager<Announcement>(Announcement.class));
 	}
 
 	public UserProvider getUserProvider() {
@@ -48,9 +50,8 @@ public class ContentProvider {
 	public FileProvider getFileProvider() {
 		return fileProvider;
 	}
-	/*
-	 * public void setUserConversationProvider(UserConversationProvider
-	 * userConversationProvider) { this.userConversationProvider =
-	 * userConversationProvider; }
-	 */
+	
+	public AnnouncementProvider getAnnouncementProvider() {
+		return announcementProvider;
+	}
 }

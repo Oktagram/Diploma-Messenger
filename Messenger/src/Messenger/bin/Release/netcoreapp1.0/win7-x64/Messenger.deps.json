@@ -1,7 +1,7 @@
 {
   "runtimeTarget": {
     "name": ".NETCoreApp,Version=v1.0/win7-x64",
-    "signature": "288be81bdfa18996401826787a7365fb3f68c7dc"
+    "signature": "bb03ae5f8f92c759a69db496bbd04afa43f3cc88"
   },
   "compilationOptions": {
     "defines": [
@@ -18,11 +18,12 @@
         "dependencies": {
           "AutoMapper": "5.2.0",
           "AutoMapper.Extensions.Microsoft.DependencyInjection": "1.1.2",
-          "FluentValidation": "6.2.1",
+          "Microsoft.AspNet.WebApi.Client": "5.2.3",
           "Microsoft.AspNetCore.Authentication.Cookies": "1.1.0",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "1.1.0",
           "Microsoft.AspNetCore.Diagnostics": "1.1.0",
           "Microsoft.AspNetCore.Mvc": "1.1.0",
+          "Microsoft.AspNetCore.Mvc.WebApiCompatShim": "1.1.0",
           "Microsoft.AspNetCore.Routing": "1.1.0",
           "Microsoft.AspNetCore.Server.IISIntegration": "1.1.0",
           "Microsoft.AspNetCore.Server.Kestrel": "1.1.0",
@@ -68,14 +69,18 @@
           "lib/netstandard1.6/AutoMapper.Extensions.Microsoft.DependencyInjection.dll": {}
         }
       },
-      "FluentValidation/6.2.1": {
-        "compile": {
-          "lib/portable-net45+wp80+win8+wpa81/FluentValidation.dll": {}
-        }
-      },
       "Libuv/1.9.1": {
         "dependencies": {
           "Microsoft.NETCore.Platforms": "1.1.0"
+        }
+      },
+      "Microsoft.AspNet.WebApi.Client/5.2.3": {
+        "dependencies": {
+          "Microsoft.Net.Http": "2.2.22",
+          "Newtonsoft.Json": "9.0.1"
+        },
+        "compile": {
+          "lib/portable-wp8+netcore45+net45+wp81+wpa81/System.Net.Http.Formatting.dll": {}
         }
       },
       "Microsoft.AspNetCore.Antiforgery/1.1.0": {
@@ -509,6 +514,20 @@
           "lib/netstandard1.6/Microsoft.AspNetCore.Mvc.ViewFeatures.dll": {}
         }
       },
+      "Microsoft.AspNetCore.Mvc.WebApiCompatShim/1.1.0": {
+        "dependencies": {
+          "Microsoft.AspNet.WebApi.Client": "5.2.3",
+          "Microsoft.AspNetCore.Mvc.Core": "1.1.0",
+          "Microsoft.AspNetCore.Mvc.Formatters.Json": "1.1.0",
+          "Microsoft.AspNetCore.WebUtilities": "1.1.0",
+          "NETStandard.Library": "1.6.1",
+          "System.Runtime.Serialization.Xml": "4.3.0",
+          "System.Xml.XmlSerializer": "4.3.0"
+        },
+        "compile": {
+          "lib/netstandard1.6/Microsoft.AspNetCore.Mvc.WebApiCompatShim.dll": {}
+        }
+      },
       "Microsoft.AspNetCore.Razor/1.1.0": {
         "dependencies": {
           "NETStandard.Library": "1.6.1",
@@ -603,6 +622,12 @@
           "lib/netstandard1.3/Microsoft.AspNetCore.WebUtilities.dll": {}
         }
       },
+      "Microsoft.Bcl/1.1.9": {
+        "dependencies": {
+          "Microsoft.Bcl.Build": "1.0.14"
+        }
+      },
+      "Microsoft.Bcl.Build/1.0.14": {},
       "Microsoft.CodeAnalysis.Analyzers/1.1.0": {},
       "Microsoft.CodeAnalysis.Common/1.3.0": {
         "dependencies": {
@@ -644,7 +669,7 @@
           "System.Xml.ReaderWriter": "4.3.0",
           "System.Xml.XDocument": "4.3.0",
           "System.Xml.XPath.XDocument": "4.0.1",
-          "System.Xml.XmlDocument": "4.0.1"
+          "System.Xml.XmlDocument": "4.3.0"
         },
         "compile": {
           "lib/netstandard1.3/Microsoft.CodeAnalysis.dll": {}
@@ -1154,6 +1179,16 @@
         },
         "compile": {
           "lib/netstandard1.4/Microsoft.IdentityModel.Tokens.dll": {}
+        }
+      },
+      "Microsoft.Net.Http/2.2.22": {
+        "dependencies": {
+          "Microsoft.Bcl": "1.1.9",
+          "Microsoft.Bcl.Build": "1.0.14"
+        },
+        "compile": {
+          "lib/portable-net45+win8/System.Net.Http.Extensions.dll": {},
+          "lib/portable-net45+win8/System.Net.Http.Primitives.dll": {}
         }
       },
       "Microsoft.Net.Http.Headers/1.1.0": {
@@ -2535,6 +2570,35 @@
           "ref/netstandard1.3/System.ObjectModel.dll": {}
         }
       },
+      "System.Private.DataContractSerialization/4.3.0": {
+        "dependencies": {
+          "System.Collections": "4.3.0",
+          "System.Collections.Concurrent": "4.3.0",
+          "System.Diagnostics.Debug": "4.3.0",
+          "System.Globalization": "4.3.0",
+          "System.IO": "4.3.0",
+          "System.Linq": "4.3.0",
+          "System.Reflection": "4.3.0",
+          "System.Reflection.Emit.ILGeneration": "4.3.0",
+          "System.Reflection.Emit.Lightweight": "4.3.0",
+          "System.Reflection.Extensions": "4.3.0",
+          "System.Reflection.Primitives": "4.3.0",
+          "System.Reflection.TypeExtensions": "4.3.0",
+          "System.Resources.ResourceManager": "4.3.0",
+          "System.Runtime": "4.3.0",
+          "System.Runtime.Extensions": "4.3.0",
+          "System.Runtime.Serialization.Primitives": "4.3.0",
+          "System.Text.Encoding": "4.3.0",
+          "System.Text.Encoding.Extensions": "4.3.0",
+          "System.Text.RegularExpressions": "4.3.0",
+          "System.Threading": "4.3.0",
+          "System.Threading.Tasks": "4.3.0",
+          "System.Xml.ReaderWriter": "4.3.0",
+          "System.Xml.XDocument": "4.3.0",
+          "System.Xml.XmlDocument": "4.3.0",
+          "System.Xml.XmlSerializer": "4.3.0"
+        }
+      },
       "System.Private.Uri/4.3.0": {
         "dependencies": {
           "Microsoft.NETCore.Platforms": "1.1.0",
@@ -2772,6 +2836,19 @@
         },
         "compile": {
           "ref/netstandard1.3/System.Runtime.Serialization.Primitives.dll": {}
+        }
+      },
+      "System.Runtime.Serialization.Xml/4.3.0": {
+        "dependencies": {
+          "System.IO": "4.3.0",
+          "System.Private.DataContractSerialization": "4.3.0",
+          "System.Runtime": "4.3.0",
+          "System.Runtime.Serialization.Primitives": "4.3.0",
+          "System.Text.Encoding": "4.3.0",
+          "System.Xml.ReaderWriter": "4.3.0"
+        },
+        "compile": {
+          "ref/netstandard1.3/System.Runtime.Serialization.Xml.dll": {}
         }
       },
       "System.Security.Claims/4.3.0": {
@@ -3164,7 +3241,7 @@
           "ref/netstandard1.3/System.Xml.XDocument.dll": {}
         }
       },
-      "System.Xml.XmlDocument/4.0.1": {
+      "System.Xml.XmlDocument/4.3.0": {
         "dependencies": {
           "System.Collections": "4.3.0",
           "System.Diagnostics.Debug": "4.3.0",
@@ -3176,6 +3253,30 @@
           "System.Text.Encoding": "4.3.0",
           "System.Threading": "4.3.0",
           "System.Xml.ReaderWriter": "4.3.0"
+        }
+      },
+      "System.Xml.XmlSerializer/4.3.0": {
+        "dependencies": {
+          "System.Collections": "4.3.0",
+          "System.Globalization": "4.3.0",
+          "System.IO": "4.3.0",
+          "System.Linq": "4.3.0",
+          "System.Reflection": "4.3.0",
+          "System.Reflection.Emit": "4.3.0",
+          "System.Reflection.Emit.ILGeneration": "4.3.0",
+          "System.Reflection.Extensions": "4.3.0",
+          "System.Reflection.Primitives": "4.3.0",
+          "System.Reflection.TypeExtensions": "4.3.0",
+          "System.Resources.ResourceManager": "4.3.0",
+          "System.Runtime": "4.3.0",
+          "System.Runtime.Extensions": "4.3.0",
+          "System.Text.RegularExpressions": "4.3.0",
+          "System.Threading": "4.3.0",
+          "System.Xml.ReaderWriter": "4.3.0",
+          "System.Xml.XmlDocument": "4.3.0"
+        },
+        "compile": {
+          "ref/netstandard1.3/System.Xml.XmlSerializer.dll": {}
         }
       },
       "System.Xml.XPath/4.0.1": {
@@ -3210,11 +3311,12 @@
         "dependencies": {
           "AutoMapper": "5.2.0",
           "AutoMapper.Extensions.Microsoft.DependencyInjection": "1.1.2",
-          "FluentValidation": "6.2.1",
+          "Microsoft.AspNet.WebApi.Client": "5.2.3",
           "Microsoft.AspNetCore.Authentication.Cookies": "1.1.0",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "1.1.0",
           "Microsoft.AspNetCore.Diagnostics": "1.1.0",
           "Microsoft.AspNetCore.Mvc": "1.1.0",
+          "Microsoft.AspNetCore.Mvc.WebApiCompatShim": "1.1.0",
           "Microsoft.AspNetCore.Routing": "1.1.0",
           "Microsoft.AspNetCore.Server.IISIntegration": "1.1.0",
           "Microsoft.AspNetCore.Server.Kestrel": "1.1.0",
@@ -3260,61 +3362,21 @@
           "lib/netstandard1.6/AutoMapper.Extensions.Microsoft.DependencyInjection.dll": {}
         }
       },
-      "FluentValidation/6.2.1": {
-        "runtime": {
-          "lib/portable-net45+wp80+win8+wpa81/FluentValidation.dll": {}
-        },
-        "resources": {
-          "lib/portable-net45+wp80+win8+wpa81/cs/FluentValidation.resources.dll": {
-            "locale": "cs"
-          },
-          "lib/portable-net45+wp80+win8+wpa81/da/FluentValidation.resources.dll": {
-            "locale": "da"
-          },
-          "lib/portable-net45+wp80+win8+wpa81/de/FluentValidation.resources.dll": {
-            "locale": "de"
-          },
-          "lib/portable-net45+wp80+win8+wpa81/es/FluentValidation.resources.dll": {
-            "locale": "es"
-          },
-          "lib/portable-net45+wp80+win8+wpa81/fa/FluentValidation.resources.dll": {
-            "locale": "fa"
-          },
-          "lib/portable-net45+wp80+win8+wpa81/fi/FluentValidation.resources.dll": {
-            "locale": "fi"
-          },
-          "lib/portable-net45+wp80+win8+wpa81/fr/FluentValidation.resources.dll": {
-            "locale": "fr"
-          },
-          "lib/portable-net45+wp80+win8+wpa81/it/FluentValidation.resources.dll": {
-            "locale": "it"
-          },
-          "lib/portable-net45+wp80+win8+wpa81/nl/FluentValidation.resources.dll": {
-            "locale": "nl"
-          },
-          "lib/portable-net45+wp80+win8+wpa81/pl/FluentValidation.resources.dll": {
-            "locale": "pl"
-          },
-          "lib/portable-net45+wp80+win8+wpa81/pt/FluentValidation.resources.dll": {
-            "locale": "pt"
-          },
-          "lib/portable-net45+wp80+win8+wpa81/ru/FluentValidation.resources.dll": {
-            "locale": "ru"
-          },
-          "lib/portable-net45+wp80+win8+wpa81/sv/FluentValidation.resources.dll": {
-            "locale": "sv"
-          },
-          "lib/portable-net45+wp80+win8+wpa81/zh-CN/FluentValidation.resources.dll": {
-            "locale": "zh-CN"
-          }
-        }
-      },
       "Libuv/1.9.1": {
         "dependencies": {
           "Microsoft.NETCore.Platforms": "1.1.0"
         },
         "native": {
           "runtimes/win7-x64/native/libuv.dll": {}
+        }
+      },
+      "Microsoft.AspNet.WebApi.Client/5.2.3": {
+        "dependencies": {
+          "Microsoft.Net.Http": "2.2.22",
+          "Newtonsoft.Json": "9.0.1"
+        },
+        "runtime": {
+          "lib/portable-wp8+netcore45+net45+wp81+wpa81/System.Net.Http.Formatting.dll": {}
         }
       },
       "Microsoft.AspNetCore.Antiforgery/1.1.0": {
@@ -3748,6 +3810,20 @@
           "lib/netstandard1.6/Microsoft.AspNetCore.Mvc.ViewFeatures.dll": {}
         }
       },
+      "Microsoft.AspNetCore.Mvc.WebApiCompatShim/1.1.0": {
+        "dependencies": {
+          "Microsoft.AspNet.WebApi.Client": "5.2.3",
+          "Microsoft.AspNetCore.Mvc.Core": "1.1.0",
+          "Microsoft.AspNetCore.Mvc.Formatters.Json": "1.1.0",
+          "Microsoft.AspNetCore.WebUtilities": "1.1.0",
+          "NETStandard.Library": "1.6.1",
+          "System.Runtime.Serialization.Xml": "4.3.0",
+          "System.Xml.XmlSerializer": "4.3.0"
+        },
+        "runtime": {
+          "lib/netstandard1.6/Microsoft.AspNetCore.Mvc.WebApiCompatShim.dll": {}
+        }
+      },
       "Microsoft.AspNetCore.Razor/1.1.0": {
         "dependencies": {
           "NETStandard.Library": "1.6.1",
@@ -3842,6 +3918,12 @@
           "lib/netstandard1.3/Microsoft.AspNetCore.WebUtilities.dll": {}
         }
       },
+      "Microsoft.Bcl/1.1.9": {
+        "dependencies": {
+          "Microsoft.Bcl.Build": "1.0.14"
+        }
+      },
+      "Microsoft.Bcl.Build/1.0.14": {},
       "Microsoft.CodeAnalysis.Analyzers/1.1.0": {},
       "Microsoft.CodeAnalysis.Common/1.3.0": {
         "dependencies": {
@@ -3883,7 +3965,7 @@
           "System.Xml.ReaderWriter": "4.3.0",
           "System.Xml.XDocument": "4.3.0",
           "System.Xml.XPath.XDocument": "4.0.1",
-          "System.Xml.XmlDocument": "4.0.1"
+          "System.Xml.XmlDocument": "4.3.0"
         },
         "runtime": {
           "lib/netstandard1.3/Microsoft.CodeAnalysis.dll": {}
@@ -4396,6 +4478,16 @@
         },
         "runtime": {
           "lib/netstandard1.4/Microsoft.IdentityModel.Tokens.dll": {}
+        }
+      },
+      "Microsoft.Net.Http/2.2.22": {
+        "dependencies": {
+          "Microsoft.Bcl": "1.1.9",
+          "Microsoft.Bcl.Build": "1.0.14"
+        },
+        "runtime": {
+          "lib/portable-net45+win8/System.Net.Http.Extensions.dll": {},
+          "lib/portable-net45+win8/System.Net.Http.Primitives.dll": {}
         }
       },
       "Microsoft.Net.Http.Headers/1.1.0": {
@@ -6004,6 +6096,38 @@
           "lib/netstandard1.3/System.ObjectModel.dll": {}
         }
       },
+      "System.Private.DataContractSerialization/4.3.0": {
+        "dependencies": {
+          "System.Collections": "4.3.0",
+          "System.Collections.Concurrent": "4.3.0",
+          "System.Diagnostics.Debug": "4.3.0",
+          "System.Globalization": "4.3.0",
+          "System.IO": "4.3.0",
+          "System.Linq": "4.3.0",
+          "System.Reflection": "4.3.0",
+          "System.Reflection.Emit.ILGeneration": "4.3.0",
+          "System.Reflection.Emit.Lightweight": "4.3.0",
+          "System.Reflection.Extensions": "4.3.0",
+          "System.Reflection.Primitives": "4.3.0",
+          "System.Reflection.TypeExtensions": "4.3.0",
+          "System.Resources.ResourceManager": "4.3.0",
+          "System.Runtime": "4.3.0",
+          "System.Runtime.Extensions": "4.3.0",
+          "System.Runtime.Serialization.Primitives": "4.3.0",
+          "System.Text.Encoding": "4.3.0",
+          "System.Text.Encoding.Extensions": "4.3.0",
+          "System.Text.RegularExpressions": "4.3.0",
+          "System.Threading": "4.3.0",
+          "System.Threading.Tasks": "4.3.0",
+          "System.Xml.ReaderWriter": "4.3.0",
+          "System.Xml.XDocument": "4.3.0",
+          "System.Xml.XmlDocument": "4.3.0",
+          "System.Xml.XmlSerializer": "4.3.0"
+        },
+        "runtime": {
+          "lib/netstandard1.3/System.Private.DataContractSerialization.dll": {}
+        }
+      },
       "System.Private.Uri/4.3.0": {
         "dependencies": {
           "Microsoft.NETCore.Platforms": "1.1.0",
@@ -6226,6 +6350,19 @@
         },
         "runtime": {
           "lib/netstandard1.3/System.Runtime.Serialization.Primitives.dll": {}
+        }
+      },
+      "System.Runtime.Serialization.Xml/4.3.0": {
+        "dependencies": {
+          "System.IO": "4.3.0",
+          "System.Private.DataContractSerialization": "4.3.0",
+          "System.Runtime": "4.3.0",
+          "System.Runtime.Serialization.Primitives": "4.3.0",
+          "System.Text.Encoding": "4.3.0",
+          "System.Xml.ReaderWriter": "4.3.0"
+        },
+        "runtime": {
+          "lib/netstandard1.3/System.Runtime.Serialization.Xml.dll": {}
         }
       },
       "System.Security.Claims/4.3.0": {
@@ -6615,7 +6752,7 @@
           "lib/netstandard1.3/System.Xml.XDocument.dll": {}
         }
       },
-      "System.Xml.XmlDocument/4.0.1": {
+      "System.Xml.XmlDocument/4.3.0": {
         "dependencies": {
           "System.Collections": "4.3.0",
           "System.Diagnostics.Debug": "4.3.0",
@@ -6630,6 +6767,30 @@
         },
         "runtime": {
           "lib/netstandard1.3/System.Xml.XmlDocument.dll": {}
+        }
+      },
+      "System.Xml.XmlSerializer/4.3.0": {
+        "dependencies": {
+          "System.Collections": "4.3.0",
+          "System.Globalization": "4.3.0",
+          "System.IO": "4.3.0",
+          "System.Linq": "4.3.0",
+          "System.Reflection": "4.3.0",
+          "System.Reflection.Emit": "4.3.0",
+          "System.Reflection.Emit.ILGeneration": "4.3.0",
+          "System.Reflection.Extensions": "4.3.0",
+          "System.Reflection.Primitives": "4.3.0",
+          "System.Reflection.TypeExtensions": "4.3.0",
+          "System.Resources.ResourceManager": "4.3.0",
+          "System.Runtime": "4.3.0",
+          "System.Runtime.Extensions": "4.3.0",
+          "System.Text.RegularExpressions": "4.3.0",
+          "System.Threading": "4.3.0",
+          "System.Xml.ReaderWriter": "4.3.0",
+          "System.Xml.XmlDocument": "4.3.0"
+        },
+        "runtime": {
+          "lib/netstandard1.3/System.Xml.XmlSerializer.dll": {}
         }
       },
       "System.Xml.XPath/4.0.1": {
@@ -6682,15 +6843,15 @@
       "serviceable": true,
       "sha512": "sha512-bdGt4Xl1dhPFUrD5HAEm+UNlg+MolWsf4F/fxemcDpwss5VUGZC/gkibUTzPAdgQxTGVXX9zy3TdZDOTTK6IbA=="
     },
-    "FluentValidation/6.2.1": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-/5ERf6sSD8VVQObby24h6GzFB9iLJsA01V0stxJ+6KAAiLVOFJ7cE2EypG2BDOP0B3cYCzTYeJrd0Oyrvnb9Bw=="
-    },
     "Libuv/1.9.1": {
       "type": "package",
       "serviceable": true,
       "sha512": "sha512-uqX2Frwf9PW8MaY7PRNY6HM5BpW1D8oj1EdqzrmbEFD5nH63Yat3aEjN/tws6Tw6Fk7LwmLBvtUh32tTeTaHiA=="
+    },
+    "Microsoft.AspNet.WebApi.Client/5.2.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-3kiI8peSXbXHDDrRuo+QaX0iCEVRe0nvn2dBDRw656uPX32UalbBlSIDUDlJxu05eau4tnuhsikiUuugvvoUoQ=="
     },
     "Microsoft.AspNetCore.Antiforgery/1.1.0": {
       "type": "package",
@@ -6862,6 +7023,11 @@
       "serviceable": true,
       "sha512": "sha512-Odd9+gRi4DCH3RalGZEdS0xLRcUh8LV9UTCnOVjGwotI1i6Fk2VSxtkAxrVRMd44BL0WfRqJFiTkCixxA2zFig=="
     },
+    "Microsoft.AspNetCore.Mvc.WebApiCompatShim/1.1.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-TVhrza+tSF0DndKR+85CwLssIDwi5KuflX7h4n0T7/jDU3DEsVbFKr0xHI/CsKAnUcwmNc2bLxSzL0JCZ+5wpA=="
+    },
     "Microsoft.AspNetCore.Razor/1.1.0": {
       "type": "package",
       "serviceable": true,
@@ -6901,6 +7067,16 @@
       "type": "package",
       "serviceable": true,
       "sha512": "sha512-9w3aHPRUAx+1xOTcsZF6AJCS42viNqWeTcgIE1dmlK/G3NCFkes+MVxwvKt9U9pFIomxqRnD+MGRoBeruEKPbQ=="
+    },
+    "Microsoft.Bcl/1.1.9": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-USQ55innJy8K+tAXvVa1O8dUTp2s7pmJ5cJj6Tl02HtGc2xBDj0P2QH5620HbGXIWKWYhydoeQF8Rm/JRDBGhw=="
+    },
+    "Microsoft.Bcl.Build/1.0.14": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-cDLKSvNvRa519hplsbSoYqO69TjdDIhfjtKUM0g20/nVROoWsGav9KCI9HtnGjLmdV1+TcUUDhbotcllibjPEA=="
     },
     "Microsoft.CodeAnalysis.Analyzers/1.1.0": {
       "type": "package",
@@ -7141,6 +7317,11 @@
       "type": "package",
       "serviceable": true,
       "sha512": "sha512-Hg1+IbP0F9oQ8qIxQobKoOczrwufYMNHrSXj+xF1+4VCpvymhyvpVcgLqi5GOie1qcQYp/yBy04dpBImemVXKg=="
+    },
+    "Microsoft.Net.Http/2.2.22": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-bqVLJ2UimlAEs2bn3y28lB1pmFRxuysv9pFyB0A86WEMYGYTfDyfjAGjm0fiaSRjlMNU1jVnp8Mxt8qe4OmpXQ=="
     },
     "Microsoft.Net.Http.Headers/1.1.0": {
       "type": "package",
@@ -7807,6 +7988,11 @@
       "serviceable": true,
       "sha512": "sha512-bdX+80eKv9bN6K4N+d77OankKHGn6CH711a6fcOpMQu2Fckp/Ft4L/kW9WznHpyR0NRAvJutzOMHNNlBGvxQzQ=="
     },
+    "System.Private.DataContractSerialization/4.3.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-yDaJ2x3mMmjdZEDB4IbezSnCsnjQ4BxinKhRAaP6kEgL6Bb6jANWphs5SzyD8imqeC/3FxgsuXT6ykkiH1uUmA=="
+    },
     "System.Private.Uri/4.3.0": {
       "type": "package",
       "serviceable": true,
@@ -7911,6 +8097,11 @@
       "type": "package",
       "serviceable": true,
       "sha512": "sha512-Wz+0KOukJGAlXjtKr+5Xpuxf8+c8739RI1C+A2BoQZT+wMCCoMDDdO8/4IRHfaVINqL78GO8dW8G2lW/e45Mcw=="
+    },
+    "System.Runtime.Serialization.Xml/4.3.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-nUQx/5OVgrqEba3+j7OdiofvVq9koWZAC7Z3xGI8IIViZqApWnZ5+lLcwYgTlbkobrl/Rat+Jb8GeD4WQESD2A=="
     },
     "System.Security.Claims/4.3.0": {
       "type": "package",
@@ -8042,10 +8233,15 @@
       "serviceable": true,
       "sha512": "sha512-5zJ0XDxAIg8iy+t4aMnQAu0MqVbqyvfoUVl1yDV61xdo3Vth45oA2FoY4pPkxYAH5f8ixpmTqXeEIya95x0aCQ=="
     },
-    "System.Xml.XmlDocument/4.0.1": {
+    "System.Xml.XmlDocument/4.3.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-2eZu6IP+etFVBBFUFzw2w6J21DqIN5eL9Y8r8JfJWUmV28Z5P0SNU01oCisVHQgHsDhHPnmq2s1hJrJCFZWloQ=="
+      "sha512": "sha512-lJ8AxvkX7GQxpC6GFCeBj8ThYVyQczx2+f/cWHJU8tjS7YfI6Cv6bon70jVEgs2CiFbmmM8b9j1oZVx0dSI2Ww=="
+    },
+    "System.Xml.XmlSerializer/4.3.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-MYoTCP7EZ98RrANESW05J5ZwskKDoN0AuZ06ZflnowE50LTpbR5yRg3tHckTVm5j/m47stuGgCrCHWePyHS70Q=="
     },
     "System.Xml.XPath/4.0.1": {
       "type": "package",

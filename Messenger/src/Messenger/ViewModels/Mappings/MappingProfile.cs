@@ -16,6 +16,7 @@ namespace Messenger.ViewModels.Mappings
             CreateMap<Conversation, ConversationViewModel>();
             CreateMap<PersonalInfo, PersonalInfoViewModel>();
             CreateMap<UserConversation, UserConversationViewModel>();
+			CreateMap<Announcement, AnnouncementViewModel>();
         }
     }
 }
