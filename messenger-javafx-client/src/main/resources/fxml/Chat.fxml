@@ -125,20 +125,43 @@
                            <children>
                               <TextArea fx:id="txtAreaMessage" maxHeight="65.0" minHeight="65.0" minWidth="350.0" onKeyPressed="#txtAreaMessageOnKeyPressed" prefHeight="65.0" prefWidth="350.0" promptText="Type your message here...." wrapText="true" HBox.hgrow="ALWAYS">
                                  <HBox.margin>
-                                    <Insets bottom="5.0" right="5.0" top="5.0" />
+                                    <Insets bottom="5.0" top="5.0" />
                                  </HBox.margin>
                               </TextArea>
                               <VBox>
                                  <children>
-                                    <Button fx:id="btnSmiles" maxHeight="30.0" maxWidth="55.0" minHeight="30.0" minWidth="55.0" mnemonicParsing="false" onAction="#btnSmilesOnAction" prefHeight="30.0" prefWidth="55.0" text="Smiles">
+                                    <Button fx:id="btnSmiles" mnemonicParsing="false" onAction="#btnSmilesOnAction" prefHeight="30.0" prefWidth="30.0" stylesheets="@../css/buttons/with-image.css">
                                        <HBox.margin>
                                           <Insets bottom="35.0" left="5.0" right="5.0" />
                                        </HBox.margin>
+                                       <VBox.margin>
+                                          <Insets />
+                                       </VBox.margin>
+                                       <padding>
+                                          <Insets bottom="-10.0" left="-10.0" right="-10.0" top="-10.0" />
+                                       </padding>
+                                       <graphic>
+                                          <ImageView fitHeight="28.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../images/smile.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
                                     </Button>
-                                    <Button fx:id="btnAttachment" maxHeight="30.0" maxWidth="55.0" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onAction="#btnAttachmentOnAction" prefHeight="30.0" prefWidth="55.0" text="Attach">
+                                    <Button fx:id="btnAttachment" mnemonicParsing="false" onAction="#btnAttachmentOnAction" prefHeight="30.0" prefWidth="30.0" stylesheets="@../css/buttons/with-image.css">
                                        <VBox.margin>
                                           <Insets top="5.0" />
                                        </VBox.margin>
+                                       <graphic>
+                                          <ImageView fitHeight="28.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../images/upload-attachment.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                       <padding>
+                                          <Insets bottom="-10.0" left="-10.0" right="-10.0" top="-10.0" />
+                                       </padding>
                                     </Button>
                                  </children>
                                  <HBox.margin>

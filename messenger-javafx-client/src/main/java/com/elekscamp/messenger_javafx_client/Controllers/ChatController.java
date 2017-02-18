@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Timer;
@@ -293,8 +294,8 @@ public class ChatController {
 	public void btnSmilesOnAction() {
 		
 		HBox smilesHBox = new HBox();
-
-		smilesHBox.setPrefSize(30 * 5 + 6, 30 + 6);
+		int borderWidth = 4;
+		smilesHBox.setPrefSize(30 * 5 + borderWidth, 30 + borderWidth);
 		smilesHBox.setAlignment(Pos.CENTER);
 		smilesHBox.setStyle("-fx-background-color: grey;");
 
@@ -814,6 +815,19 @@ public class ChatController {
 
 	private void fillUsersListView(List<User> list) {
 
+		list.sort(new Comparator<User>() {
+			@Override
+			public int compare(User leftUser, User rightUser) {
+				boolean left = leftUser.getIsOnline();
+				boolean right = rightUser.getIsOnline();
+				
+				if (left && !right) return -1;
+				if (!left && right) return 1;
+				
+				return 0;
+			}
+			
+		});
 		UserListCell.setUsersWithImagesList(generateUsersWithImagesList(list));
 		usersObservableList = FXCollections.observableArrayList();
 		usersObservableList.addAll(list);
@@ -896,9 +910,13 @@ public class ChatController {
 			button.setStyle("-fx-base: " + passiveButtonsColor);
 		}
 
+//		btnAttachment.setStyle("-fx-font-size: 11.5; -fx-base: " + newConversationColor);
+	//	btnAttachment.setGraphic(new ImageView("/images/upload-attachment.png"));
+	//	btnAttachment.setPrefSize(30, 30);
+	//	btnAttachment.setPadding(new Insets(-10));
+		
 		btnUpdate.setStyle("-fx-font-size: 11.5; -fx-base: " + newConversationColor);
-		btnAttachment.setStyle("-fx-font-size: 11.5; -fx-base: " + newConversationColor);
-		btnSmiles.setStyle("-fx-font-size: 12; -fx-base: " + newConversationColor);
+		btnSmiles.setStyle("-fx-font-size: 12; -fx-base: white");
 		btnLogOut.setStyle("-fx-base: " + logOutColor);
 		btnNewConversation.setStyle("-fx-base: " + newConversationColor);
 		btnSend.setStyle("-fx-base: " + findAndSearchColor);

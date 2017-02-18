@@ -81,9 +81,20 @@ public class UserListCell extends ListCell<User> {
 			usernameAndOnlineStatusHBox = new HBox();
 			addToConversationVBox = new VBox();
 			username = new Label(item.getLogin());
-			onlineStatus = new Label(item.getIsOnline() ? "[Online]" : "[Offline]");
 			btnAddToConversation = new Button("+");
-
+			onlineStatus = new Label();
+			
+			boolean isUserOnline = item.getIsOnline();
+			
+			if (isUserOnline) {
+				onlineStatus.setText("[Online]");
+				onlineStatus.setStyle("-fx-text-fill: green;");
+				
+			} else {
+				onlineStatus.setText("[Offline]");
+				onlineStatus.setStyle("-fx-text-fill: darkred;");
+			}
+			
 			DialogPane dialogPane = alert.getDialogPane();
 			
 			alert.setTitle("Message");
@@ -117,7 +128,7 @@ public class UserListCell extends ListCell<User> {
 			usernameAndOnlineStatusHBox.setPrefHeight(50);
 			usernameAndOnlineStatusHBox.setPrefWidth(150);
 
-			addToConversationVBox.setAlignment(Pos.CENTER);
+			addToConversationVBox.setAlignment(Pos.CENTER_RIGHT);
 			addToConversationVBox.setPrefHeight(50);
 			addToConversationVBox.setPrefWidth(50);
 
@@ -129,7 +140,8 @@ public class UserListCell extends ListCell<User> {
 
 			btnAddToConversation.setPrefWidth(40);
 			btnAddToConversation.setPrefHeight(40);
-			btnAddToConversation.setStyle("-fx-base: #63A388; -fx-text-fill: white; -fx-font-size: 18;");
+			btnAddToConversation.setPadding(new Insets(-12, -11, -10, -10));
+			btnAddToConversation.setStyle("-fx-base: #63A388; -fx-text-fill: white; -fx-font-size: 25;");
 			btnAddToConversation.setTextAlignment(TextAlignment.CENTER);
 			btnAddToConversation.setTooltip(new Tooltip("Add to current conversation"));
 			btnAddToConversation.setOnAction(new EventHandler<ActionEvent>() {
