@@ -14,7 +14,7 @@ public interface RequestService<T> {
 
 	public String post(String path, T item) throws HttpErrorCodeException, IOException;
 
-	public void put(String path, Integer id, T item) throws HttpErrorCodeException, IOException;
+	public T put(String path, Integer id, T item) throws HttpErrorCodeException, IOException;
 
 	public void delete(String path, Integer id) throws HttpErrorCodeException, IOException;
 }

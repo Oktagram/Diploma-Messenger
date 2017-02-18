@@ -96,8 +96,9 @@ public class MessageListCell extends ListCell<Message> {
 			String messageText = message.getText();
 			int userId = message.getUserId();
 
-			mainHBox.setStyle("-fx-border-color: black; -fx-border-radius: 10px;");
-
+			mainHBox.getStylesheets().add(getClass().getResource("/css/message-list-cell.css").toExternalForm());//.setStyle("");
+			mainHBox.getStyleClass().add("hbox");
+			
 			user = searchUserInListById(userId);
 
 			username = new Label(user.getLogin());

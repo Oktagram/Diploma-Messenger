@@ -17,8 +17,8 @@ public class AnnouncementProvider extends EntityProvider<Announcement>{
 		return service.get(path);
 	}
 	
-	public void update(int id, Announcement item) throws HttpErrorCodeException, IOException {
-		service.put(path, id, item);
+	public Announcement update(int id, Announcement item) throws HttpErrorCodeException, IOException {
+		return service.put(path, id, item);
 	}
 	
 	public Announcement add(Announcement item) throws HttpErrorCodeException, IOException {

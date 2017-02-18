@@ -59,7 +59,8 @@ namespace Messenger.Controllers
 			if (announcement == null) return NotFound();
 			else _announcementRepository.Update(id, announcement, item);
 
-			return new OkObjectResult(_announcementRepository.Find(item.Id));
+			var temp = _announcementRepository.Find(id);
+			return new OkObjectResult(temp);
 		}
 	}
 }

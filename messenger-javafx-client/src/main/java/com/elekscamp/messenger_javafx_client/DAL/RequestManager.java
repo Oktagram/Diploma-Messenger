@@ -138,19 +138,17 @@ public class RequestManager<T> implements RequestService<T> {
 		try {
 			response = request.execute(requestApi + path + "/" + id.toString(), HttpMethod.GET, header, "");
 			item = objectMapper.readValue(response, type);
+			return item;
 		} catch (IOException e) {
 			exceptionResolver.checkForErrorCodeException(request.getResponceCode(), request.getResponseMessage());
 			throw e;
 		}
-
-		return item;
 	}
 
 	public void getFile(String path, Integer id) throws HttpErrorCodeException, IOException {
 
 		try {
 			response = request.execute(requestApi + path + "/" + id.toString(), HttpMethod.GET, header, "");
-			System.out.println("file responce: " + response);
 			item = objectMapper.readValue(response, type);
 		} catch (IOException e) {
 			exceptionResolver.checkForErrorCodeException(request.getResponceCode(), request.getResponseMessage());
@@ -191,15 +189,11 @@ public class RequestManager<T> implements RequestService<T> {
 
 			httpPost.setEntity(httpEntity);
 
-			System.out.println("executing request " + httpPost.getRequestLine());
 			CloseableHttpResponse response = httpClient.execute(httpPost);
 			try {
 				System.out.println("----------------------------------------");
 				System.out.println(response.getStatusLine());
 				HttpEntity resEntity = response.getEntity();
-				if (resEntity != null) {
-					System.out.println("Response content length: " + resEntity.getContentLength());
-				}
 				EntityUtils.consume(resEntity);
 			} finally {
 				response.close();
@@ -211,17 +205,24 @@ public class RequestManager<T> implements RequestService<T> {
 		return "";
 	}
 
-	public void put(String path, Integer id, T item) throws HttpErrorCodeException, IOException {
+	public T put(String path, Integer id, T item) throws HttpErrorCodeException, IOException {
 
 		header.put("Content-Type", "application/json");
 		String itemJson = objectMapper.writeValueAsString(item);
 
 		try {
 			response = request.execute(requestApi + path + "/" + id.toString(), HttpMethod.PUT, header, itemJson);
+			
+			if (!response.isEmpty()) {
+				item = objectMapper.readValue(response, type);
+				return item;
+			}
 		} catch (IOException e) {
 			exceptionResolver.checkForErrorCodeException(request.getResponceCode(), request.getResponseMessage());
 			throw e;
 		}
+		
+		return null;
 	}
 
 	public void delete(String path, Integer id) throws HttpErrorCodeException, IOException {

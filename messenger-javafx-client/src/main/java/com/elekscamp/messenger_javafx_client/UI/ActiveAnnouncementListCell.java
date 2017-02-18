@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Optional;
 
 import com.elekscamp.messenger_javafx_client.DAL.ContentProvider;
 import com.elekscamp.messenger_javafx_client.Entities.Announcement;
@@ -11,26 +12,42 @@ import com.elekscamp.messenger_javafx_client.Exceptions.HttpErrorCodeException;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.Tooltip;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
 public class ActiveAnnouncementListCell extends ListCell<Announcement> {
 
-	private HBox mainHBox;
 	private ContentProvider provider;
 	private SimpleDateFormat formatter;
+	private ObservableList<Announcement> activeAnnouncementList;
+	private ObservableList<Announcement> closedAnnouncementList;
 	
 	public ActiveAnnouncementListCell(ContentProvider provider) {
 		
 		this.provider = provider;
 		formatter = new SimpleDateFormat("dd/MM/yyyy 'at' HH:mm:ss");
-		mainHBox = new HBox();
+	}
+	
+	public void initData(ObservableList<Announcement> activeAnnouncementList, ObservableList<Announcement> closedAnnouncementList) {
+		this.activeAnnouncementList = activeAnnouncementList;
+		this.closedAnnouncementList = closedAnnouncementList;
 	}
 	
 	@Override protected void updateItem(Announcement announcement, boolean empty) {
@@ -39,6 +56,8 @@ public class ActiveAnnouncementListCell extends ListCell<Announcement> {
 
 		if (announcement != null) {
 
+			HBox mainHBox = new HBox();
+			HBox buttonsHBox = new HBox();
 			AnchorPane anchorPane = new AnchorPane();
 			Label description = new Label(announcement.getDescription());
 			Button btnEditDescription = new Button();
@@ -46,6 +65,7 @@ public class ActiveAnnouncementListCell extends ListCell<Announcement> {
 			Tooltip descriptionTooltip = new Tooltip(description.getText());
 			String descriptionTooltipStr = "";
 			String userThatCreatedAnnouncement = "";
+			String buttonStylesheet = getClass().getResource("/css/buttons/with-image.css").toExternalForm();
 			
 			try {
 				userThatCreatedAnnouncement = provider.getUserProvider().getById(announcement.getUserId()).getLogin();
@@ -67,7 +87,76 @@ public class ActiveAnnouncementListCell extends ListCell<Announcement> {
 		    } catch (Exception e) {
 		        e.printStackTrace();
 		    }
-			
+		    
+			btnEditDescription.setMinSize(22, 22);
+			btnEditDescription.setPadding(new Insets(-10));
+		    btnEditDescription.setGraphic(new ImageView("/images/edit-announcement.png"));
+		    btnEditDescription.getStylesheets().add(buttonStylesheet);
+		    btnEditDescription.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent event) {
+					TextInputDialog textInputDialog = new TextInputDialog(description.getText());
+					textInputDialog.setTitle("Edit Announcement");
+					textInputDialog.setHeaderText(null);
+					textInputDialog.setContentText("Announcement description:");
+					textInputDialog.getDialogPane().setStyle("-fx-background-color: #ffd272");		
+					textInputDialog.getDialogPane().setPrefWidth(600);
+					textInputDialog.setResizable(true);
+					
+					Stage stage = (Stage) textInputDialog.getDialogPane().getScene().getWindow();
+					stage.getIcons().add(new Image("/images/icon.png"));
+					
+					Optional<String> dialogResult = textInputDialog.showAndWait();
+					dialogResult.ifPresent(conversationName -> {
+						if (conversationName.isEmpty()) {
+							
+							Alert alert = new Alert(AlertType.INFORMATION);
+							alert.setTitle("Message");
+							alert.setHeaderText(null);
+							alert.setContentText("Announcement's description cannot be empty!");
+							alert.showAndWait();
+						} else {
+							description.setText(dialogResult.get());
+							announcement.setDescription(dialogResult.get());
+							
+							try {
+								provider.getAnnouncementProvider().update(announcement.getId(), announcement);
+							} catch (HttpErrorCodeException | IOException e) {
+								e.printStackTrace();
+							}
+						}
+					});
+				}
+			});
+		    HBox.setMargin(btnEditDescription, new Insets(0, 5, 0, 0));
+		    btnEditDescription.setTooltip(new Tooltip("Edit"));
+		    
+			btnCloseAnnouncement.setMinSize(22, 22);
+			btnCloseAnnouncement.setPadding(new Insets(-10));
+		    btnCloseAnnouncement.setGraphic(new ImageView("/images/remove.png"));
+		    btnCloseAnnouncement.getStylesheets().add(buttonStylesheet);
+		    btnCloseAnnouncement.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent event) {
+					try {
+						announcement.setIsActive(false);
+						Announcement updatedAnnouncement = provider.getAnnouncementProvider().update(announcement.getId(), announcement);
+						
+						for (Announcement a : activeAnnouncementList) {
+							if (a.getId() != announcement.getId()) continue;
+							
+							activeAnnouncementList.remove(a);
+							break;
+						}
+						
+						closedAnnouncementList.add(0, updatedAnnouncement);
+					} catch (HttpErrorCodeException | IOException e) {
+						e.printStackTrace();
+					}
+				}
+			});
+		    btnCloseAnnouncement.setTooltip(new Tooltip("Close"));
+		    
 			Date creationDate = new Date(announcement.getCreationDate());
 			
 			descriptionTooltipStr += description.getText() + "\nCreated: " + formatter.format(creationDate) + "\nBy: " + userThatCreatedAnnouncement; 
@@ -77,23 +166,17 @@ public class ActiveAnnouncementListCell extends ListCell<Announcement> {
 			descriptionTooltip.setMaxWidth(500);
 			
 			description.setTooltip(descriptionTooltip);
-			
-			btnEditDescription.setStyle("-fx-font-size: 12px;");
-			btnEditDescription.setMinSize(26, 26);
-			
-			btnCloseAnnouncement.setStyle("-fx-font-size: 12px;");
-			btnCloseAnnouncement.setMinSize(26, 26);
-			
-			anchorPane.getChildren().addAll(description, btnEditDescription, btnCloseAnnouncement);
-
-			AnchorPane.setRightAnchor(btnCloseAnnouncement, 0d);
-			AnchorPane.setRightAnchor(btnEditDescription, 30d);
 			AnchorPane.setLeftAnchor(description, 0d);
-			AnchorPane.setRightAnchor(description, 60d);
+			AnchorPane.setRightAnchor(description, 50d);
+			
+			buttonsHBox.getChildren().addAll(btnEditDescription, btnCloseAnnouncement);
+			buttonsHBox.setAlignment(Pos.CENTER);
+			AnchorPane.setRightAnchor(buttonsHBox, 0d);
+			
+			anchorPane.getChildren().addAll(description, buttonsHBox);
+			HBox.setHgrow(anchorPane, Priority.ALWAYS);
 			
 			mainHBox.getChildren().add(anchorPane);
-
-			HBox.setHgrow(anchorPane, Priority.ALWAYS);
 
 			setGraphic(mainHBox);
 		} else {

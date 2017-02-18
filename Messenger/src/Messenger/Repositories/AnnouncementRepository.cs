@@ -20,8 +20,11 @@ namespace Messenger.Repositories
 			if (!announcement.IsActive && newAnnouncement.IsActive)
 			{
 				announcement.ClosingDate = 0;
-			}
+				announcement.CreationDate = DateTimeOffset.Now.ToUnixTimeMilliseconds();
 
+				if (newAnnouncement.UserId != 0) announcement.UserId = newAnnouncement.UserId;
+			}
+			
 			announcement.Description = newAnnouncement.Description;
 			announcement.IsActive = newAnnouncement.IsActive;
 

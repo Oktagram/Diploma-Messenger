@@ -95,6 +95,7 @@ namespace Messenger.Controllers
 
         private string UploadFile(List<IFormFile> files)
         {
+			System.IO.Directory.CreateDirectory(_env.ContentRootPath + "/Files");
             var uploads = Path.Combine(_env.ContentRootPath, "Files");
             List<string> filepath = new List<string>();
             foreach (var file in files)

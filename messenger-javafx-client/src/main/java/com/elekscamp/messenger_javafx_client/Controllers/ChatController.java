@@ -51,6 +51,7 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.TitledPane;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
@@ -111,7 +112,9 @@ public class ChatController {
 	private Button btnRemoveAttachment;
 	private Label lbAttachmentName;
 	private Popup popup;
-
+	private ObservableList<Announcement> activeAnnouncementsObservableList;
+	private ObservableList<Announcement> closedAnnouncementsObservableList;
+	
 	@FXML private Text txtCurrentUsername;
 	@FXML private Button btnLogOut;
 	@FXML private Button btnNewConversation;
@@ -133,7 +136,9 @@ public class ChatController {
 	@FXML private TabPane announcementsTabPane;
 	@FXML private ListView<Announcement> listViewActiveAnnouncements;
 	@FXML private ListView<Announcement> listViewClosedAnnouncements;
-
+	@FXML private Button btnAddNewAnnouncement;
+	@FXML private TitledPane announcementTitlePane;
+	
 	public void initData(int currentUserId) {
 
 		this.currentUserId = currentUserId;
@@ -153,6 +158,8 @@ public class ChatController {
 
 		btnFriends.fire();
 
+		announcementTitlePane.getStylesheets().add(getClass().getResource("/css/titled-pane.css").toExternalForm());
+		
 		Platform.runLater(new Runnable() {
 			@Override public void run() {
 				txtAreaMessage.requestFocus();
@@ -164,7 +171,7 @@ public class ChatController {
 	}
 
 	private void initializeObjects() {
-		
+		/*
 		timer.scheduleAtFixedRate(new TimerTask() {
 			@Override public void run() { 
 				Platform.runLater(() -> {
@@ -173,7 +180,7 @@ public class ChatController {
 				}); 
 			} 
 		}, 2000, 5000);
-
+*/
 		DialogPane dialogPane = alert.getDialogPane();
 		alert.setTitle("Message");
 		alert.setHeaderText(null);
@@ -221,7 +228,8 @@ public class ChatController {
 			List<Announcement> closedAnnouncemetsList = getClosedAnnouncements(announcementsList);
 			
 			fillConversationsListView(conversationsList);
-			fillAnnouncementsListViews(activeAnnouncementsList, closedAnnouncemetsList);
+			fillActiveAnnouncementListView(activeAnnouncementsList);
+			fillClosedAnnouncementListView(closedAnnouncemetsList);
 		} catch (HttpErrorCodeException | IOException e) {
 			e.printStackTrace();
 		}
@@ -249,10 +257,11 @@ public class ChatController {
 	
 	private void initializeAttachmentControls() {
 		
-		btnRemoveAttachment = new Button("X");
-		btnRemoveAttachment.setStyle("-fx-font-size: 12px;");
-		btnRemoveAttachment.setMinSize(26, 26);
-		btnRemoveAttachment.setMaxSize(26, 26);
+		btnRemoveAttachment = new Button("", new ImageView("/images/remove.png"));
+		btnRemoveAttachment.setTooltip(new Tooltip("Remove"));
+		btnRemoveAttachment.setMinSize(22, 22);
+		btnRemoveAttachment.setPadding(new Insets(-10));
+		btnRemoveAttachment.getStylesheets().add(getClass().getResource("/css/buttons/with-image.css").toExternalForm());
 		btnRemoveAttachment.setOnAction(new EventHandler<ActionEvent>() {
 			@Override public void handle(ActionEvent event) {
 				removeAttachment();
@@ -502,7 +511,8 @@ public class ChatController {
 				ActiveAnnouncementListCell listCell = new ActiveAnnouncementListCell(provider);
 
 				listCell.prefWidthProperty().bind(listViewActiveAnnouncements.widthProperty().subtract(50));
-			
+				listCell.initData(activeAnnouncementsObservableList, closedAnnouncementsObservableList);
+				
 				return listCell;
 			}
 		});
@@ -514,6 +524,7 @@ public class ChatController {
 				ClosedAnnouncementsListCell listCell = new ClosedAnnouncementsListCell(provider);
 				
 				listCell.prefWidthProperty().bind(listViewClosedAnnouncements.widthProperty().subtract(50));
+				listCell.initData(currentUserId, activeAnnouncementsObservableList, closedAnnouncementsObservableList);
 				
 				return listCell;
 			}
@@ -524,8 +535,7 @@ public class ChatController {
 
 		currentConversation = listViewConversations.getSelectionModel().getSelectedItem();
 
-		if (currentConversation == null)
-			return;
+		if (currentConversation == null) return;
 
 		currentConversationId = currentConversation.getId();
 		UserListCell.setCurrentConversationId(currentConversationId);
@@ -567,9 +577,9 @@ public class ChatController {
 	public void btnNewConversationOnAction() {
 
 		textInputDialog = new TextInputDialog("");
-		textInputDialog.setTitle("New conversation");
+		textInputDialog.setTitle("New Conversation");
 		textInputDialog.setHeaderText(null);
-		textInputDialog.setContentText("Name of the conversation:");
+		textInputDialog.setContentText("Name of the Conversation:");
 		textInputDialog.getDialogPane().setStyle("-fx-background-color: " + dialogColor);
 
 		Stage stage = (Stage) textInputDialog.getDialogPane().getScene().getWindow();
@@ -597,11 +607,12 @@ public class ChatController {
 
 			result.ifPresent(pair -> {
 				try {
-					provider.getUserProvider().update(currentUserId, pair.getKey());
 					currentUser = pair.getKey();
+					provider.getUserProvider().update(currentUserId, currentUser);
+					
 					PersonalInfo personalInfo = pair.getValue();
 					picture = personalInfo.getPicture();
-					provider.getPersonalInfoProvider().update(currentUserId, pair.getValue());
+					provider.getPersonalInfoProvider().update(currentUserId, personalInfo);
 					imageViewCurrentUser.setImage(new Image(
 							RequestManager.getRequestApi() + "/files/downloadpicture/" + personalInfo.getId()));
 				} catch (HttpErrorCodeException | IOException e) {
@@ -657,12 +668,12 @@ public class ChatController {
 
 		try {
 			conversationsList = provider.getConversationProvider().getByUserId(currentUserId);
+			
+			if (conversationsList.size() != listViewConversations.getItems().size())
+				fillConversationsListView(conversationsList);
 		} catch (HttpErrorCodeException | IOException e) {
 			e.printStackTrace();
 		}
-		
-		if (conversationsList.size() != listViewConversations.getItems().size())
-			fillConversationsListView(conversationsList);
 	}
 
 	private void updateCurrentUserPicture() {
@@ -676,11 +687,31 @@ public class ChatController {
 		imageViewCurrentUser.setImage(profileImage);
 	}
 
+	private void updateAnnouncementsListViews() {
+		
+		List<Announcement> announcementsList = null;
+		
+		try {
+			announcementsList = provider.getAnnouncementProvider().getAll();
+			
+			List<Announcement> activeAnnouncementsList = getActiveAnnouncements(announcementsList);
+			List<Announcement> closedAnnouncemetsList = getClosedAnnouncements(announcementsList);
+			
+			if (activeAnnouncementsList.size() != listViewActiveAnnouncements.getItems().size())
+				fillActiveAnnouncementListView(activeAnnouncementsList);
+			if (closedAnnouncemetsList.size() != listViewClosedAnnouncements.getItems().size())
+				fillClosedAnnouncementListView(closedAnnouncemetsList);
+		} catch (HttpErrorCodeException | IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public void btnUpdateOnAction() {
 
 		updateMessagesListView();
 		updateConversationsListView();
 		updateCurrentUserPicture();
+		updateAnnouncementsListViews();
 	}
 
 	public void txtAreaMessageOnKeyPressed(KeyEvent ke) {
@@ -794,17 +825,19 @@ public class ChatController {
 		conversationsObservableList.addAll(list);
 		listViewConversations.setItems(conversationsObservableList);
 	}
-	
-	private void fillAnnouncementsListViews(List<Announcement> active, List<Announcement> closed) {
-		ObservableList<Announcement> activeAnnouncementsObservableList = FXCollections.observableArrayList();
+
+	private void fillActiveAnnouncementListView(List<Announcement> active) {
+		activeAnnouncementsObservableList = FXCollections.observableArrayList();
 		activeAnnouncementsObservableList.addAll(active);
 		listViewActiveAnnouncements.setItems(activeAnnouncementsObservableList);
-		
-		ObservableList<Announcement> closedAnnouncementsObservableList = FXCollections.observableArrayList();
+	}
+	
+	private void fillClosedAnnouncementListView(List<Announcement> closed) {
+		closedAnnouncementsObservableList = FXCollections.observableArrayList();
 		closedAnnouncementsObservableList.addAll(closed);
 		listViewClosedAnnouncements.setItems(closedAnnouncementsObservableList);
 	}
-
+	
 	private void changeButtonsColors(Button buttonPicked) {
 
 		for (Button button : buttonsForListViewUsers) {
@@ -812,6 +845,42 @@ public class ChatController {
 				button.setStyle("-fx-base: " + activeButtonColor);
 			else
 				button.setStyle("-fx-base: " + passiveButtonsColor);
+		}
+	}
+
+	public void btnAddNewAnnouncementOnAction() {
+		
+		textInputDialog = new TextInputDialog("");
+		textInputDialog.setTitle("New Announcement");
+		textInputDialog.setHeaderText(null);
+		textInputDialog.setContentText("Announcement description:");
+		textInputDialog.getDialogPane().setStyle("-fx-background-color: " + dialogColor);		
+		textInputDialog.getDialogPane().setPrefWidth(600);
+		textInputDialog.setResizable(true);
+		
+		Stage stage = (Stage) textInputDialog.getDialogPane().getScene().getWindow();
+		stage.getIcons().add(new Image("/images/icon.png"));
+		
+		dialogResult = textInputDialog.showAndWait();
+		dialogResult.ifPresent(conversationName -> {
+			if (conversationName.isEmpty()) {
+				alert.setContentText("Announcement's description cannot be empty!");
+				alert.showAndWait();
+			} else {
+				createNewAnnouncement(dialogResult.get());
+			}
+		});
+	}
+	
+	private void createNewAnnouncement(String description) {
+		
+		Announcement newAnnouncement = new Announcement(description, currentUserId);
+		
+		try {
+			newAnnouncement = provider.getAnnouncementProvider().add(newAnnouncement);
+			listViewActiveAnnouncements.getItems().add(0, newAnnouncement);
+		} catch (HttpErrorCodeException | IOException e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -834,5 +903,7 @@ public class ChatController {
 		btnNewConversation.setStyle("-fx-base: " + newConversationColor);
 		btnSend.setStyle("-fx-base: " + findAndSearchColor);
 		btnFind.setStyle("-fx-base: " + findAndSearchColor);
+		
+		btnAddNewAnnouncement.getStylesheets().add(getClass().getResource("/css/buttons/add-new-announcement.css").toExternalForm());
 	}
 }
