@@ -1,6 +1,8 @@
 package com.elekscamp.messenger_javafx_client.Controllers;
 
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.elekscamp.messenger_javafx_client.DAL.ContentProvider;
 import com.elekscamp.messenger_javafx_client.DAL.RegistrationProvider;
@@ -143,7 +145,14 @@ public class AuthenticationAndRegistrationController {
 		stage.setScene(scene);
 		stage.show();
 	}
-
+	
+	private boolean checkWithRegExp(String stringToCheck){  
+        Pattern p = Pattern.compile("^[a-zA-Z0-9]{5,15}$");  
+        Matcher m = p.matcher(stringToCheck);  
+        System.out.println(m.matches() + " " + stringToCheck);
+        return m.matches();  
+    }  
+	
 	public void signUpButtonAction() {
 
 		String response;
@@ -161,11 +170,21 @@ public class AuthenticationAndRegistrationController {
 			return;
 		}
 
-		if (passwordLength < 8) {
-			signUpStatusText.setText("Password length should be 8 or more.");
+		if (passwordLength <= 8 || passwordLength >= 20) {
+			signUpStatusText.setText("Password length should be more than 8 and less than 20.");
 			return;
 		}
 
+		if (usernameLength <= 5 || usernameLength >= 15) {
+			signUpStatusText.setText("Username length should be more than 5 and less than 15.");
+			return;
+		}
+		
+		if (!checkWithRegExp(username) || !checkWithRegExp(password)) {
+			signUpStatusText.setText("Username and password can contain only Latin letters and digits.");
+			return;
+		}
+		
 		try {
 			registrationProvider = new RegistrationProvider(new RequestManager<User>(User.class));
 			response = registrationProvider.register(new User(username, password, email));

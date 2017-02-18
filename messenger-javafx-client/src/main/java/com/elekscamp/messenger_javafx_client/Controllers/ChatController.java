@@ -282,13 +282,14 @@ public class ChatController {
 		fileChooser.setTitle("Attachment");
 		fileChooser.setInitialDirectory(new File(System.getProperty("user.home") + "/Desktop"));
 		fileChooser.getExtensionFilters().addAll(
-				new ExtensionFilter("All", "*.jpg", "*.gif", "*.bmp", "*.png", "*.doc", "*.docx", "*.pdf"),
+				new ExtensionFilter("All", "*.jpg", "*.gif", "*.bmp", "*.png", "*.doc", "*.docx", "*.pdf", "*.txt"),
 				new ExtensionFilter("JPG", "*.jpg"), 
 				new ExtensionFilter("GIF", "*.gif"),
 				new ExtensionFilter("BMP", "*.bmp"), 
 				new ExtensionFilter("PNG", "*.png"),
 				new ExtensionFilter("DOC", "*.doc", "*.docx"), 
-				new ExtensionFilter("PDF", "*.pdf"));
+				new ExtensionFilter("PDF", "*.pdf"),
+				new ExtensionFilter("TXT", "*.txt"));
 	}
 
 	public void btnSmilesOnAction() {
