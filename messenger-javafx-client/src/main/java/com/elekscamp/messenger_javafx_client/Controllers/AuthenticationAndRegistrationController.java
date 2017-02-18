@@ -1,6 +1,8 @@
 package com.elekscamp.messenger_javafx_client.Controllers;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -15,11 +17,13 @@ import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -28,7 +32,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
-public class AuthenticationAndRegistrationController {
+public class AuthenticationAndRegistrationController implements Initializable {
 
 	@FXML
 	private TextField loginSignInTextField;
@@ -165,13 +169,9 @@ public class AuthenticationAndRegistrationController {
 		emailLength = email.length();
 
 		signUpStatusText.setFill(Color.RED);
+		
 		if (usernameLength == 0 || passwordLength == 0 || emailLength == 0) {
 			signUpStatusText.setText("Fields cannot be empty.");
-			return;
-		}
-
-		if (passwordLength <= 8 || passwordLength >= 20) {
-			signUpStatusText.setText("Password length should be more than 8 and less than 20.");
 			return;
 		}
 
@@ -180,6 +180,11 @@ public class AuthenticationAndRegistrationController {
 			return;
 		}
 		
+		if (passwordLength <= 8 || passwordLength >= 20) {
+			signUpStatusText.setText("Password length should be more than 8 and less than 20.");
+			return;
+		}
+
 		if (!checkWithRegExp(username) || !checkWithRegExp(password)) {
 			signUpStatusText.setText("Username and password can contain only Latin letters and digits.");
 			return;
@@ -206,5 +211,19 @@ public class AuthenticationAndRegistrationController {
 		if (ke.getCode() == KeyCode.ENTER) {
 			signUpButton.fire();
 		}
+	}
+
+	@Override
+	public void initialize(URL location, ResourceBundle resources) {
+		loginSignUpTextField.setTextFormatter(new TextFormatter<String>(change -> 
+				change.getControlNewText().length() <= 15 ? change : null));
+		passwordSignUpTextField.setTextFormatter(new TextFormatter<String>(change -> 
+				change.getControlNewText().length() <= 20 ? change : null));
+		emailSignUpTextField.setTextFormatter(new TextFormatter<String>(change ->
+				change.getControlNewText().length() <= 40 ? change : null));
+		loginSignInTextField.setTextFormatter(new TextFormatter<String>(change -> 
+				change.getControlNewText().length() <= 15 ? change : null));
+		passwordSignInTextField.setTextFormatter(new TextFormatter<String>(change -> 
+				change.getControlNewText().length() <= 20 ? change : null));
 	}
 }

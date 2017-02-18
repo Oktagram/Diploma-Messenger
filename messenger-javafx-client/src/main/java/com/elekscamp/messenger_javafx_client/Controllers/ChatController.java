@@ -51,6 +51,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.Tooltip;
@@ -182,6 +183,9 @@ public class ChatController {
 			} 
 		}, 2000, 5000);
 */
+		txtAreaMessage.setTextFormatter(new TextFormatter<String>(change -> 
+				change.getControlNewText().length() <= 200 ? change : null));
+		
 		DialogPane dialogPane = alert.getDialogPane();
 		alert.setTitle("Message");
 		alert.setHeaderText(null);
@@ -566,7 +570,7 @@ public class ChatController {
 			stage = new Stage();
 			stage.setScene(scene);
 			stage.setTitle("Messenger");
-
+			stage.setResizable(false);
 			stage.setMinWidth(520);
 			stage.setMinHeight(450);
 

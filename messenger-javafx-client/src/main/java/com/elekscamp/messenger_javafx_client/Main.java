@@ -35,6 +35,7 @@ public class Main extends Application {
 		primaryStage.setMinWidth(520);
 		primaryStage.setMinHeight(450);
 		primaryStage.setTitle("Messenger");
+		primaryStage.setResizable(false);
 		primaryStage.setScene(scene);
 		primaryStage.show();
 	}
