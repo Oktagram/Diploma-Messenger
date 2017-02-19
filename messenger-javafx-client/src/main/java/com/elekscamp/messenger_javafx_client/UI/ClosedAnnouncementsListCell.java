@@ -5,9 +5,12 @@ import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.elekscamp.messenger_javafx_client.GlobalVariables;
 import com.elekscamp.messenger_javafx_client.DAL.ContentProvider;
 import com.elekscamp.messenger_javafx_client.Entities.Announcement;
 import com.elekscamp.messenger_javafx_client.Exceptions.HttpErrorCodeException;
+import com.elekscamp.messenger_javafx_client.GlobalVariables.Language;
+
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.collections.ObservableList;
@@ -82,8 +85,12 @@ public class ClosedAnnouncementsListCell extends ListCell<Announcement> {
 			Date creationDate = new Date(announcement.getCreationDate());
 			Date closingDate = new Date(announcement.getClosingDate());
 			
-			descriptionTooltipStr += description.getText() + "\nCreated: " + formatter.format(creationDate) 
-					+ "\nBy: " + userThatCreatedAnnouncement + "\nClosed: " + formatter.format(closingDate); 
+			if (GlobalVariables.language == Language.ENGLISH)
+				descriptionTooltipStr += description.getText() + "\nCreated: " + formatter.format(creationDate) 
+						+ "\nBy: " + userThatCreatedAnnouncement + "\nClosed: " + formatter.format(closingDate);
+			else
+				descriptionTooltipStr += description.getText() + "\nСтворено: " + formatter.format(creationDate) 
+				+ "\nСтворив: " + userThatCreatedAnnouncement + "\nЗакрито: " + formatter.format(closingDate);
 	
 			descriptionTooltip.setText(descriptionTooltipStr);
 			descriptionTooltip.setWrapText(true);
@@ -116,7 +123,11 @@ public class ClosedAnnouncementsListCell extends ListCell<Announcement> {
 					}
 				}
 			});
-			btnOpenAnnouncement.setTooltip(new Tooltip("Restore"));
+			
+			if (GlobalVariables.language == Language.ENGLISH)
+				btnOpenAnnouncement.setTooltip(new Tooltip("Restore"));
+			else
+				btnOpenAnnouncement.setTooltip(new Tooltip("Відновити"));
 			
 			anchorPane.getChildren().addAll(description, btnOpenAnnouncement);
 

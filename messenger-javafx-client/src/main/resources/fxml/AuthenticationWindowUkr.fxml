@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<HBox alignment="CENTER" style="-fx-background-color: #175087;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.elekscamp.messenger_javafx_client.Controllers.AuthenticationAndRegistrationController">
+   <children>
+      <TabPane id="authorisation-tab-pane" fx:id="authorizationTabPane" maxHeight="400.0" maxWidth="510.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="400.0" prefWidth="510.0" stylesheets="@../css/tab-pane.css" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <tabs>
+          <Tab closable="false" style="-fx-border-color: #306497;" text="Авторизація">
+               <content>
+                  <HBox alignment="CENTER" maxHeight="349.0" maxWidth="483.0" styleClass="hbox" stylesheets="@../css/tab-pane.css">
+                     <children>
+                        <VBox alignment="CENTER_LEFT">
+                           <children>
+                              <Text id="loginSignInText" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: #C3E0FF;" text="Ім'я користувача">
+                                 <font>
+                                    <Font name="Comic Sans MS Bold" size="14.0" />
+                                 </font>
+                              </Text>
+                              <TextField fx:id="loginSignInTextField" onKeyPressed="#signInEnterKeyPressed">
+                                 <font>
+                                    <Font name="Comic Sans MS Bold Italic" size="14.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets bottom="10.0" />
+                                 </VBox.margin>
+                              </TextField>
+                              <Text id="passwordSignInText" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: #C3E0FF;" text="Пароль">
+                                 <font>
+                                    <Font name="Comic Sans MS Bold" size="14.0" />
+                                 </font>
+                              </Text>
+                              <PasswordField fx:id="passwordSignInTextField" onKeyPressed="#signInEnterKeyPressed">
+                                 <font>
+                                    <Font name="Comic Sans MS Bold Italic" size="14.0" />
+                                 </font>
+                              </PasswordField>
+                              <Text fx:id="signInStatusText" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="438.826171875">
+                                 <font>
+                                    <Font name="System Bold" size="14.0" />
+                                 </font>
+                              </Text>
+                              <HBox alignment="CENTER" prefHeight="20.0" prefWidth="440.0">
+                                 <children>
+                                    <Button fx:id="signInButton" maxWidth="200.0" minWidth="200.0" mnemonicParsing="false" onAction="#signInButtonAction" prefWidth="200.0" stylesheets="@../css/buttons/sign-in.css" text="Увійти">
+                                       <font>
+                                          <Font name="Comic Sans MS" size="14.0" />
+                                       </font>
+                                    </Button>
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets />
+                                 </VBox.margin>
+                              </HBox>
+                           </children>
+                           <HBox.margin>
+                              <Insets />
+                           </HBox.margin>
+                        </VBox>
+                     </children>
+                  </HBox>
+               </content>
+          </Tab>
+          <Tab style="-fx-border-color: #306497;" text="Реєстрація">
+               <content>
+                  <HBox alignment="CENTER" maxHeight="349.0" maxWidth="483.0" styleClass="hbox" stylesheets="@../css/tab-pane.css">
+                     <children>
+                        <VBox alignment="CENTER_LEFT">
+                           <children>
+                              <Text id="loginSignUpText" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: #C3E0FF;" text="Ім'я користувача">
+                                 <font>
+                                    <Font name="Comic Sans MS Bold" size="14.0" />
+                                 </font>
+                              </Text>
+                              <TextField fx:id="loginSignUpTextField" onKeyPressed="#signUpEnterKeyPressed">
+                                 <font>
+                                    <Font name="Comic Sans MS Bold Italic" size="14.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets bottom="10.0" />
+                                 </VBox.margin>
+                              </TextField>
+                              <Text id="passwordSignUpText" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: #C3E0FF;" text="Пароль">
+                                 <font>
+                                    <Font name="Comic Sans MS Bold" size="14.0" />
+                                 </font>
+                              </Text>
+                              <PasswordField fx:id="passwordSignUpTextField" onKeyPressed="#signUpEnterKeyPressed">
+                                 <font>
+                                    <Font name="Comic Sans MS Bold Italic" size="14.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets bottom="10.0" />
+                                 </VBox.margin>
+                              </PasswordField>
+                              <Text id="emailSignUpText" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: #C3E0FF;" text="Електронна пошта">
+                                 <font>
+                                    <Font name="Comic Sans MS Bold" size="14.0" />
+                                 </font>
+                              </Text>
+                              <TextField fx:id="emailSignUpTextField" onKeyPressed="#signUpEnterKeyPressed">
+                                 <font>
+                                    <Font name="Comic Sans MS Bold Italic" size="14.0" />
+                                 </font>
+                              </TextField>
+                              <Text fx:id="signUpStatusText" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="439.826171875">
+                                 <font>
+                                    <Font name="System Bold" size="14.0" />
+                                 </font>
+                              </Text>
+                              <HBox alignment="CENTER" prefHeight="0.0" prefWidth="440.0">
+                                 <children>
+                                    <Button fx:id="signUpButton" maxWidth="200.0" minWidth="200.0" mnemonicParsing="false" onAction="#signUpButtonAction" prefWidth="200.0" stylesheets="@../css/buttons/sign-in.css" text="Зареєструватись">
+                                       <font>
+                                          <Font name="Comic Sans MS" size="14.0" />
+                                       </font>
+                                    </Button>
+                                 </children>
+                              </HBox>
+                           </children>
+                           <HBox.margin>
+                              <Insets />
+                           </HBox.margin>
+                        </VBox>
+                     </children>
+                  </HBox>
+               </content>
+          </Tab>
+        </tabs>
+         <HBox.margin>
+            <Insets top="5.0" />
+         </HBox.margin>
+         <padding>
+            <Insets left="14.0" />
+         </padding>
+      </TabPane>
+   </children>
+</HBox>

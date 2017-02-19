@@ -1,3 +1,11 @@
 .titled-pane:focused {
-	-fx-color: #b5c6da;
+	-fx-color: #306497;
+}
+
+.titled-pane:selected {
+	-fx-color: #306497;
+}
+
+.titled-pane:hover > .title {
+	-fx-background-color: #306497;
 }

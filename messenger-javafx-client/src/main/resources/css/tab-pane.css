@@ -1,0 +1,29 @@
+.tab-pane .tab-header-area .tab-header-background {
+	-fx-opacity: 0;
+}
+
+.tab-pane {
+	-fx-font-family: "Comic Sans MS", cursive, sans-serif;
+    -fx-font-size: 14;
+	fx-tab-min-height: 30px;    
+}
+
+#authorisation-tab-pane {
+	-fx-tab-min-width: 220;
+}
+
+.tab-label {
+	-fx-text-fill: white;
+}
+
+.tab-pane .tab {
+    -fx-background-color: #052D54;
+}
+
+.tab-pane .tab:selected {
+    -fx-background-color: #306497;
+}
+
+.hbox {
+	-fx-background-color: #306497;
+}

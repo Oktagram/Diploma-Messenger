@@ -12,6 +12,10 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.stream.Collectors;
 
+import javax.xml.bind.annotation.XmlElementDecl.GLOBAL;
+
+import com.elekscamp.messenger_javafx_client.GlobalVariables;
+import com.elekscamp.messenger_javafx_client.GlobalVariables.Language;
 import com.elekscamp.messenger_javafx_client.DAL.ContentProvider;
 import com.elekscamp.messenger_javafx_client.DAL.RequestManager;
 import com.elekscamp.messenger_javafx_client.Entities.Announcement;
@@ -141,6 +145,43 @@ public class ChatController {
 	@FXML private Button btnAddNewAnnouncement;
 	@FXML private TitledPane announcementTitlePane;
 	
+	private final String CHOOSE_CONVERSATION;
+	private final String EMPTY_MESSAGE;
+	private final String NEW_CONVERSATION; 
+	private final String NAME_OF_THE_CONVERSATION;
+	private final String NAME_OF_THE_CONVERSATION_CANNOT_BE_EMPTY;
+	private final String SEND_FIRST_MESSAGE;
+	private final String NEW_ANNOUNCEMENT;
+	private final String ANNOUNCEMENT_DESCRIPTION;
+	private final String ANNOUNCEMENT_DESCRIPTION_EMPTY;
+	private final String MESSAGE;
+	
+	public ChatController() {
+		if (GlobalVariables.language == Language.ENGLISH) {
+			CHOOSE_CONVERSATION = "Choose conversation!";
+			EMPTY_MESSAGE = "Cannot send empty message!";
+			NEW_CONVERSATION = "New Conversation";
+			NAME_OF_THE_CONVERSATION = "Name of the Conversation:";
+			NAME_OF_THE_CONVERSATION_CANNOT_BE_EMPTY = "Name of the conversation cannot be empty!";
+			SEND_FIRST_MESSAGE = "Send first message in this conversation!";
+			NEW_ANNOUNCEMENT = "New Announcement";
+			ANNOUNCEMENT_DESCRIPTION = "Announcement description:";
+			ANNOUNCEMENT_DESCRIPTION_EMPTY = "Announcement's description cannot be empty!";
+			MESSAGE = "Message";
+		} else {
+			CHOOSE_CONVERSATION = "Оберіть бесіду!";
+			EMPTY_MESSAGE = "Неможливо відправити порожнє повідомлення!";
+			NEW_CONVERSATION = "Нова Бесіда";
+			NAME_OF_THE_CONVERSATION = "Назва Бесіди:";
+			NAME_OF_THE_CONVERSATION_CANNOT_BE_EMPTY = "Назва бесіди не може бути порожня!";
+			SEND_FIRST_MESSAGE = "Відправте перше повідомлення у цю бесіду!";
+			NEW_ANNOUNCEMENT = "Нове Оголошення";
+			ANNOUNCEMENT_DESCRIPTION = "Опис оголошення:";
+			ANNOUNCEMENT_DESCRIPTION_EMPTY = "Опис оголошення не може бути порожній!";
+			MESSAGE = "Повідомлення";
+		}
+	}
+	
 	public void initData(int currentUserId) {
 
 		this.currentUserId = currentUserId;
@@ -187,7 +228,7 @@ public class ChatController {
 				change.getControlNewText().length() <= 200 ? change : null));
 		
 		DialogPane dialogPane = alert.getDialogPane();
-		alert.setTitle("Message");
+		alert.setTitle(MESSAGE);
 		alert.setHeaderText(null);
 		dialogPane.setStyle("-fx-background-color: " + dialogColor);		
 		
@@ -418,7 +459,7 @@ public class ChatController {
 	public void btnSendOnAction() {
 
 		if (currentConversation == null) {
-			alert.setContentText("Choose conversation first!");
+			alert.setContentText(CHOOSE_CONVERSATION);
 			alert.showAndWait();
 			return;
 		}
@@ -427,7 +468,7 @@ public class ChatController {
 		messageText = messageText.trim();
 
 		if (messageText.isEmpty() && attachmentFile == null) {
-			alert.setContentText("Cannot send empty message!");
+			alert.setContentText(EMPTY_MESSAGE);
 			alert.showAndWait();
 			return;
 		}
@@ -468,14 +509,14 @@ public class ChatController {
 
 	private void initializeListViews() {
 
-		listViewChat.setPlaceholder(new Text("Choose conversation!"));
+		listViewChat.setPlaceholder(new Text(CHOOSE_CONVERSATION));
 		listViewChat.setCache(true);
 		listViewChat.setCellFactory(new Callback<ListView<Message>, ListCell<Message>>() {
 
 			@Override public ListCell<Message> call(ListView<Message> param) {
 
 				MessageListCell listCell = new MessageListCell();
-
+				listCell.getStylesheets().add(getClass().getResource("/css/list-cell.css").toExternalForm());
 				listCell.prefWidthProperty().bind(listViewChat.widthProperty().subtract(50));
 				listCell.setCurrentUserId(currentUserId);
 
@@ -485,34 +526,36 @@ public class ChatController {
 
 		listViewUsers.setCellFactory(new Callback<ListView<User>, ListCell<User>>() {
 
-			@Override public ListCell<User> call(ListView<User> param) {
+			@Override 
+			public ListCell<User> call(ListView<User> param) {
 
 				UserListCell listCell = new UserListCell(provider);
-
+				listCell.getStylesheets().add(getClass().getResource("/css/list-cell.css").toExternalForm());
 				listCell.prefWidthProperty().bind(listViewUsers.widthProperty().subtract(50));
 
 				return listCell;
 			}
-
 		});
 
 		listViewConversations.setCache(true);
 		listViewConversations.setCellFactory(new Callback<ListView<Conversation>, ListCell<Conversation>>() {
 			
-			@Override public ListCell<Conversation> call(ListView<Conversation> param) {
+			@Override 
+			public ListCell<Conversation> call(ListView<Conversation> param) {
 
 				ConversationListCell listCell = new ConversationListCell(provider);
-
+				listCell.getStylesheets().add(getClass().getResource("/css/list-cell.css").toExternalForm());
 				listCell.prefWidthProperty().bind(listViewUsers.widthProperty().subtract(50));
 				listCell.initData(currentUserId, conversationsObservableList);
-				
+			
 				return listCell;
 			}
 		});
 		
 		listViewActiveAnnouncements.setCellFactory(new Callback<ListView<Announcement>, ListCell<Announcement>>() {
 			
-			@Override public ListCell<Announcement> call(ListView<Announcement> param) {
+			@Override 
+			public ListCell<Announcement> call(ListView<Announcement> param) {
 
 				ActiveAnnouncementListCell listCell = new ActiveAnnouncementListCell(provider);
 
@@ -525,7 +568,8 @@ public class ChatController {
 		
 		listViewClosedAnnouncements.setCellFactory(new Callback<ListView<Announcement>, ListCell<Announcement>>() {
 			
-			@Override public ListCell<Announcement> call(ListView<Announcement> param) {
+			@Override 
+			public ListCell<Announcement> call(ListView<Announcement> param) {
 				
 				ClosedAnnouncementsListCell listCell = new ClosedAnnouncementsListCell(provider);
 				
@@ -554,8 +598,12 @@ public class ChatController {
 	public void btnLogOutOnAction() {
 
 		timer.cancel();
-		loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/AuthenticationAndRegistration.fxml"));
-
+		
+		if (GlobalVariables.language == Language.ENGLISH)
+			loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/AuthenticationWindowEng.fxml"));
+		else
+			loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/AuthenticationWindowUkr.fxml"));
+			
 		try {
 			currentUser.setIsOnline(false);
 			provider.getUserProvider().update(currentUser.getId(), currentUser);
@@ -583,9 +631,9 @@ public class ChatController {
 	public void btnNewConversationOnAction() {
 
 		textInputDialog = new TextInputDialog("");
-		textInputDialog.setTitle("New Conversation");
+		textInputDialog.setTitle(NEW_CONVERSATION);
 		textInputDialog.setHeaderText(null);
-		textInputDialog.setContentText("Name of the Conversation:");
+		textInputDialog.setContentText(NAME_OF_THE_CONVERSATION);
 		textInputDialog.getDialogPane().setStyle("-fx-background-color: " + dialogColor);
 
 		Stage stage = (Stage) textInputDialog.getDialogPane().getScene().getWindow();
@@ -593,11 +641,10 @@ public class ChatController {
 		
 		dialogResult = textInputDialog.showAndWait();
 		dialogResult.ifPresent(conversationName -> {
-			if (conversationName.isEmpty()) {
-				alert.setContentText("Name of the conversation cannot be empty!");
+			if (!conversationName.isEmpty()) createNewConversation(dialogResult.get());
+			else {
+				alert.setContentText(NAME_OF_THE_CONVERSATION_CANNOT_BE_EMPTY);
 				alert.showAndWait();
-			} else {
-				createNewConversation(dialogResult.get());
 			}
 		});
 	}
@@ -667,7 +714,7 @@ public class ChatController {
 		}
 	
 		if (countOfItems == 0)
-			listViewChat.setPlaceholder(new Text("Send first message in this conversation!"));
+			listViewChat.setPlaceholder(new Text(SEND_FIRST_MESSAGE));
 	}
 
 	private void updateConversationsListView() {
@@ -831,7 +878,6 @@ public class ChatController {
 				
 				return 0;
 			}
-			
 		});
 		UserListCell.setUsersWithImagesList(generateUsersWithImagesList(list));
 		usersObservableList = FXCollections.observableArrayList();
@@ -870,9 +916,9 @@ public class ChatController {
 	public void btnAddNewAnnouncementOnAction() {
 		
 		textInputDialog = new TextInputDialog("");
-		textInputDialog.setTitle("New Announcement");
+		textInputDialog.setTitle(NEW_ANNOUNCEMENT);
 		textInputDialog.setHeaderText(null);
-		textInputDialog.setContentText("Announcement description:");
+		textInputDialog.setContentText(ANNOUNCEMENT_DESCRIPTION);
 		textInputDialog.getDialogPane().setStyle("-fx-background-color: " + dialogColor);		
 		textInputDialog.getDialogPane().setPrefWidth(600);
 		textInputDialog.setResizable(true);
@@ -883,7 +929,7 @@ public class ChatController {
 		dialogResult = textInputDialog.showAndWait();
 		dialogResult.ifPresent(conversationName -> {
 			if (conversationName.isEmpty()) {
-				alert.setContentText("Announcement's description cannot be empty!");
+				alert.setContentText(ANNOUNCEMENT_DESCRIPTION_EMPTY);
 				alert.showAndWait();
 			} else {
 				createNewAnnouncement(dialogResult.get());
@@ -915,17 +961,12 @@ public class ChatController {
 			button.setStyle("-fx-base: " + passiveButtonsColor);
 		}
 
-//		btnAttachment.setStyle("-fx-font-size: 11.5; -fx-base: " + newConversationColor);
-	//	btnAttachment.setGraphic(new ImageView("/images/upload-attachment.png"));
-	//	btnAttachment.setPrefSize(30, 30);
-	//	btnAttachment.setPadding(new Insets(-10));
-		
 		btnUpdate.setStyle("-fx-font-size: 11.5; -fx-base: " + newConversationColor);
 		btnSmiles.setStyle("-fx-font-size: 12; -fx-base: white");
 		btnLogOut.setStyle("-fx-base: " + logOutColor);
 		btnNewConversation.setStyle("-fx-base: " + newConversationColor);
 		btnSend.setStyle("-fx-base: " + findAndSearchColor);
-		btnFind.setStyle("-fx-base: " + findAndSearchColor);
+		btnFind.setStyle("-fx-font-size: 11; -fx-base: " + findAndSearchColor);
 		
 		btnAddNewAnnouncement.getStylesheets().add(getClass().getResource("/css/buttons/add-new-announcement.css").toExternalForm());
 	}

@@ -1,6 +1,5 @@
 package com.elekscamp.messenger_javafx_client;
 
-import com.elekscamp.messenger_javafx_client.DAL.RequestManager;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -26,15 +25,13 @@ public class Main extends Application {
 
 	@Override public void start(Stage primaryStage) throws Exception {
 
-		RequestManager.setRequestApi("http://localhost:5000/api");// ("http://localhost:55059/api");
-
-		Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("fxml/AuthenticationAndRegistration.fxml"));
-
+		Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("fxml/LanguageWindow.fxml"));
+		
 		Scene scene = new Scene(root);
-
-		primaryStage.setMinWidth(520);
-		primaryStage.setMinHeight(450);
-		primaryStage.setTitle("Messenger");
+		
+		primaryStage.setMinWidth(700);
+		primaryStage.setMinHeight(300);
+		primaryStage.setTitle("Language");
 		primaryStage.setResizable(false);
 		primaryStage.setScene(scene);
 		primaryStage.show();

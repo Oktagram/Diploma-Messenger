@@ -3,6 +3,8 @@ package com.elekscamp.messenger_javafx_client.UI;
 import java.io.IOException;
 import java.util.List;
 
+import com.elekscamp.messenger_javafx_client.GlobalVariables;
+import com.elekscamp.messenger_javafx_client.GlobalVariables.Language;
 import com.elekscamp.messenger_javafx_client.DAL.ContentProvider;
 import com.elekscamp.messenger_javafx_client.Entities.PersonalInfo;
 import com.elekscamp.messenger_javafx_client.Entities.User;
@@ -48,11 +50,37 @@ public class UserListCell extends ListCell<User> {
 	private static int conversationId;
 	private static List<User> usersInCurrentConversation;
 	private static List<UserWithImage> usersWithImages;
+	
+	private final String ONLINE;
+	private final String OFFLINE;
+	private final String USER_ALREADY_IN_CONVERSATION;
+	private final String ADD_TO_CURRENT_CONVERSATION;
+	private final String MESSAGE;
+	private final String CHOOSE_CONVERSATION;
+	private final String USER_SUCCESSFULLY_ADDED;
 
 	public UserListCell(ContentProvider provider) {
 		dialogColor = "#ffd272";
 		this.provider = provider;
 		userInfoDialog = new PersonalInfoDialog(dialogColor);
+		
+		if (GlobalVariables.language == Language.ENGLISH) {
+			ONLINE = "[Online]";
+			OFFLINE = "[Offline]";
+			USER_ALREADY_IN_CONVERSATION = "User is already in this conversation!";
+			ADD_TO_CURRENT_CONVERSATION = "Add to current conversation";
+			MESSAGE = "Message";
+			CHOOSE_CONVERSATION = "Choose conversation.";
+			USER_SUCCESSFULLY_ADDED = "User successfully aded to conversation.";
+		} else {
+			ONLINE = "[В мережі]";
+			OFFLINE = "[Офлайн]";
+			USER_ALREADY_IN_CONVERSATION = "Користувач вже є в цій бесіді!";
+			ADD_TO_CURRENT_CONVERSATION = "Додати користувача до поточної бесіди";
+			MESSAGE = "Повідомлення";
+			CHOOSE_CONVERSATION = "Виберіть бесіду.";
+			USER_SUCCESSFULLY_ADDED = "Користувача успішно додано у бесіду.";
+		}
 	}
 
 	public static void setCurrentConversationId(int id) {
@@ -87,20 +115,20 @@ public class UserListCell extends ListCell<User> {
 			boolean isUserOnline = item.getIsOnline();
 			
 			if (isUserOnline) {
-				onlineStatus.setText("[Online]");
+				onlineStatus.setText(ONLINE);
 				onlineStatus.setStyle("-fx-text-fill: green;");
 				
 			} else {
-				onlineStatus.setText("[Offline]");
+				onlineStatus.setText(OFFLINE);
 				onlineStatus.setStyle("-fx-text-fill: darkred;");
 			}
 			
 			DialogPane dialogPane = alert.getDialogPane();
 			
-			alert.setTitle("Message");
+			alert.setTitle(MESSAGE);
 			alert.setHeaderText(null);
 			dialogPane.setStyle("-fx-background-color: " + dialogColor);
-			alert.setContentText("User is already in this conversation!");
+			alert.setContentText(USER_ALREADY_IN_CONVERSATION);
 			
 			Stage stage = (Stage) dialogPane.getScene().getWindow();
 			stage.getIcons().add(new Image("/images/icon.png"));
@@ -143,13 +171,13 @@ public class UserListCell extends ListCell<User> {
 			btnAddToConversation.setPadding(new Insets(-12, -11, -10, -10));
 			btnAddToConversation.setStyle("-fx-base: #63A388; -fx-text-fill: white; -fx-font-size: 25;");
 			btnAddToConversation.setTextAlignment(TextAlignment.CENTER);
-			btnAddToConversation.setTooltip(new Tooltip("Add to current conversation"));
+			btnAddToConversation.setTooltip(new Tooltip(ADD_TO_CURRENT_CONVERSATION));
 			btnAddToConversation.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
 
 					if (conversationId == 0) {
-						alert.setContentText("Choose conversation.");
+						alert.setContentText(CHOOSE_CONVERSATION);
 						alert.showAndWait();
 						return;
 					}
@@ -158,7 +186,7 @@ public class UserListCell extends ListCell<User> {
 						try {
 							provider.getUserConversationProvider().addUser(conversationId, item.getId());
 							usersInCurrentConversation = provider.getUserProvider().getByConversationId(conversationId);
-							alert.setContentText("User successfully aded to conversation.");
+							alert.setContentText(USER_SUCCESSFULLY_ADDED);
 						} catch (HttpErrorCodeException | IOException e) {
 							e.printStackTrace();
 						}

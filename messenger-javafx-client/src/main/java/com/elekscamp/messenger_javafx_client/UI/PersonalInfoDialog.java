@@ -14,11 +14,14 @@ import java.util.Optional;
 
 import javax.imageio.ImageIO;
 
+import com.elekscamp.messenger_javafx_client.GlobalVariables;
 import com.elekscamp.messenger_javafx_client.DAL.ContentProvider;
 import com.elekscamp.messenger_javafx_client.DAL.RequestManager;
 import com.elekscamp.messenger_javafx_client.Entities.PersonalInfo;
 import com.elekscamp.messenger_javafx_client.Entities.User;
 import com.elekscamp.messenger_javafx_client.Exceptions.HttpErrorCodeException;
+import com.elekscamp.messenger_javafx_client.GlobalVariables.Language;
+
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
@@ -80,18 +83,81 @@ public class PersonalInfoDialog {
 	private Label txtPictureName;
 	private File newProfilePicture;
 	private FileChooser chooser;
-	private final String NO_PICTURE_CHOSEN;
 	private Tooltip pictureNameTooltip;
 	private Image profileImage;
 	private HBox pictureHBox;
 	private int gridRow;
 	private Button btnDeleteProfilePicture;
 	private Button btnRemoveSelectedPicture;
-
+	private final String NO_PICTURE_CHOSEN;
+	private final String CHOOSE_PICTURE;
+	private final String DELETE_PICTURE;
+	private final String PROFILE_PICTURE;
+	private final String FIELDS_WITH_STAR;
+	private final String YES;
+	private final String NO;
+	private final String INFORMATION_ABOUT_USER;
+	private final String IS_ONLINE;
+	private final String REGISTRATION_DATE;
+	private final String USERNAME;
+	private final String EMAIL;
+	private final String FIRST_NAME;
+	private final String LAST_NAME;
+	private final String PHONE_NUMBER;
+	private final String BIRTH_DATE;
+	private final String SAVE;
+	private final String NEW_PASSWORD;
+	private final String MESSAGE;
+	private final String PASSWORD_LENGTH;
+	
 	public PersonalInfoDialog(String backgroundColor) {
 
 		this.backgroundColor = backgroundColor;
-		NO_PICTURE_CHOSEN = "No picture chosen.";
+		
+		if (GlobalVariables.language == Language.ENGLISH) {
+			NO_PICTURE_CHOSEN = "No picture chosen.";
+			CHOOSE_PICTURE = "Choose picture...";
+			DELETE_PICTURE = "Delete Picture";
+			PROFILE_PICTURE = "Profile Picture";
+			FIELDS_WITH_STAR = "Fields with '*' cannot be empty!";
+			YES = "Yes";
+			NO = "No";
+			INFORMATION_ABOUT_USER = "Information about user ";
+			IS_ONLINE = "Is Online: ";
+			REGISTRATION_DATE = "Registration date: ";
+			USERNAME = "Username: ";
+			EMAIL = "Email: ";
+			FIRST_NAME = "First name: "; 
+			LAST_NAME = "Last name: "; 
+			PHONE_NUMBER = "Phone number: "; 
+			BIRTH_DATE = "Birth date: "; 
+			SAVE = "Save";
+			NEW_PASSWORD = "New password: ";
+			MESSAGE = "Message";
+			PASSWORD_LENGTH = "Password length should not be less than 8 characters.";
+		} else {
+			NO_PICTURE_CHOSEN = "Картинка не вибрана.";
+			CHOOSE_PICTURE = "Вибрати картинку...";
+			DELETE_PICTURE = "Видалити картинку";
+			PROFILE_PICTURE = "Картинка профілю";
+			FIELDS_WITH_STAR = "Поля з * не можуть бути порожні!";
+			YES = "Так";
+			NO = "Ні";
+			INFORMATION_ABOUT_USER = "Інформація про користувача ";
+			IS_ONLINE = "В мережі: ";
+			REGISTRATION_DATE = "Дата реєстрації: ";
+			USERNAME = "Логін: ";
+			EMAIL = "Пошта: ";
+			FIRST_NAME = "Ім'я: ";
+			LAST_NAME = "Прізвище: ";
+			PHONE_NUMBER = "Номер телефону: ";
+			BIRTH_DATE = "Дата народження: ";
+			SAVE = "Зберегти";
+			NEW_PASSWORD = "Новий пароль: ";
+			MESSAGE = "Повідомлення";
+			PASSWORD_LENGTH = "Довжина паролю повинна бути не менша за 8 символів.";
+		}
+		
 		dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 		dialog = new Dialog<Pair<User, PersonalInfo>>();
 		gridPane = new GridPane();
@@ -103,13 +169,13 @@ public class PersonalInfoDialog {
 		tfPhoneNumber = new TextField();
 		picture = new ImageView();
 		birthDateDatePicker = new DatePicker();
-		btnChangePicture = new Button("Choose picture...");
+		btnChangePicture = new Button(CHOOSE_PICTURE);
 		txtPictureName = new Label(NO_PICTURE_CHOSEN);
 		chooser = new FileChooser();
 		pictureNameTooltip = new Tooltip();
 		pictureHBox = new HBox();
 		gridRow = 0;
-		btnDeleteProfilePicture = new Button("Delete Picture");
+		btnDeleteProfilePicture = new Button(DELETE_PICTURE);
 		btnRemoveSelectedPicture = new Button("X");
 	}
 
@@ -117,7 +183,7 @@ public class PersonalInfoDialog {
 
 		btnRemoveSelectedPicture.setPrefWidth(btnRemoveSelectedPicture.getHeight());
 
-		chooser.setTitle("Profile Picture");
+		chooser.setTitle(PROFILE_PICTURE);
 		chooser.setInitialDirectory(new File(System.getProperty("user.home") + "/Desktop"));
 		chooser.getExtensionFilters().addAll(
 				new ExtensionFilter("All Images", "*.jpg", "*.bmp", "*.png"),
@@ -134,7 +200,7 @@ public class PersonalInfoDialog {
 
 		pictureNameTooltip.setText(txtPictureName.getText());
 
-		dialog.setTitle("Information about user " + user.getLogin());
+		dialog.setTitle(INFORMATION_ABOUT_USER + user.getLogin());
 		dialog.setHeaderText(null);
 		dialog.getDialogPane().setStyle(
 				"-fx-font-size: 14; -fx-font-family: \"Comic Sans MS\", cursive, sans-serif; -fx-background-color: " + backgroundColor);
@@ -162,7 +228,7 @@ public class PersonalInfoDialog {
 		registrationDateStr = dateFormat.format(new Date(user.getRegistrationDate()));
 		txtRegistrationDate = new Text(registrationDateStr);
 
-		txtIsOnline = new Text(user.getIsOnline() ? "Yes" : "No");
+		txtIsOnline = new Text(user.getIsOnline() ? YES : NO);
 		
 		StringProperty imageUrl = new SimpleStringProperty(RequestManager.getRequestApi() + "/files/downloadPicture/" + Integer.toString(user.getId()));
 		
@@ -211,9 +277,9 @@ public class PersonalInfoDialog {
 		GridPane.setHalignment(hBox, HPos.CENTER);
 		GridPane.setValignment(hBox, VPos.CENTER);
 
-		topGridPane.add(new Text("Is online: "), 0, 0);
+		topGridPane.add(new Text(IS_ONLINE), 0, 0);
 		topGridPane.add(txtIsOnline, 1, 0);
-		topGridPane.add(new Text("Registration date: "), 0, 1);
+		topGridPane.add(new Text(REGISTRATION_DATE), 0, 1);
 		topGridPane.add(txtRegistrationDate, 1, 1);
 
 		if (allowEditing) {
@@ -235,32 +301,32 @@ public class PersonalInfoDialog {
 			gridPane.add(btnDeleteProfilePicture, 0, ++gridRow);
 		}
 
-		gridPane.add(new Text("Username: "), 0, ++gridRow);
+		gridPane.add(new Text(USERNAME), 0, ++gridRow);
 		gridPane.add(tfUsername, 1, gridRow);
 
-		gridPane.add(new Text("Email: "), 0, ++gridRow);
+		gridPane.add(new Text(EMAIL), 0, ++gridRow);
 		gridPane.add(tfEmail, 1, gridRow);
 
-		gridPane.add(new Text("First name: "), 0, ++gridRow);
+		gridPane.add(new Text(FIRST_NAME), 0, ++gridRow);
 		gridPane.add(tfFirstName, 1, gridRow);
 
-		gridPane.add(new Text("Last name: "), 0, ++gridRow);
+		gridPane.add(new Text(LAST_NAME), 0, ++gridRow);
 		gridPane.add(tfLastName, 1, gridRow);
 
-		gridPane.add(new Text("Phone number: "), 0, ++gridRow);
+		gridPane.add(new Text(PHONE_NUMBER), 0, ++gridRow);
 		gridPane.add(tfPhoneNumber, 1, gridRow);
 
-		gridPane.add(new Text("Birth date: "), 0, ++gridRow);
+		gridPane.add(new Text(BIRTH_DATE), 0, ++gridRow);
 		gridPane.add(birthDateDatePicker, 1, gridRow);
 
 		dialog.getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
 
 		if (allowEditing) {
 			
-			btnSave = new ButtonType("Save", ButtonData.OK_DONE);
+			btnSave = new ButtonType(SAVE, ButtonData.OK_DONE);
 			dialog.getDialogPane().getButtonTypes().add(btnSave);
 
-			gridPane.add(new Text("New password: "), 0, ++gridRow);
+			gridPane.add(new Text(NEW_PASSWORD), 0, ++gridRow);
 			gridPane.add(pfPassword, 1, gridRow);
 			gridPane.add(new Text("*"), 2, 3);
 			gridPane.add(new Text("*"), 2, 4);
@@ -304,16 +370,16 @@ public class PersonalInfoDialog {
 				if (username.isEmpty() || email.isEmpty() || (password.length() < 8 && !password.isEmpty())) {
 
 					alert = new Alert(AlertType.INFORMATION);
-					alert.setTitle("Message");
+					alert.setTitle(MESSAGE);
 					alert.setHeaderText(null);
 					alert.getDialogPane().setStyle("-fx-background-color: " + backgroundColor);
-					alert.setContentText("Fields with '*' cannot be empty!");
+					alert.setContentText(FIELDS_WITH_STAR);
 
 					Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
 					stage.getIcons().add(new Image("/images/icon.png"));
 					
 					if (!password.isEmpty() && password.length() < 8)
-						alert.setContentText("Password length should be 8 or more!");
+						alert.setContentText(PASSWORD_LENGTH);
 
 					alert.showAndWait();
 					return null;

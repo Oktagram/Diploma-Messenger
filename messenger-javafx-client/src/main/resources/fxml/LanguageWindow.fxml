@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="700.0" style="-fx-background-color: #175087;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.elekscamp.messenger_javafx_client.Controllers.LanguageController">
+   <children>
+      <VBox alignment="CENTER" maxHeight="181.0" prefHeight="181.0" prefWidth="300.0">
+         <children>
+            <Button alignment="CENTER" maxHeight="145.0" maxWidth="300.0" minHeight="145.0" minWidth="300.0" mnemonicParsing="false" onAction="#btnUkraineLanguageOnAction" stylesheets="@../css/buttons/language-button.css" textAlignment="CENTER">
+               <graphic>
+                  <ImageView fx:id="ukrainianImageView" fitHeight="150.0" fitWidth="300.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/ukraine-flag.jpg" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <padding>
+                  <Insets bottom="-10.0" left="-10.0" right="-10.0" top="-10.0" />
+               </padding>
+            </Button>
+            <Label style="-fx-text-fill: white;" text="Українська мова">
+               <padding>
+                  <Insets top="10.0" />
+               </padding>
+               <font>
+                  <Font name="Comic Sans MS Bold" size="14.0" />
+               </font>
+            </Label>
+         </children>
+         <HBox.margin>
+            <Insets right="10.0" />
+         </HBox.margin>
+      </VBox>
+      <VBox alignment="CENTER" maxHeight="181.0" prefHeight="181.0" prefWidth="300.0">
+         <children>
+            <Button alignment="CENTER" maxHeight="145.0" maxWidth="300.0" minHeight="145.0" minWidth="300.0" mnemonicParsing="false" onAction="#btnEnglishLanguageOnAction" stylesheets="@../css/buttons/language-button.css">
+               <graphic>
+                  <ImageView fx:id="englishImageView" fitHeight="150.0" fitWidth="300.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/english-flag.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+               <padding>
+                  <Insets bottom="-10.0" left="-10.0" right="-10.0" top="-10.0" />
+               </padding>
+            </Button>
+            <Label style="-fx-text-fill: white;" text="English language">
+               <padding>
+                  <Insets top="10.0" />
+               </padding>
+               <font>
+                  <Font name="Comic Sans MS Bold" size="14.0" />
+               </font>
+            </Label>
+         </children>
+         <HBox.margin>
+            <Insets left="10.0" />
+         </HBox.margin>
+      </VBox>
+   </children>
+</HBox>

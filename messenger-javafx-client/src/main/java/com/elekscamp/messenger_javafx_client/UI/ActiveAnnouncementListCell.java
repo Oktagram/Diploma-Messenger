@@ -6,9 +6,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Optional;
 
+import com.elekscamp.messenger_javafx_client.GlobalVariables;
 import com.elekscamp.messenger_javafx_client.DAL.ContentProvider;
 import com.elekscamp.messenger_javafx_client.Entities.Announcement;
 import com.elekscamp.messenger_javafx_client.Exceptions.HttpErrorCodeException;
+import com.elekscamp.messenger_javafx_client.GlobalVariables.Language;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -38,11 +40,33 @@ public class ActiveAnnouncementListCell extends ListCell<Announcement> {
 	private SimpleDateFormat formatter;
 	private ObservableList<Announcement> activeAnnouncementList;
 	private ObservableList<Announcement> closedAnnouncementList;
+	private final String EDIT_ANNOUNCEMENT;
+	private final String ANNOUNCEMENT_DESCRIPTION;
+	private final String ANNOUNCEMENT_DESCRIPTION_EMPTY;
+	private final String EDIT;
+	private final String CLOSE;
+	private final String MESSAGE;
 	
 	public ActiveAnnouncementListCell(ContentProvider provider) {
 		
 		this.provider = provider;
 		formatter = new SimpleDateFormat("dd/MM/yyyy 'at' HH:mm:ss");
+		
+		if (GlobalVariables.language == Language.ENGLISH) {
+			EDIT_ANNOUNCEMENT = "Edit Announcement";
+			ANNOUNCEMENT_DESCRIPTION = "Announcement description:";
+			ANNOUNCEMENT_DESCRIPTION_EMPTY = "Announcement's description cannot be empty!";
+			EDIT = "Edit";
+			CLOSE = "Close";
+			MESSAGE = "Message";
+		} else {
+			EDIT_ANNOUNCEMENT = "Редагувати Оголошення";
+			ANNOUNCEMENT_DESCRIPTION = "Опис оголошення:";
+			ANNOUNCEMENT_DESCRIPTION_EMPTY = "Опис оголошення не може бути порожній!";
+			EDIT = "Редагувати";
+			CLOSE = "Закрити";
+			MESSAGE = "Повідомлення";
+		}
 	}
 	
 	public void initData(ObservableList<Announcement> activeAnnouncementList, ObservableList<Announcement> closedAnnouncementList) {
@@ -96,9 +120,9 @@ public class ActiveAnnouncementListCell extends ListCell<Announcement> {
 				@Override
 				public void handle(ActionEvent event) {
 					TextInputDialog textInputDialog = new TextInputDialog(description.getText());
-					textInputDialog.setTitle("Edit Announcement");
+					textInputDialog.setTitle(EDIT_ANNOUNCEMENT);
 					textInputDialog.setHeaderText(null);
-					textInputDialog.setContentText("Announcement description:");
+					textInputDialog.setContentText(ANNOUNCEMENT_DESCRIPTION);
 					textInputDialog.getDialogPane().setStyle("-fx-background-color: #ffd272");		
 					textInputDialog.getDialogPane().setPrefWidth(600);
 					textInputDialog.setResizable(true);
@@ -111,9 +135,9 @@ public class ActiveAnnouncementListCell extends ListCell<Announcement> {
 						if (conversationName.isEmpty()) {
 							
 							Alert alert = new Alert(AlertType.INFORMATION);
-							alert.setTitle("Message");
+							alert.setTitle(MESSAGE);
 							alert.setHeaderText(null);
-							alert.setContentText("Announcement's description cannot be empty!");
+							alert.setContentText(ANNOUNCEMENT_DESCRIPTION_EMPTY);
 							alert.showAndWait();
 						} else {
 							description.setText(dialogResult.get());
@@ -129,7 +153,7 @@ public class ActiveAnnouncementListCell extends ListCell<Announcement> {
 				}
 			});
 		    HBox.setMargin(btnEditDescription, new Insets(0, 5, 0, 0));
-		    btnEditDescription.setTooltip(new Tooltip("Edit"));
+		    btnEditDescription.setTooltip(new Tooltip(EDIT));
 		    
 			btnCloseAnnouncement.setMinSize(22, 22);
 			btnCloseAnnouncement.setPadding(new Insets(-10));
@@ -155,12 +179,16 @@ public class ActiveAnnouncementListCell extends ListCell<Announcement> {
 					}
 				}
 			});
-		    btnCloseAnnouncement.setTooltip(new Tooltip("Close"));
+		    btnCloseAnnouncement.setTooltip(new Tooltip(CLOSE));
 		    
 			Date creationDate = new Date(announcement.getCreationDate());
-			
-			descriptionTooltipStr += description.getText() + "\nCreated: " + formatter.format(creationDate) + "\nBy: " + userThatCreatedAnnouncement; 
 	
+			if (GlobalVariables.language == Language.ENGLISH)
+				descriptionTooltipStr += description.getText() + "\nCreated: " + formatter.format(creationDate) + "\nBy: " + userThatCreatedAnnouncement; 
+			else
+				descriptionTooltipStr += description.getText() + "\nСтворено: " + formatter.format(creationDate) + "\nСтворив: " + userThatCreatedAnnouncement;
+			
+			
 			descriptionTooltip.setText(descriptionTooltipStr);
 			descriptionTooltip.setWrapText(true);
 			descriptionTooltip.setMaxWidth(500);

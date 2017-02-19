@@ -14,11 +14,13 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
+import com.elekscamp.messenger_javafx_client.GlobalVariables;
 import com.elekscamp.messenger_javafx_client.Main;
 import com.elekscamp.messenger_javafx_client.DAL.RequestManager;
 import com.elekscamp.messenger_javafx_client.Entities.Message;
 import com.elekscamp.messenger_javafx_client.Entities.User;
 import com.elekscamp.messenger_javafx_client.Entities.UserWithImage;
+import com.elekscamp.messenger_javafx_client.GlobalVariables.Language;
 
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -198,7 +200,16 @@ public class MessageListCell extends ListCell<Message> {
 	}
 
 	private void addHLinkForOpenAttachment() {
-		Hyperlink openAttachmentHLink = new Hyperlink("Open");
+		
+		String openStr;
+		
+		if (GlobalVariables.language == Language.ENGLISH) {
+			openStr = "Open";
+		} else {
+			openStr = "Відкрити";
+		}
+		
+		Hyperlink openAttachmentHLink = new Hyperlink(openStr);
 
 		openAttachmentHLink.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
@@ -242,8 +253,19 @@ public class MessageListCell extends ListCell<Message> {
 
 	private void addHLinkForAttachedImage() {
 
-		Hyperlink showImageHLink = new Hyperlink("Show");
-		Hyperlink hideImageHLink = new Hyperlink("Hide");
+		String showStr;
+		String hideStr;
+		
+		if (GlobalVariables.language == Language.ENGLISH){
+			showStr = "Show";
+			hideStr = "Hide";
+		} else {
+			showStr = "Показати";
+			hideStr = "Сховати";
+		}
+
+		Hyperlink showImageHLink = new Hyperlink(showStr);
+		Hyperlink hideImageHLink = new Hyperlink(hideStr);
 		ImageView attachmentImageView = new ImageView();
 
 		showImageHLink.setOnAction(new EventHandler<ActionEvent>() {

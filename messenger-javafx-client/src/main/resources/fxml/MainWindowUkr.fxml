@@ -37,7 +37,7 @@
                               </AnchorPane>
                               <AnchorPane maxHeight="44.0" minHeight="30.0" prefHeight="44.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
                                  <children>
-                                    <Button fx:id="btnLogOut" maxHeight="30.0" minHeight="30.0" mnemonicParsing="false" onAction="#btnLogOutOnAction" prefHeight="30.0" text="Log Out" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="5.0" />
+                                    <Button fx:id="btnLogOut" maxHeight="30.0" minHeight="30.0" mnemonicParsing="false" onAction="#btnLogOutOnAction" prefHeight="30.0" text="Вихід" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="5.0" />
                                  </children>
                               </AnchorPane>
                            </children>
@@ -54,7 +54,7 @@
                   </AnchorPane>
                   <AnchorPane prefWidth="300.0">
                      <children>
-                        <Button fx:id="btnNewConversation" maxHeight="30.0" minHeight="30.0" mnemonicParsing="false" onAction="#btnNewConversationOnAction" prefHeight="30.0" prefWidth="290.0" text="New Conversation" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <Button fx:id="btnNewConversation" maxHeight="30.0" minHeight="30.0" mnemonicParsing="false" onAction="#btnNewConversationOnAction" prefHeight="30.0" prefWidth="290.0" text="Нова Бесіда" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <HBox.margin>
                               <Insets />
                            </HBox.margin>
@@ -71,17 +71,17 @@
             </VBox>
             <VBox fx:id="middleVBox" minWidth="500.0" prefHeight="500.0" prefWidth="500.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" HBox.hgrow="ALWAYS">
                <children>
-                  <Accordion style="-fx-color: #b5c6da;">
+                  <Accordion style="-fx-color: #306497;">
                     <panes>
-                      <TitledPane fx:id="announcementTitlePane" animated="false" text="Announcements">
+                      <TitledPane fx:id="announcementTitlePane" animated="false" text="Дошка оголошень">
                         <content>
-                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="400.0" prefWidth="200.0">
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="400.0" prefWidth="200.0" style="-fx-background-color: #175087;">
                                  <children>
-                                    <TabPane fx:id="announcementsTabPane" prefHeight="77.0" prefWidth="498.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="-10.0" AnchorPane.leftAnchor="-10.0" AnchorPane.rightAnchor="-10.0" AnchorPane.topAnchor="-10.0">
+                                    <TabPane fx:id="announcementsTabPane" prefHeight="77.0" prefWidth="498.0" stylesheets="@../css/tab-pane.css" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="-10.0" AnchorPane.leftAnchor="-10.0" AnchorPane.rightAnchor="-10.0" AnchorPane.topAnchor="-10.0">
                                       <tabs>
-                                        <Tab text="Active Announcements">
+                                        <Tab text="Активні оголошення">
                                           <content>
-                                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="143.0" prefWidth="471.0" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
                                                    <children>
                                                       <ListView fx:id="listViewActiveAnnouncements" prefHeight="154.0" prefWidth="499.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="5.0" />
                                                       <Button fx:id="btnAddNewAnnouncement" layoutX="440.0" layoutY="95.0" maxHeight="35.0" maxWidth="35.0" minHeight="35.0" minWidth="35.0" mnemonicParsing="false" onAction="#btnAddNewAnnouncementOnAction" opacity="0.7" prefHeight="35.0" prefWidth="35.0" text="+" textAlignment="CENTER" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0">
@@ -92,10 +92,17 @@
                                                             <Insets bottom="-11.0" left="-10.0" right="-11.0" top="-15.0" />
                                                          </padding>
                                                       </Button>
-                                                   </children></AnchorPane>
+                                                   </children>
+                                                   <opaqueInsets>
+                                                      <Insets />
+                                                   </opaqueInsets>
+                                                   <VBox.margin>
+                                                      <Insets left="-14.0" />
+                                                   </VBox.margin>
+                                                </AnchorPane>
                                           </content>
                                         </Tab>
-                                        <Tab text="Closed Announcements">
+                                        <Tab text="Закриті оголошення">
                                           <content>
                                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                                    <children>
@@ -123,7 +130,7 @@
                      <children>
                         <HBox alignment="CENTER" maxHeight="75.0" minHeight="75.0" minWidth="500.0" prefHeight="75.0" prefWidth="500.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
-                              <TextArea fx:id="txtAreaMessage" maxHeight="65.0" minHeight="65.0" minWidth="350.0" onKeyPressed="#txtAreaMessageOnKeyPressed" prefHeight="65.0" prefWidth="350.0" promptText="Type your message here...." wrapText="true" HBox.hgrow="ALWAYS">
+                              <TextArea fx:id="txtAreaMessage" maxHeight="65.0" minHeight="65.0" minWidth="350.0" onKeyPressed="#txtAreaMessageOnKeyPressed" prefHeight="65.0" prefWidth="350.0" promptText="Введіть ваше повідомлення тут..." wrapText="true" HBox.hgrow="ALWAYS">
                                  <HBox.margin>
                                     <Insets bottom="5.0" top="5.0" />
                                  </HBox.margin>
@@ -170,12 +177,12 @@
                               </VBox>
                               <VBox>
                                  <children>
-                                    <Button fx:id="btnSend" maxHeight="30.0" maxWidth="55.0" minHeight="30.0" minWidth="55.0" mnemonicParsing="false" onAction="#btnSendOnAction" prefHeight="30.0" prefWidth="55.0" text="Send">
+                                    <Button fx:id="btnSend" maxHeight="30.0" maxWidth="70.0" minHeight="30.0" minWidth="70.0" mnemonicParsing="false" onAction="#btnSendOnAction" prefHeight="30.0" prefWidth="70.0" text="Ввід">
                                        <HBox.margin>
                                           <Insets bottom="35.0" left="5.0" right="5.0" />
                                        </HBox.margin>
                                     </Button>
-                                    <Button fx:id="btnUpdate" maxHeight="30.0" maxWidth="55.0" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onAction="#btnUpdateOnAction" prefHeight="30.0" prefWidth="55.0" text="Update">
+                                    <Button fx:id="btnUpdate" maxHeight="30.0" maxWidth="70.0" minHeight="30.0" minWidth="70.0" mnemonicParsing="false" onAction="#btnUpdateOnAction" prefHeight="30.0" prefWidth="70.0" text="Оновити">
                                        <VBox.margin>
                                           <Insets top="5.0" />
                                        </VBox.margin>
@@ -198,9 +205,9 @@
                <children>
                   <HBox alignment="CENTER" maxHeight="30.0" minHeight="30.0" VBox.vgrow="ALWAYS">
                      <children>
-                        <Button fx:id="btnInChat" mnemonicParsing="false" onAction="#btnInChatOnAction" prefHeight="30.0" prefWidth="96.0" text="In chat" />
-                        <Button fx:id="btnFriends" mnemonicParsing="false" onAction="#btnFriendsOnAction" prefHeight="30.0" prefWidth="96.0" text="Friends" />
-                        <Button fx:id="btnAllUsers" mnemonicParsing="false" onAction="#btnAllUsersOnAction" prefHeight="30.0" prefWidth="96.0" text="All users" />
+                        <Button fx:id="btnInChat" mnemonicParsing="false" onAction="#btnInChatOnAction" prefHeight="30.0" prefWidth="96.0" text="В бесіді" />
+                        <Button fx:id="btnFriends" mnemonicParsing="false" onAction="#btnFriendsOnAction" prefHeight="30.0" prefWidth="96.0" text="Друзі" />
+                        <Button fx:id="btnAllUsers" mnemonicParsing="false" onAction="#btnAllUsersOnAction" prefHeight="30.0" prefWidth="96.0" text="Всі" />
                      </children>
                      <VBox.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -208,12 +215,12 @@
                   </HBox>
                   <HBox maxHeight="30.0" minHeight="30.0" prefHeight="30.0" prefWidth="280.0">
                      <children>
-                        <TextField fx:id="tfUsersSearch" maxHeight="30.0" minHeight="30.0" onKeyPressed="#tfUsersSearchOnKeyPressed" prefHeight="30.0" prefWidth="215.0" promptText="Search for users..." HBox.hgrow="ALWAYS">
+                        <TextField fx:id="tfUsersSearch" maxHeight="30.0" minHeight="30.0" onKeyPressed="#tfUsersSearchOnKeyPressed" prefHeight="30.0" prefWidth="215.0" promptText="Пошук користувачів..." HBox.hgrow="ALWAYS">
                            <VBox.margin>
                               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                            </VBox.margin>
                         </TextField>
-                        <Button fx:id="btnFind" maxHeight="30.0" maxWidth="55.0" minHeight="30.0" minWidth="55.0" mnemonicParsing="false" onAction="#btnFindOnAction" prefHeight="30.0" prefWidth="55.0" text="Find" HBox.hgrow="ALWAYS">
+                        <Button fx:id="btnFind" maxHeight="30.0" maxWidth="55.0" minHeight="30.0" minWidth="55.0" mnemonicParsing="false" onAction="#btnFindOnAction" prefHeight="30.0" prefWidth="55.0" text="Пошук" HBox.hgrow="ALWAYS">
                            <HBox.margin>
                               <Insets left="10.0" />
                            </HBox.margin>

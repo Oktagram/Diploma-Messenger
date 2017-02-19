@@ -6,12 +6,14 @@ import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.elekscamp.messenger_javafx_client.GlobalVariables;
 import com.elekscamp.messenger_javafx_client.DAL.ContentProvider;
 import com.elekscamp.messenger_javafx_client.DAL.RegistrationProvider;
 import com.elekscamp.messenger_javafx_client.DAL.RequestManager;
 import com.elekscamp.messenger_javafx_client.Entities.Credential;
 import com.elekscamp.messenger_javafx_client.Entities.User;
 import com.elekscamp.messenger_javafx_client.Exceptions.HttpErrorCodeException;
+import com.elekscamp.messenger_javafx_client.GlobalVariables.Language;
 
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -22,6 +24,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.image.Image;
@@ -34,6 +37,9 @@ import javafx.stage.WindowEvent;
 
 public class AuthenticationAndRegistrationController implements Initializable {
 
+	@FXML 
+	TabPane authorizationTabPane;
+	
 	@FXML
 	private TextField loginSignInTextField;
 	@FXML
@@ -70,7 +76,12 @@ public class AuthenticationAndRegistrationController implements Initializable {
 	private Scene scene;
 	private String stylesheet;
 	private ContentProvider provider;
-
+	
+	private final String FIELDS_CANNOT_BE_EMPTY;
+	private final String USERNAME_LENGTH;
+	private final String PASSWORD_LENGTH;
+	private final String ONLY_LETTERS_AND_NUMBERS;
+	
 	public AuthenticationAndRegistrationController() {
 		registrationProvider = new RegistrationProvider(new RequestManager<User>(User.class));
 		provider = new ContentProvider();
@@ -81,6 +92,18 @@ public class AuthenticationAndRegistrationController implements Initializable {
 				stage.getIcons().add(new Image("/images/icon.png"));
 			}
 		});
+		
+		if (GlobalVariables.language == Language.ENGLISH) {
+			FIELDS_CANNOT_BE_EMPTY = "Fields cannot be empty.";
+			USERNAME_LENGTH = "Username length should not be less than 6 characters.";
+			PASSWORD_LENGTH = "Password length should not be less than 8 characters.";
+			ONLY_LETTERS_AND_NUMBERS = "Username and password can contain only Latin letters and digits.";
+		} else {
+			FIELDS_CANNOT_BE_EMPTY = "Поля не можуть бути порожні.";
+			USERNAME_LENGTH = "Ім'я користувача повинно бути не коротше 6 символів";
+			PASSWORD_LENGTH = "Довжина паролю повинна бути не менша за 8 символів.";
+			ONLY_LETTERS_AND_NUMBERS = "Ім'я користувача та пароль можуть містити тільки латинські буки та цифри.";
+		}
 	}
 
 	public void signInButtonAction() {
@@ -92,7 +115,7 @@ public class AuthenticationAndRegistrationController implements Initializable {
 
 		signInStatusText.setFill(Color.RED);
 		if (usernameLength == 0 || passwordLength == 0) {
-			signInStatusText.setText("Fields cannot be empty.");
+			signInStatusText.setText(FIELDS_CANNOT_BE_EMPTY);
 			loginSignInTextField.requestFocus();
 			return;
 		}
@@ -116,7 +139,11 @@ public class AuthenticationAndRegistrationController implements Initializable {
 
 	private void openChatWindow() throws IOException {
 
-		loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/Chat.fxml"));
+		if (GlobalVariables.language == Language.ENGLISH)
+			loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/MainWindowEng.fxml"));
+		else
+			loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/MainWindowUkr.fxml"));
+			
 		root = loader.load();
 
 		controller = loader.<ChatController>getController();
@@ -171,22 +198,22 @@ public class AuthenticationAndRegistrationController implements Initializable {
 		signUpStatusText.setFill(Color.RED);
 		
 		if (usernameLength == 0 || passwordLength == 0 || emailLength == 0) {
-			signUpStatusText.setText("Fields cannot be empty.");
+			signUpStatusText.setText(FIELDS_CANNOT_BE_EMPTY);
 			return;
 		}
 
-		if (usernameLength <= 5 || usernameLength >= 15) {
-			signUpStatusText.setText("Username length should be more than 5 and less than 15.");
+		if (usernameLength <= 5) {
+			signUpStatusText.setText(USERNAME_LENGTH);
 			return;
 		}
 		
 		if (passwordLength <= 8 || passwordLength >= 20) {
-			signUpStatusText.setText("Password length should be more than 8 and less than 20.");
+			signUpStatusText.setText(PASSWORD_LENGTH);
 			return;
 		}
 
 		if (!checkWithRegExp(username) || !checkWithRegExp(password)) {
-			signUpStatusText.setText("Username and password can contain only Latin letters and digits.");
+			signUpStatusText.setText(ONLY_LETTERS_AND_NUMBERS);
 			return;
 		}
 		
@@ -215,6 +242,7 @@ public class AuthenticationAndRegistrationController implements Initializable {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		authorizationTabPane.setFocusTraversable(false);
 		loginSignUpTextField.setTextFormatter(new TextFormatter<String>(change -> 
 				change.getControlNewText().length() <= 15 ? change : null));
 		passwordSignUpTextField.setTextFormatter(new TextFormatter<String>(change -> 

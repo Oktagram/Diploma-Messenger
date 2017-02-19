@@ -1,6 +1,9 @@
 package com.elekscamp.messenger_javafx_client.UI;
 
 import java.io.IOException;
+
+import com.elekscamp.messenger_javafx_client.GlobalVariables;
+import com.elekscamp.messenger_javafx_client.GlobalVariables.Language;
 import com.elekscamp.messenger_javafx_client.DAL.ContentProvider;
 import com.elekscamp.messenger_javafx_client.Entities.Conversation;
 import com.elekscamp.messenger_javafx_client.Exceptions.HttpErrorCodeException;
@@ -42,12 +45,20 @@ public class ConversationListCell extends ListCell<Conversation> {
 		alert = new Alert(AlertType.CONFIRMATION);
 		alert.setTitle("Confirm action");
 		alert.setHeaderText(null);
-		alert.setContentText("Are you sure you want to leave the conversation?");
+		
+		if (GlobalVariables.language == Language.ENGLISH)
+			alert.setContentText("Are you sure you want to leave the conversation?");
+		else
+			alert.setContentText("Ви впевнені, що хочете покинути бесіду?");
 
 		Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
 		stage.getIcons().add(new Image("/images/icon.png"));
 		
-		btnLeaveConversation = new Button("Leave");
+		if (GlobalVariables.language == Language.ENGLISH)
+			btnLeaveConversation = new Button("Leave");
+		else {
+			btnLeaveConversation = new Button("Вийти");
+		}
 	}
 
 	public void initData(int id, ObservableList<Conversation> conversationsList) {
@@ -89,7 +100,7 @@ public class ConversationListCell extends ListCell<Conversation> {
 			btnLeaveConversation.setMaxWidth(60);
 			btnLeaveConversation.setMaxHeight(30);
 			btnLeaveConversation.setMinHeight(30);
-			btnLeaveConversation.setStyle("-fx-base: #CC5029; -fx-text-fill: white; -fx-font-size: 15;");
+			btnLeaveConversation.setStyle("-fx-base: #CC5029; -fx-text-fill: white; -fx-font-size: 13;");
 			btnLeaveConversation.setTextAlignment(TextAlignment.CENTER);
 			btnLeaveConversation.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
