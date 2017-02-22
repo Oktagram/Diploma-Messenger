@@ -8,15 +8,19 @@ namespace Messenger.Contexts
     {
         public MessengerContext(DbContextOptions<MessengerContext> options)
             : base(options) { }
+
         public MessengerContext() { }
+
         public DbSet<User> Users { get; set; }
         public DbSet<PersonalInfo> PersonalInfos { get; set; }
         public DbSet<Conversation> Conversations { get; set; }
         public DbSet<UserConversation> UserConversations { get; set; }
         public DbSet<Message> Messages { get; set; }
 		public DbSet<Announcement> Announcements { get; set; }
+		public DbSet<EventLog> EventLog { get; set; }
+		public static int MessageMaxLength;
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+		protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>()
                 .ToTable("User");               
@@ -65,6 +69,21 @@ namespace Messenger.Contexts
 			modelBuilder.Entity<Announcement>()
 				.Property(a => a.IsActive)
 				.IsRequired();
+
+			modelBuilder.Entity<EventLog>().ToTable("EventLog");
+			
+	/*		modelBuilder.Entity<EventLog>(entity => 
+            { 
+                entity.Property(e => e.Id).HasColumnName("Id"); 
+ 
+                entity.Property(e => e.EventId).HasColumnName("EventId"); 
+ 
+                entity.Property(e => e.LogLevel).HasMaxLength(50); 
+ 
+                entity.Property(e => e.Message).HasMaxLength(4000);                 
+            });
+			*/
+			MessageMaxLength = 4000;
 		}
     }
 }

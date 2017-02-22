@@ -8,7 +8,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.elekscamp.messenger_javafx_client.Controllers.ChatController">
+<AnchorPane id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.elekscamp.messenger_javafx_client.controllers.ChatController">
    <children>
       <HBox layoutX="91.0" layoutY="162.0" prefHeight="500.0" prefWidth="1100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -37,7 +37,7 @@
                               </AnchorPane>
                               <AnchorPane maxHeight="44.0" minHeight="30.0" prefHeight="44.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
                                  <children>
-                                    <Button fx:id="btnLogOut" maxHeight="30.0" minHeight="30.0" mnemonicParsing="false" onAction="#btnLogOutOnAction" prefHeight="30.0" text="Log Out" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="5.0" />
+                                    <Button fx:id="btnLogOut" maxHeight="30.0" minHeight="30.0" mnemonicParsing="false" onAction="#btnLogOutOnAction" prefHeight="30.0" style="-fx-base: #994646;" text="Log Out" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="5.0" />
                                  </children>
                               </AnchorPane>
                            </children>
@@ -54,7 +54,7 @@
                   </AnchorPane>
                   <AnchorPane prefWidth="300.0">
                      <children>
-                        <Button fx:id="btnNewConversation" maxHeight="30.0" minHeight="30.0" mnemonicParsing="false" onAction="#btnNewConversationOnAction" prefHeight="30.0" prefWidth="290.0" text="New Conversation" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <Button fx:id="btnNewConversation" maxHeight="30.0" minHeight="30.0" mnemonicParsing="false" onAction="#btnNewConversationOnAction" prefHeight="30.0" prefWidth="290.0" style="-fx-base: #10385E;" text="New Conversation" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <HBox.margin>
                               <Insets />
                            </HBox.margin>
@@ -73,7 +73,7 @@
                <children>
                   <Accordion style="-fx-color: #306497;">
                     <panes>
-                      <TitledPane fx:id="announcementTitlePane" animated="false" text="Announcements Board">
+                      <TitledPane fx:id="announcementTitlePane" animated="false" stylesheets="@../css/titled-pane.css" text="Announcements Board">
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="400.0" prefWidth="200.0" style="-fx-background-color: #175087;">
                                  <children>
@@ -84,7 +84,7 @@
                                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="143.0" prefWidth="471.0" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
                                                    <children>
                                                       <ListView fx:id="listViewActiveAnnouncements" prefHeight="154.0" prefWidth="499.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="5.0" />
-                                                      <Button fx:id="btnAddNewAnnouncement" layoutX="440.0" layoutY="95.0" maxHeight="35.0" maxWidth="35.0" minHeight="35.0" minWidth="35.0" mnemonicParsing="false" onAction="#btnAddNewAnnouncementOnAction" opacity="0.7" prefHeight="35.0" prefWidth="35.0" text="+" textAlignment="CENTER" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0">
+                                                      <Button fx:id="btnAddNewAnnouncement" layoutX="440.0" layoutY="95.0" maxHeight="35.0" maxWidth="35.0" minHeight="35.0" minWidth="35.0" mnemonicParsing="false" onAction="#btnAddNewAnnouncementOnAction" opacity="0.7" prefHeight="35.0" prefWidth="35.0" stylesheets="@../css/buttons/add-new-announcement.css" text="+" textAlignment="CENTER" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0">
                                                          <font>
                                                             <Font size="30.0" />
                                                          </font>
@@ -177,12 +177,12 @@
                               </VBox>
                               <VBox>
                                  <children>
-                                    <Button fx:id="btnSend" maxHeight="30.0" maxWidth="55.0" minHeight="30.0" minWidth="55.0" mnemonicParsing="false" onAction="#btnSendOnAction" prefHeight="30.0" prefWidth="55.0" text="Send">
+                                    <Button fx:id="btnSend" maxHeight="30.0" maxWidth="55.0" minHeight="30.0" minWidth="55.0" mnemonicParsing="false" onAction="#btnSendOnAction" prefHeight="30.0" prefWidth="55.0" style="-fx-base: #fcc05f;" text="Send">
                                        <HBox.margin>
                                           <Insets bottom="35.0" left="5.0" right="5.0" />
                                        </HBox.margin>
                                     </Button>
-                                    <Button fx:id="btnUpdate" maxHeight="30.0" maxWidth="55.0" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onAction="#btnUpdateOnAction" prefHeight="30.0" prefWidth="55.0" text="Update">
+                                    <Button fx:id="btnUpdate" maxHeight="30.0" maxWidth="55.0" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onAction="#btnUpdateOnAction" prefHeight="30.0" prefWidth="55.0" style="-fx-font-size: 11.5; -fx-base: #10385E;" text="Update">
                                        <VBox.margin>
                                           <Insets top="5.0" />
                                        </VBox.margin>
@@ -220,7 +220,7 @@
                               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                            </VBox.margin>
                         </TextField>
-                        <Button fx:id="btnFind" maxHeight="30.0" maxWidth="55.0" minHeight="30.0" minWidth="55.0" mnemonicParsing="false" onAction="#btnFindOnAction" prefHeight="30.0" prefWidth="55.0" text="Find" HBox.hgrow="ALWAYS">
+                        <Button fx:id="btnFind" maxHeight="30.0" maxWidth="55.0" minHeight="30.0" minWidth="55.0" mnemonicParsing="false" onAction="#btnFindOnAction" prefHeight="30.0" prefWidth="55.0" style="-fx-base: #fcc05f;" text="Find" HBox.hgrow="ALWAYS">
                            <HBox.margin>
                               <Insets left="10.0" />
                            </HBox.margin>

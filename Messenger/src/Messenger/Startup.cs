@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Http;
 using AutoMapper;
 using Messenger.Core;
 using Messenger.Paginations;
+using Messenger.LogProvider;
 
 namespace Messenger
 {
@@ -53,12 +54,13 @@ namespace Messenger
             services.AddScoped<IPersonalInfoRepository, PersonalInfoRepository>();
             services.AddScoped<IUserConversationRepository, UserConversationRepository>();
 			services.AddScoped<IAnnouncementRepository, AnnouncementRepository>();
+			services.AddScoped<IEventLogRepository, EventLogRepository>();
 
             services.AddScoped<IUserPaginationService, UserPaginationService>();
             services.AddScoped<IMessagePaginationService, MessagePaginationService>();
             services.AddScoped<IConversationPaginationService, ConversationPaginationService>();
             services.AddScoped<IPersonalInfoPaginationService, PersonalInfoPaginationService>();
-
+			
             services.AddDbContext<MessengerContext>(options =>
 								options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
 							);
@@ -96,7 +98,7 @@ namespace Messenger
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
-            var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey));
+			var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey));
 
             var tokenValidationParameters = new TokenValidationParameters
             {

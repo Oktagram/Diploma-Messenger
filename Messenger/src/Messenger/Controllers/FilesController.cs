@@ -1,31 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using System.IO;
 using Messenger.Repositories;
-using System.Net.Http;
-using System.Net;
-using Microsoft.Net.Http.Headers;
 using Microsoft.AspNetCore.Authorization;
-using System.Text;
-
-// For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+using Messenger.LogProvider;
 
 namespace Messenger.Controllers
 {
-    [Route("api/[controller]")]
+	[Route("api/[controller]")]
     public class FilesController : Controller
     {
         private IHostingEnvironment _env;
         private IMessageRepository _messageRepository;
         private IPersonalInfoRepository _persInfoRepository;
+		private readonly IEventLogRepository _logRepository;
 
-        public FilesController(IHostingEnvironment env, IMessageRepository messageRepository, IPersonalInfoRepository persInfoRepository)
+        public FilesController(IEventLogRepository eventLogRepository, IHostingEnvironment env, IMessageRepository messageRepository, IPersonalInfoRepository persInfoRepository)
         {
+			_logRepository = eventLogRepository;
+			_logRepository.LoggingEntity = LoggingEntity.FILE;
+
             _env = env;
             _messageRepository = messageRepository;
             _persInfoRepository = persInfoRepository;
@@ -36,9 +33,14 @@ namespace Messenger.Controllers
         public IActionResult DownloadAttachment(int messageId)
         {
             var message = _messageRepository.Find(messageId);
+
             try
             {
-                return DownloadFile(message.Attachment);
+				var result = DownloadFile(message.Attachment);
+
+				_logRepository.Add(LoggingEvents.DOWNLOAD, $"Downloaded attachment \"{message.Attachment}\".");
+
+				return result;
             }
             catch
             {
@@ -54,7 +56,8 @@ namespace Messenger.Controllers
             var persInfo = _persInfoRepository.Find(personalInfoId);
             try
             {
-                return DownloadFile(persInfo.Picture);
+				var result = DownloadFile(persInfo.Picture);
+				return result;
             }
             catch
             {
@@ -67,8 +70,12 @@ namespace Messenger.Controllers
         [Route("uploadAttachment/{messageId}")]
         public IActionResult UploadAttachment(List<IFormFile> files, int messageId)
         {
+			if (files == null) return BadRequest();
+
             string attachmentPath = UploadFile(files);
             _messageRepository.AddAttachments(messageId, attachmentPath);
+
+			_logRepository.Add(LoggingEvents.UPLOAD, $"Uploaded attachment \"{files[0].FileName}\".");
 
             return new OkObjectResult("File Uploaded");
         }
@@ -81,7 +88,9 @@ namespace Messenger.Controllers
             string picturePath = UploadFile(files);
             _persInfoRepository.AddPicture(personalInfoId, picturePath);
 
-            return new OkObjectResult("File Uploaded");
+			_logRepository.Add(LoggingEvents.UPLOAD, $"Uploaded profile picture \"{files[0].FileName}\".");
+
+			return new OkObjectResult("File Uploaded");
         }
 
         private IActionResult DownloadFile(string path)

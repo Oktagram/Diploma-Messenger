@@ -1,4 +1,5 @@
 ﻿using Messenger.Contexts;
+using Messenger.LogProvider;
 using Messenger.Models;
 using System;
 using System.Linq;
@@ -98,7 +99,6 @@ namespace Messenger
 			{
 				context.Announcements.Add(announcement);
 			}
-
 			context.SaveChanges();
         }
     }

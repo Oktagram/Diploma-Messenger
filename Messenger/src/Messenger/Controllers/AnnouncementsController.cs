@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Messenger.LogProvider;
 using Messenger.Models;
 using Messenger.Repositories;
 using Messenger.ViewModels;
@@ -15,9 +16,13 @@ namespace Messenger.Controllers
 	public class AnnouncementsController : Controller
 	{
 		private IAnnouncementRepository _announcementRepository;
+		private readonly IEventLogRepository _logRepository;
 		
-		public AnnouncementsController(IAnnouncementRepository announcementRepository)
+		public AnnouncementsController(IEventLogRepository eventLogRepository, IAnnouncementRepository announcementRepository)
 		{
+			_logRepository = eventLogRepository;
+			_logRepository.LoggingEntity = LoggingEntity.ANNOUNCEMENT;
+
 			_announcementRepository = announcementRepository;
 		}
 		
@@ -43,9 +48,10 @@ namespace Messenger.Controllers
 			item.CreationDate = DateTimeOffset.Now.ToUnixTimeMilliseconds();
 			item.IsActive = true;
 			item.Description.Trim();
-
-			_announcementRepository.Add(item);
 			
+			_announcementRepository.Add(item);
+			_logRepository.Add(LoggingEvents.CREATE_ITEM, $"Announcement {item.Id} created.");
+
 			return new OkObjectResult(_announcementRepository.Find(item.Id));
 		}
 
@@ -58,6 +64,8 @@ namespace Messenger.Controllers
 
 			if (announcement == null) return NotFound();
 			else _announcementRepository.Update(id, announcement, item);
+
+			_logRepository.Add(LoggingEvents.UPDATE_ITEM, $"Announcement {id} updated.");
 
 			var temp = _announcementRepository.Find(id);
 			return new OkObjectResult(temp);

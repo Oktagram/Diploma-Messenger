@@ -9,8 +9,7 @@ using System;
 using System.Linq;
 using Messenger.Core;
 using Messenger.Paginations;
-
-// For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+using Messenger.LogProvider;
 
 namespace Messenger.Controllers
 {
@@ -21,10 +20,14 @@ namespace Messenger.Controllers
         private IUserConversationRepository _userConvRepo;
         private IMessageRepository _messageRepo;
         private IConversationPaginationService _conversationPaginationService;
-
-        public ConversationsController(IConversationRepository repo, IUserConversationRepository ucrepo,
+		private readonly IEventLogRepository _logRepository;
+		
+		public ConversationsController(IEventLogRepository eventLogRepository, IConversationRepository repo, IUserConversationRepository ucrepo,
             IMessageRepository messageRepo, IConversationPaginationService conversationPS)
-        { 
+        {
+			_logRepository = eventLogRepository;
+			_logRepository.LoggingEntity = LoggingEntity.CONVERSATION;
+
             _converRepo = repo;
             _userConvRepo = ucrepo;
             _messageRepo = messageRepo;
@@ -35,11 +38,13 @@ namespace Messenger.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            IEnumerable<Conversation> conversations = _converRepo.GetAll();
+            var conversations = _converRepo.GetAll();
             var paginationInfo = Request.Headers["Pagination"];
             var pagination = _conversationPaginationService.MakePagination(conversations, paginationInfo);
+
             Response.AddPagination(pagination.Header);
-            IEnumerable<ConversationViewModel> conversationsVM = Mapper.Map<IEnumerable<Conversation>, IEnumerable<ConversationViewModel>>(pagination.PageOfItems);
+			
+            var conversationsVM = Mapper.Map<IEnumerable<Conversation>, IEnumerable<ConversationViewModel>>(pagination.PageOfItems);
             return new OkObjectResult(conversationsVM);
         }
 
@@ -48,11 +53,10 @@ namespace Messenger.Controllers
         public IActionResult GetById(int id)
         {
             var conv = _converRepo.Find(id);
-            if (conv == null)
-            {
-                return NotFound();
-            }
-            ConversationViewModel conversationVM = Mapper.Map<Conversation, ConversationViewModel>(conv);
+
+            if (conv == null) return NotFound();
+			
+            var conversationVM = Mapper.Map<Conversation, ConversationViewModel>(conv);
             return new OkObjectResult(conversationVM);
         }
 
@@ -72,6 +76,7 @@ namespace Messenger.Controllers
             {                
                 conversations.Add(_converRepo.Find(convId));
             }
+			
             IEnumerable<ConversationViewModel> conversationsVM = Mapper.Map<IEnumerable<Conversation>, IEnumerable<ConversationViewModel>>(conversations);
             return new OkObjectResult(conversationsVM);
         }
@@ -80,12 +85,13 @@ namespace Messenger.Controllers
         [HttpPost]
         public IActionResult Create([FromBody] Conversation item)
         {
-            if (item == null)
-            {
-                return BadRequest();
-            }
+            if (item == null) return BadRequest();
+
             item.CreationDate = DateTimeOffset.Now.ToUnixTimeMilliseconds();
             _converRepo.Add(item);
+
+			_logRepository.Add(LoggingEvents.CREATE_ITEM, $"Convnersation {item.Id} {item.Name} created.");
+
             return CreatedAtRoute("GetConversation", new { Controller = "Conversation", id = item.Id },
                 Mapper.Map<Conversation, ConversationViewModel>(item));
         }
@@ -94,20 +100,15 @@ namespace Messenger.Controllers
         [HttpPut("{id}")]
         public IActionResult Update(int id, [FromBody] Conversation item)
         {
-            if (item == null)
-            {
-                return BadRequest();
-            }
-
+            if (item == null) return BadRequest();
+        
             var convObj = _converRepo.Find(id);
-            if (convObj == null)
-            {
-                return NotFound();
-            }
-            else
-            {
-                _converRepo.Update(id,convObj,item);
-            }
+
+            if (convObj == null) return NotFound();
+
+            _converRepo.Update(id,convObj,item);
+			_logRepository.Add(LoggingEvents.UPDATE_ITEM, $"Conversation {id} {convObj.Name} updated.");
+
             return new NoContentResult();
         }
 
@@ -116,6 +117,8 @@ namespace Messenger.Controllers
         public IActionResult Delete(int id)
         {
             _converRepo.Remove(id);
+			_logRepository.Add(LoggingEvents.DELETE_ITEM, $"Conversation {id} deleted.");
+
             return new NoContentResult();
         }
     }

@@ -1,5 +1,8 @@
 ﻿using System.Collections.Generic;
 using Messenger.Models;
+using System.Linq.Expressions;
+using System;
+using Messenger.LogProvider;
 
 namespace Messenger.Repositories
 {
@@ -36,5 +39,13 @@ namespace Messenger.Repositories
 	public interface IAnnouncementRepository : IEntityBaseRepository<Announcement>
 	{
 		void Update(int id, Announcement convObj, Announcement item);
+	}
+
+	public interface IEventLogRepository
+	{
+		LoggingEntity LoggingEntity { get; set; }
+		void Add(LoggingEvents eventId, string message);
+		IEnumerable<EventLog> FindBy(Expression<Func<EventLog, bool>> predicate);
+		IEnumerable<EventLog> GetAll();
 	}
 }

@@ -11,8 +11,7 @@ using Messenger.Core;
 using System;
 using System.Linq;
 using Messenger.Paginations;
-
-// For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+using Messenger.LogProvider;
 
 namespace Messenger.Controllers
 {
@@ -21,9 +20,13 @@ namespace Messenger.Controllers
     {
         private IPersonalInfoRepository _personalInfoRepo;
         private IPersonalInfoPaginationService _personalInfoPaginationService;
+		private readonly IEventLogRepository _logRepository;
 
-        public PersonalInfoController(IPersonalInfoRepository _repo, IPersonalInfoPaginationService personalInfoPS)
+		public PersonalInfoController(IEventLogRepository eventLogRepository, IPersonalInfoRepository _repo, IPersonalInfoPaginationService personalInfoPS)
         {
+			_logRepository = eventLogRepository;
+			_logRepository.LoggingEntity = LoggingEntity.PERSONAL_INFO;
+
             _personalInfoRepo = _repo;
             _personalInfoPaginationService = personalInfoPS;
         }
@@ -45,11 +48,10 @@ namespace Messenger.Controllers
         public IActionResult GetById(int id)
         {
             var persInfo = _personalInfoRepo.Find(id);
-            if (persInfo == null)
-            {
-                return NotFound();
-            }
-            PersonalInfoViewModel persInfoVM = Mapper.Map<PersonalInfo, PersonalInfoViewModel>(persInfo);
+
+			if (persInfo == null) return NotFound();
+			
+			var persInfoVM = Mapper.Map<PersonalInfo, PersonalInfoViewModel>(persInfo);
             return new OkObjectResult(persInfoVM);
         }
 
@@ -57,20 +59,15 @@ namespace Messenger.Controllers
         [HttpPut("{id}")]
         public IActionResult Update(int id, [FromBody] PersonalInfo item)
         {
+            if (item == null) return BadRequest();
 
-            if (item == null)
-            {
-                return BadRequest();
-            }
             var persInfoObj = _personalInfoRepo.Find(id);
-            if (persInfoObj == null)
-            {
-                return NotFound();
-            }
-            else
-            {
-                _personalInfoRepo.Update(id, persInfoObj, item);
-            }
+
+            if (persInfoObj == null) return NotFound();
+
+            _personalInfoRepo.Update(id, persInfoObj, item);
+			_logRepository.Add(LoggingEvents.UPDATE_ITEM, $"Personal info {id} updated.");
+
             return new NoContentResult();
         }
 
@@ -79,6 +76,8 @@ namespace Messenger.Controllers
         public IActionResult Delete(int id)
         {
             _personalInfoRepo.Remove(id);
+			_logRepository.Add(LoggingEvents.DELETE_ITEM, $"Personal info {id} deleted.");
+
             return new NoContentResult();
         }
     }

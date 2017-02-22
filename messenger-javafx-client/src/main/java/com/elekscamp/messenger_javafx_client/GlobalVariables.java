@@ -1,5 +1,7 @@
 package com.elekscamp.messenger_javafx_client;
 
+import translation.Dictionary;
+
 public class GlobalVariables {
 	
 	public enum Language {
@@ -8,4 +10,5 @@ public class GlobalVariables {
 	}
 	
 	public static Language language = Language.UKRAINIAN;
+	public static Dictionary languageDictionary;
 }

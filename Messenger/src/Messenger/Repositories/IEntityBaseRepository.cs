@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Messenger.LogProvider;
+using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
@@ -6,7 +7,7 @@ namespace Messenger.Repositories
 {
     public interface IEntityBaseRepository<T> where T : class, new()
     {
-        void Add(T item);
+		void Add(T item);
         IEnumerable<T> GetAll();
         IEnumerable<T> AllIncluding(params Expression<Func<T, object>>[] includeProperties);
         T GetSingle(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includeProperties);

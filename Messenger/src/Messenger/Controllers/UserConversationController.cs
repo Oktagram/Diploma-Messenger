@@ -36,7 +36,9 @@ namespace Messenger.Controllers
             {
                 return BadRequest();
             }        
+
             _userConverRepo.Add(item);
+
             return new OkObjectResult(Mapper.Map<UserConversation, UserConversationViewModel>(item));
         }
 

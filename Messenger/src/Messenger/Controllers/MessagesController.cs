@@ -5,24 +5,25 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Messenger.ViewModels;
 using AutoMapper;
-using System.Linq;
 using System;
 using Messenger.Core;
-using Microsoft.AspNetCore.Http;
 using Messenger.Paginations;
-
-// For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+using Messenger.LogProvider;
 
 namespace Messenger.Controllers
 {
-    [Route("api/[controller]")]
+	[Route("api/[controller]")]
     public class MessagesController : Controller
     {
         private IMessageRepository _messageRepository;
         private IMessagePaginationService _messagePaginationService { get; set; }
+		private readonly IEventLogRepository _logRepository;
 
-        public MessagesController(IMessageRepository messageRepository, IMessagePaginationService messagePS)
+        public MessagesController(IEventLogRepository eventLogRepository, IMessageRepository messageRepository, IMessagePaginationService messagePS)
         {
+			_logRepository = eventLogRepository;
+			_logRepository.LoggingEntity = LoggingEntity.MESSAGE;
+
             _messageRepository = messageRepository;
             _messagePaginationService = messagePS;
         }
@@ -31,24 +32,25 @@ namespace Messenger.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {           
-            IEnumerable<Message> messages = _messageRepository.GetAll();
+            var messages = _messageRepository.GetAll();
             var paginationInfo = Request.Headers["Pagination"];
             var pagination = _messagePaginationService.MakePagination(messages, paginationInfo);
+
             Response.AddPagination(pagination.Header);
-            IEnumerable<MessageViewModel> messagesVM = Mapper.Map<IEnumerable<Message>, IEnumerable<MessageViewModel>>(pagination.PageOfItems);
-            return new OkObjectResult(messagesVM);
+
+            var messagesVM = Mapper.Map<IEnumerable<Message>, IEnumerable<MessageViewModel>>(pagination.PageOfItems);
+			return new OkObjectResult(messagesVM);
         }
 
         [Authorize]
         [HttpGet("{id}", Name = "GetMessage")]
         public IActionResult GetById(int id)
         {
-            Message message = _messageRepository.Find(id);
-            if (message == null)
-            {
-                return NotFound();
-            }
-            MessageViewModel messageVM = Mapper.Map<Message, MessageViewModel>(message);
+            var message = _messageRepository.Find(id);
+
+            if (message == null) return NotFound();
+			
+            var messageVM = Mapper.Map<Message, MessageViewModel>(message);
             return new OkObjectResult(messageVM);
         }
 
@@ -56,11 +58,13 @@ namespace Messenger.Controllers
         [HttpGet("byConversation/{id}")]
         public IActionResult GetByConversationId(int id)
         {
-            IEnumerable<Message> messages = _messageRepository.FindBy(m => m.ConversationId == id);
+			var messages = _messageRepository.FindBy(m => m.ConversationId == id);
             var paginationInfo = Request.Headers["Pagination"];
             var pagination = _messagePaginationService.MakePagination(messages, paginationInfo);
+
             Response.AddPagination(pagination.Header);
-            IEnumerable<MessageViewModel> messagesVM = Mapper.Map<IEnumerable<Message>, IEnumerable<MessageViewModel>>(pagination.PageOfItems);
+			
+            var messagesVM = Mapper.Map<IEnumerable<Message>, IEnumerable<MessageViewModel>>(pagination.PageOfItems);
             return new OkObjectResult(messagesVM);
         }
 
@@ -68,13 +72,14 @@ namespace Messenger.Controllers
         [HttpPost]
         public IActionResult Create([FromBody] Message item)
         {
-            if (item == null)
-            {
-                return BadRequest();
-            }
+            if (item == null) return BadRequest();
+            
             item.SendDate = DateTimeOffset.Now.ToUnixTimeMilliseconds();
             _messageRepository.Add(item);
-            return CreatedAtRoute("GetMessage", new { Controller = "Message", id = item.Id },
+
+			_logRepository.Add(LoggingEvents.CREATE_ITEM, $"Message {item.Id} created.");
+
+			return CreatedAtRoute("GetMessage", new { Controller = "Message", id = item.Id },
                 Mapper.Map<Message, MessageViewModel>(item));
         }
 
@@ -87,15 +92,13 @@ namespace Messenger.Controllers
                 return BadRequest();
             }
             var messObj = _messageRepository.Find(id);
-            if (messObj == null)
-            {
-                return NotFound();
-            }
-            else
-            {
-                _messageRepository.Update(id, messObj, item);
-            }
-            return new NoContentResult();
+
+			if (messObj == null) return NotFound();
+            
+            _messageRepository.Update(id, messObj, item);
+			_logRepository.Add(LoggingEvents.UPDATE_ITEM, $"Message {id} updated.");
+
+			return new NoContentResult();
         }
 
         [Authorize]
@@ -103,7 +106,9 @@ namespace Messenger.Controllers
         public IActionResult Delete(int id)
         {
             _messageRepository.Remove(id);
-            return new NoContentResult();
+			_logRepository.Add(LoggingEvents.DELETE_ITEM, $"Message {id} deleted.");
+			
+			return new NoContentResult();
         }
     }
 }
