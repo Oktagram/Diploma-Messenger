@@ -54,7 +54,11 @@ namespace Messenger.Controllers
         {
             var conv = _converRepo.Find(id);
 
-            if (conv == null) return NotFound();
+			if (conv == null)
+			{
+				_logRepository.Add(LoggingEvents.GET_ITEM, $"Getting conversation by id {id}: Not Found.");
+				return NotFound();
+			}
 			
             var conversationVM = Mapper.Map<Conversation, ConversationViewModel>(conv);
             return new OkObjectResult(conversationVM);
@@ -64,20 +68,24 @@ namespace Messenger.Controllers
         [HttpGet("byUser/{id}")]
         public IActionResult GetByUserId(int id)
         {
-            List<int> userConvs = _userConvRepo.FindBy(uc => uc.UserId == id)
+            var userConvs = _userConvRepo.FindBy(uc => uc.UserId == id)
                                                       .Select(uc => uc.ConversationId)
                                                       .ToList();
-            List<int> orderedConversations = _messageRepo.GetOrderedConversationIds()
+
+			var orderedConversations = _messageRepo.GetOrderedConversationIds()
                                                                 .Intersect(userConvs)
                                                                 .ToList();
-            orderedConversations.AddRange(userConvs.Except(orderedConversations));
-            IList<Conversation> conversations = new List<Conversation>();
+
+			var conversations = new List<Conversation>();
+
+			orderedConversations.AddRange(userConvs.Except(orderedConversations));
+			
             foreach (var convId in orderedConversations)
             {                
                 conversations.Add(_converRepo.Find(convId));
             }
 			
-            IEnumerable<ConversationViewModel> conversationsVM = Mapper.Map<IEnumerable<Conversation>, IEnumerable<ConversationViewModel>>(conversations);
+            var conversationsVM = Mapper.Map<IEnumerable<Conversation>, IEnumerable<ConversationViewModel>>(conversations);
             return new OkObjectResult(conversationsVM);
         }
 
@@ -85,12 +93,16 @@ namespace Messenger.Controllers
         [HttpPost]
         public IActionResult Create([FromBody] Conversation item)
         {
-            if (item == null) return BadRequest();
+			if (item == null)
+			{
+				_logRepository.Add(LoggingEvents.CREATE_ITEM, $"Creating conversation: Bad Request.");
+				return BadRequest();
+			}
 
             item.CreationDate = DateTimeOffset.Now.ToUnixTimeMilliseconds();
             _converRepo.Add(item);
 
-			_logRepository.Add(LoggingEvents.CREATE_ITEM, $"Convnersation {item.Id} {item.Name} created.");
+			_logRepository.Add(LoggingEvents.CREATE_ITEM, $"Convnersation {item.Id} [{item.Name}] created.");
 
             return CreatedAtRoute("GetConversation", new { Controller = "Conversation", id = item.Id },
                 Mapper.Map<Conversation, ConversationViewModel>(item));
@@ -100,16 +112,24 @@ namespace Messenger.Controllers
         [HttpPut("{id}")]
         public IActionResult Update(int id, [FromBody] Conversation item)
         {
-            if (item == null) return BadRequest();
-        
+			if (item == null)
+			{
+				_logRepository.Add(LoggingEvents.UPDATE_ITEM, $"Updating announcement {item.Id}: Bad Request.");
+				return BadRequest();
+			}
+
             var convObj = _converRepo.Find(id);
 
-            if (convObj == null) return NotFound();
+			if (convObj == null)
+			{
+				_logRepository.Add(LoggingEvents.UPDATE_ITEM, $"Updating announcement {item.Id}: Not Found.");
+				return NotFound();
+			}
 
             _converRepo.Update(id,convObj,item);
-			_logRepository.Add(LoggingEvents.UPDATE_ITEM, $"Conversation {id} {convObj.Name} updated.");
-
-            return new NoContentResult();
+			_logRepository.Add(LoggingEvents.UPDATE_ITEM, $"Conversation {id} [{convObj.Name}] to [{item.Name}] updated.");
+			
+			return new NoContentResult();
         }
 
         [Authorize]

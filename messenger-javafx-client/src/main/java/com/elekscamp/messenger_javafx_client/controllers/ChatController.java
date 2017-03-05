@@ -11,11 +11,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Timer;
+import java.util.TimerTask;
 import java.util.stream.Collectors;
 
 import com.elekscamp.messenger_javafx_client.GlobalVariables;
-import com.elekscamp.messenger_javafx_client.GlobalVariables.Language;
-import com.elekscamp.messenger_javafx_client.Services.Computer;
 import com.elekscamp.messenger_javafx_client.dal.ContentProvider;
 import com.elekscamp.messenger_javafx_client.dal.RequestManager;
 import com.elekscamp.messenger_javafx_client.entities.Announcement;
@@ -25,25 +24,25 @@ import com.elekscamp.messenger_javafx_client.entities.PersonalInfo;
 import com.elekscamp.messenger_javafx_client.entities.User;
 import com.elekscamp.messenger_javafx_client.entities.UserWithImage;
 import com.elekscamp.messenger_javafx_client.exceptions.HttpErrorCodeException;
+import com.elekscamp.messenger_javafx_client.services.Computer;
 import com.elekscamp.messenger_javafx_client.ui.Colors;
-import com.elekscamp.messenger_javafx_client.ui.Chat.ChatButtonsHandler;
-import com.elekscamp.messenger_javafx_client.ui.Chat.ChatDialogsHandler;
-import com.elekscamp.messenger_javafx_client.ui.Chat.ChatLabelsHandler;
-import com.elekscamp.messenger_javafx_client.ui.Chat.ChatListViewHandler;
-import com.elekscamp.messenger_javafx_client.ui.Chat.ChatObjectsHandler;
-import com.elekscamp.messenger_javafx_client.ui.Chat.ListCells.MessageListCell;
-import com.elekscamp.messenger_javafx_client.ui.Chat.ListCells.UserListCell;
 import com.elekscamp.messenger_javafx_client.ui.PersonalInfo.PersonalInfoDialog;
+import com.elekscamp.messenger_javafx_client.ui.handlers.AnnouncementsHandler;
+import com.elekscamp.messenger_javafx_client.ui.handlers.ChatButtonsHandler;
+import com.elekscamp.messenger_javafx_client.ui.handlers.ChatDialogsHandler;
+import com.elekscamp.messenger_javafx_client.ui.handlers.ChatLabelsHandler;
+import com.elekscamp.messenger_javafx_client.ui.handlers.ChatListViewHandler;
+import com.elekscamp.messenger_javafx_client.ui.handlers.ChatObjectsHandler;
+import com.elekscamp.messenger_javafx_client.ui.list_cells.MessageListCell;
+import com.elekscamp.messenger_javafx_client.ui.list_cells.UserListCell;
+
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -112,14 +111,11 @@ public class ChatController implements Initializable {
 	private ChatObjectsHandler objectsHandler;
 	private ChatDialogsHandler dialogsHandler;
 	private HBox smilesHBox;
-	private final double smileSize;
-	private final int countOfSmiles;
 	private Computer computer;
 	private ChatListViewHandler listViewHandler;
+	private AnnouncementsHandler announcementsHandler;
 	
 	public ChatController() {
-		smileSize = 30;
-		countOfSmiles = 5;
 		computer = new Computer();
 		labelsHandler = new ChatLabelsHandler();
 		objectsHandler = new ChatObjectsHandler();
@@ -129,10 +125,12 @@ public class ChatController implements Initializable {
 		attachmentAnchor = new AnchorPane();
 		buttonsHandler = new ChatButtonsHandler();
 		listViewHandler = new ChatListViewHandler();
+		announcementsHandler = new AnnouncementsHandler();
 		alert = dialogsHandler.getAlert();
+		popup = dialogsHandler.getSmilesPopup(txtAreaMessage, buttonsHandler);
 		
 		timer = new Timer();
-		/*
+		
 		timer.scheduleAtFixedRate(new TimerTask() {
 			@Override public void run() { 
 				Platform.runLater(() -> {
@@ -140,29 +138,17 @@ public class ChatController implements Initializable {
 					updateConversationsListView();
 				}); 
 			} 
-		}, 2000, 5000);
-		*/
+		}, 2000, 3000);
 		
-		prepareSmilesPopup();
+
 		initializeAttachmentControls();
 	}
 	
 	public void initData(int currentUserId) {
-
 		this.currentUserId = currentUserId;
 		
 		prepareData();
-		prepareButtons();
 		initializeListViews();
-
-		btnFriends.fire();
-
-		Platform.runLater(() -> {
-				Stage btnSendStage = (Stage) btnSend.getScene().getWindow();
-				btnSendStage.getIcons().add(new Image("/images/icon.png"));
-				
-				txtAreaMessage.requestFocus();
-		});
 	}
 
 	public void btnSmilesOnAction() {
@@ -176,25 +162,6 @@ public class ChatController implements Initializable {
 		popup.show(btnSmiles, posX, posY);
 	}
 
-	private void prepareSmilesPopup() {
-		smilesHBox = new HBox();
-		
-		int borderWidth = 4;
-		smilesHBox.setPrefSize(smileSize * countOfSmiles + borderWidth, smileSize + borderWidth);
-		smilesHBox.setAlignment(Pos.CENTER);
-		smilesHBox.setStyle("-fx-background-color: " + Colors.smilesPopupBorder);
-
-		Button btnFirstSmile = buttonsHandler.getSmileButton("images/friendly-smile.jpg", 30, () -> addSmileToMessage("=)"));
-		Button btnSecondSmile = buttonsHandler.getSmileButton("images/sad-smile.jpg", 30, () -> addSmileToMessage("=("));
-		Button btnThirdSmile = buttonsHandler.getSmileButton("images/happy-smile.jpg", 30, () -> addSmileToMessage("=D"));
-		Button btnFourthSmile = buttonsHandler.getSmileButton("images/very-sad-smile.jpg", 30, () -> addSmileToMessage("='("));
-		Button btnFifthSmile = buttonsHandler.getSmileButton("images/angry-smile.jpg", 30, () -> addSmileToMessage("X-("));
-
-		smilesHBox.getChildren().addAll(btnFirstSmile, btnSecondSmile, btnThirdSmile, btnFourthSmile, btnFifthSmile);
-
-		popup = dialogsHandler.getSmilesPopup(smilesHBox);
-	}
-	
 	private void prepareData() {
 		try {
 			this.currentUser = provider.getUserProvider().getById(currentUserId);
@@ -202,50 +169,23 @@ public class ChatController implements Initializable {
 			personalInfo = provider.getPersonalInfoProvider().getById(currentUserId);
 			picture = personalInfo.getPicture();
 
-			updateCurrentUserPicture();
+			objectsHandler.customizeUsersPicture(imageViewCurrentUser, picture, currentUserId);
 
 			List<Conversation> conversationsList = provider.getConversationProvider().getByUserId(currentUserId);
 			List<Announcement> announcementsList = provider.getAnnouncementProvider().getAll();
-			List<Announcement> activeAnnouncementsList = getActiveAnnouncements(announcementsList);
-			List<Announcement> closedAnnouncemetsList = getClosedAnnouncements(announcementsList);
-			
+
 			fillConversationsListView(conversationsList);
-			fillActiveAnnouncementListView(activeAnnouncementsList);
-			fillClosedAnnouncementListView(closedAnnouncemetsList);
+			fillActiveAnnouncementListView(announcementsHandler.getSpreadedAnnouncements(announcementsList, true));
+			fillClosedAnnouncementListView(announcementsHandler.getSpreadedAnnouncements(announcementsList, false));
 		} catch (HttpErrorCodeException | IOException e) {
 			e.printStackTrace();
 		}
 	}
 
-	private List<Announcement> getClosedAnnouncements(List<Announcement> announcementsList) {
-		List<Announcement> result = new ArrayList<>();
-		
-		for (Announcement item : announcementsList) 
-			if (!item.getIsActive()) result.add(item);
-		
-		return result;
-	}
-	
-	private List<Announcement> getActiveAnnouncements(List<Announcement> announcementsList) {
-		List<Announcement> result = new ArrayList<>();
-		
-		for (Announcement item : announcementsList) 
-			if (item.getIsActive()) result.add(item);
-		
-		return result;
-	}
-	
 	private void initializeAttachmentControls() {
 		Button btnRemoveAttachment = buttonsHandler.getRemoveAttachmentButton(() -> removeAttachment());
 		lbAttachmentName = labelsHandler.getAttachmentNameLabel(attachmentTooltip);
-
 		attachmentAnchor.getChildren().addAll(lbAttachmentName, btnRemoveAttachment);
-	}
-
-	private void addSmileToMessage(String smile) {
-		txtAreaMessage.appendText(" " + smile + " ");
-		popup.hide();
-		txtAreaMessage.requestFocus();
 	}
 
 	public void btnAttachmentOnAction() {
@@ -337,34 +277,8 @@ public class ChatController implements Initializable {
 	public void btnLogOutOnAction() {
 		timer.cancel();
 		
-		FXMLLoader loader;
-		if (GlobalVariables.language == Language.ENGLISH)
-			loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/AuthenticationWindowEng.fxml"));
-		else
-			loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/AuthenticationWindowUkr.fxml"));
-			
-		try {
-			currentUser.setIsOnline(false);
-			provider.getUserProvider().update(currentUser.getId(), currentUser);
-
-			Parent root = loader.load();
-
-			Stage stage = (Stage) btnSend.getScene().getWindow();
-			stage.close();
-
-			Scene scene = new Scene(root);
-
-			stage = new Stage();
-			stage.setScene(scene);
-			stage.setTitle("Messenger");
-			stage.setResizable(false);
-			stage.setMinWidth(520);
-			stage.setMinHeight(450);
-
-			stage.show();
-		} catch (HttpErrorCodeException | IOException e) {
-			e.printStackTrace();
-		}
+		Stage stage = objectsHandler.getAuthenticationStage(provider, currentUser, btnSend);
+		stage.show();
 	}
 
 	public void btnNewConversationOnAction() {
@@ -373,7 +287,8 @@ public class ChatController implements Initializable {
 		
 		Optional<String> dialogResult = textInputDialog.showAndWait();
 		dialogResult.ifPresent(conversationName -> {
-			if (!conversationName.isEmpty()) createNewConversation(dialogResult.get());
+			if (!conversationName.isEmpty()) 
+				createNewConversation(dialogResult.get());
 			else {
 				alert.setContentText(GlobalVariables.languageDictionary.getNameOfTheConversationCannotBeEmpty());
 				alert.showAndWait();
@@ -383,7 +298,7 @@ public class ChatController implements Initializable {
 
 	public void imageViewCurrentUserOnMouseClicked() {
 
-		PersonalInfoDialog personalInfoDialog = new PersonalInfoDialog(Colors.dialogBackground);
+		PersonalInfoDialog personalInfoDialog = new PersonalInfoDialog(Colors.DIALOG_BACKGROUND);
 		try {
 			personalInfo = provider.getPersonalInfoProvider().getById(currentUserId);
 
@@ -431,17 +346,14 @@ public class ChatController implements Initializable {
 
 		List<Message> messagesList = null;
 		try {
-			messagesList = provider.getMessageProvider().getByConversationId(currentConversationId);
-			
+			messagesList = provider.getMessageProvider().getByConversationId(currentConversationId);	
 			int countOfItems = listViewChat.getItems().size();
 			
 			if (countOfItems != messagesList.size()) {
-			
 				Collections.reverse(messagesList);
-		
 				ObservableList<Message> messagesObservableList = FXCollections.observableArrayList();
+				
 				messagesObservableList.setAll(messagesList);
-		
 				listViewChat.setItems(messagesObservableList);
 				
 				countOfItems = listViewChat.getItems().size();
@@ -467,19 +379,6 @@ public class ChatController implements Initializable {
 		}
 	}
 
-	private void updateCurrentUserPicture() {
-
-		Image profileImage;
-		
-		if (picture == null || picture.isEmpty())
-			profileImage = new Image("images/default_user_image.png");
-		else
-			profileImage = new Image(
-					RequestManager.getRequestApi() + "/files/downloadpicture/" + Integer.toString(currentUserId));
-
-		imageViewCurrentUser.setImage(profileImage);
-	}
-
 	private void updateAnnouncementsListViews() {
 		
 		List<Announcement> announcementsList = null;
@@ -487,8 +386,8 @@ public class ChatController implements Initializable {
 		try {
 			announcementsList = provider.getAnnouncementProvider().getAll();
 			
-			List<Announcement> activeAnnouncementsList = getActiveAnnouncements(announcementsList);
-			List<Announcement> closedAnnouncemetsList = getClosedAnnouncements(announcementsList);
+			List<Announcement> activeAnnouncementsList = announcementsHandler.getSpreadedAnnouncements(announcementsList, true);
+			List<Announcement> closedAnnouncemetsList = announcementsHandler.getSpreadedAnnouncements(announcementsList, false);
 			
 			if (activeAnnouncementsList.size() != listViewActiveAnnouncements.getItems().size())
 				fillActiveAnnouncementListView(activeAnnouncementsList);
@@ -502,8 +401,9 @@ public class ChatController implements Initializable {
 	public void btnUpdateOnAction() {
 		updateMessagesListView();
 		updateConversationsListView();
-		updateCurrentUserPicture();
 		updateAnnouncementsListViews();
+		
+		objectsHandler.customizeUsersPicture(imageViewCurrentUser, picture, currentUserId);
 	}
 
 	public void txtAreaMessageOnKeyPressed(KeyEvent ke) {
@@ -640,9 +540,9 @@ public class ChatController implements Initializable {
 	private void changeButtonsColors(Button buttonPicked) {
 		for (Button button : buttonsForListViewUsers) {
 			if (button.equals(buttonPicked))
-				button.setStyle("-fx-base: " + Colors.activeUserTab);
+				button.setStyle("-fx-base: " + Colors.ACTIVE_USER_TAB);
 			else
-				button.setStyle("-fx-base: " + Colors.passiveUserTab);
+				button.setStyle("-fx-base: " + Colors.PASSIVE_USER_TAB);
 		}
 	}
 
@@ -676,15 +576,23 @@ public class ChatController implements Initializable {
 		buttonsForListViewUsers.add(btnAllUsers);
 		buttonsForListViewUsers.add(btnFriends);
 
-		for (Button button : buttonsForListViewUsers) {
-			button.setStyle("-fx-base: " + Colors.passiveUserTab);
-		}
+		for (Button button : buttonsForListViewUsers) 
+			button.setStyle("-fx-base: " + Colors.PASSIVE_USER_TAB);
 	}
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		prepareButtons();
 		txtAreaMessage.setTextFormatter(new TextFormatter<String>(change -> 
 			change.getControlNewText().length() <= 200 ? change : null));
 		objectsHandler.customizeAnnouncementsTabPane(announcementsTabPane);
+		
+		Platform.runLater(() -> {
+			Stage btnSendStage = (Stage) btnSend.getScene().getWindow();
+			btnSendStage.getIcons().add(new Image("/images/icon.png"));
+			
+			txtAreaMessage.requestFocus();
+			btnFriends.fire();
+		});
 	}
 }

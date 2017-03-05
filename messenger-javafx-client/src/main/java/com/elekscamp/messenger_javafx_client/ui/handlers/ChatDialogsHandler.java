@@ -1,12 +1,15 @@
-package com.elekscamp.messenger_javafx_client.ui.Chat;
+package com.elekscamp.messenger_javafx_client.ui.handlers;
 
 import java.io.File;
 
 import com.elekscamp.messenger_javafx_client.GlobalVariables;
 import com.elekscamp.messenger_javafx_client.ui.Colors;
 
+import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.DialogPane;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
@@ -18,13 +21,31 @@ import javafx.stage.Popup;
 
 public class ChatDialogsHandler {
 
-	public Popup getSmilesPopup(HBox smilesHBox) {
+	public Popup getSmilesPopup(TextArea textAreaMessage, ChatButtonsHandler buttonsHandler) {
+		double smileSize = 30;
+		int countOfSmiles = 5;
+		int borderWidth = 4;
+		
+		HBox smilesHBox = new HBox();
+		
+		smilesHBox.setPrefSize(smileSize * countOfSmiles + borderWidth, smileSize + borderWidth);
+		smilesHBox.setAlignment(Pos.CENTER);
+		smilesHBox.setStyle("-fx-background-color: " + Colors.SMILES_POPUP_BORDER);
+		
 		Popup popup =  new Popup();
 		
 		popup.setAutoHide(true);
 		popup.setHideOnEscape(true);
 		popup.setAutoFix(true);
 		popup.getContent().add(smilesHBox);
+		
+		Button btnFirstSmile = buttonsHandler.getSmileButton(textAreaMessage, popup, "images/friendly-smile.jpg", smileSize, "=)");
+		Button btnSecondSmile = buttonsHandler.getSmileButton(textAreaMessage, popup, "images/sad-smile.jpg", smileSize, "=(");
+		Button btnThirdSmile = buttonsHandler.getSmileButton(textAreaMessage, popup, "images/happy-smile.jpg", smileSize, "=D");
+		Button btnFourthSmile = buttonsHandler.getSmileButton(textAreaMessage, popup, "images/very-sad-smile.jpg", smileSize, "='(");
+		Button btnFifthSmile = buttonsHandler.getSmileButton(textAreaMessage, popup, "images/angry-smile.jpg", smileSize, "X-(");
+		
+		smilesHBox.getChildren().addAll(btnFirstSmile, btnSecondSmile, btnThirdSmile, btnFourthSmile, btnFifthSmile);
 		
 		return popup;
 	}
@@ -35,7 +56,7 @@ public class ChatDialogsHandler {
 		textInputDialog.setTitle(GlobalVariables.languageDictionary.getNewAnnouncement());
 		textInputDialog.setHeaderText(null);
 		textInputDialog.setContentText(GlobalVariables.languageDictionary.getAnnouncementDescription());
-		textInputDialog.getDialogPane().setStyle("-fx-background-color: " + Colors.dialogBackground);		
+		textInputDialog.getDialogPane().setStyle("-fx-background-color: " + Colors.DIALOG_BACKGROUND);		
 		textInputDialog.getDialogPane().setPrefWidth(600);
 		textInputDialog.setResizable(true);
 		
@@ -51,7 +72,7 @@ public class ChatDialogsHandler {
 		textInputDialog.setTitle(GlobalVariables.languageDictionary.getNewConversation());
 		textInputDialog.setHeaderText(null);
 		textInputDialog.setContentText(GlobalVariables.languageDictionary.getNameOfTheConversation());
-		textInputDialog.getDialogPane().setStyle("-fx-background-color: " + Colors.dialogBackground);
+		textInputDialog.getDialogPane().setStyle("-fx-background-color: " + Colors.DIALOG_BACKGROUND);
 
 		Stage stage = (Stage) textInputDialog.getDialogPane().getScene().getWindow();
 		stage.getIcons().add(new Image("/images/icon.png"));
@@ -65,7 +86,7 @@ public class ChatDialogsHandler {
 		alert.setHeaderText(null);
 		
 		DialogPane dialogPane = alert.getDialogPane();
-		dialogPane.setStyle("-fx-background-color: " + Colors.dialogBackground);		
+		dialogPane.setStyle("-fx-background-color: " + Colors.DIALOG_BACKGROUND);		
 		
 		Stage stage = (Stage) dialogPane.getScene().getWindow();
 		stage.getIcons().add(new Image("/images/icon.png"));

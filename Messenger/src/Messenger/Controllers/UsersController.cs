@@ -42,11 +42,15 @@ namespace Messenger.Controllers
             var subject = jwt.Subject;
             var user = _userRepo.GetSingle(use => use.Login.Equals(subject));
 
-            if (user == null) return NotFound();
+			if (user == null)
+			{
+				_logRepository.Add(LoggingEvents.GET_ITEM, $"Authorizing user {user.Id}: Not Found.");
+				return NotFound();
+			}
 
-			_logRepository.Add(LoggingEvents.GET_ITEM, $"User {user.Id} {user.Login} authorized.");
+			_logRepository.Add(LoggingEvents.GET_ITEM, $"User {user.Id} [{user.Login}] authorized.");
 
-            UserViewModel userVM = Mapper.Map<User, UserViewModel>(user);
+            var userVM = Mapper.Map<User, UserViewModel>(user);
             return new OkObjectResult(userVM);
         }
 
@@ -54,12 +58,14 @@ namespace Messenger.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            IEnumerable<User> users = _userRepo.GetAll();
+            var users = _userRepo.GetAll();
             var paginationInfo = Request.Headers["Pagination"];
             var pagination = _userPaginationService.MakePagination(users, paginationInfo);
-            Response.AddPagination(pagination.Header);
-            IEnumerable<UserViewModel> usersVM = Mapper.Map<IEnumerable<User>, IEnumerable<UserViewModel>>(pagination.PageOfItems);
-            return new OkObjectResult(usersVM);
+
+			Response.AddPagination(pagination.Header);
+
+			var usersVM = Mapper.Map<IEnumerable<User>, IEnumerable<UserViewModel>>(pagination.PageOfItems);
+			return new OkObjectResult(usersVM);
         }
 
         [Authorize]
@@ -68,9 +74,13 @@ namespace Messenger.Controllers
         {
             var user = _userRepo.Find(id);
 
-            if (user == null) return NotFound();
-			
-            UserViewModel userVM = Mapper.Map<User, UserViewModel>(user);
+			if (user == null)
+			{
+				_logRepository.Add(LoggingEvents.GET_ITEM, $"Getting user by id {id}: Not Found.");
+				return NotFound();
+			}
+
+            var userVM = Mapper.Map<User, UserViewModel>(user);
             return new OkObjectResult(userVM);
         }
 
@@ -78,8 +88,8 @@ namespace Messenger.Controllers
         [HttpGet("byConversation/{id}")]
         public IActionResult GetByConversationId(int id)
         {
-            IEnumerable<UserConversation> userConvs = _userConvRepo.FindBy(u => u.ConversationId == id);
-            IList<User> users = new List<User>();
+            var userConvs = _userConvRepo.FindBy(u => u.ConversationId == id);
+            var users = new List<User>();
 
             foreach (var uc in userConvs)
             {
@@ -91,7 +101,7 @@ namespace Messenger.Controllers
 
             Response.AddPagination(pagination.Header);
 			
-            IEnumerable<UserViewModel> usersVM = Mapper.Map<IEnumerable<User>, IEnumerable<UserViewModel>>(pagination.PageOfItems);
+            var usersVM = Mapper.Map<IEnumerable<User>, IEnumerable<UserViewModel>>(pagination.PageOfItems);
             return new OkObjectResult(usersVM);
         }
 
@@ -99,7 +109,7 @@ namespace Messenger.Controllers
         [HttpGet("{id}/friends")]
         public IActionResult GetFriends(int id)
         {
-            IList<User> users = new List<User>();
+            var users = new List<User>();
             var friends = _userConvRepo.FindFriends(id);
 
             foreach (var friend in friends)
@@ -137,13 +147,17 @@ namespace Messenger.Controllers
         [HttpPost]
         public IActionResult Create([FromBody] User item)
         {
-            if (item == null) return BadRequest();
-            
+			if (item == null)
+			{
+				_logRepository.Add(LoggingEvents.CREATE_ITEM, $"Creating user: Bad Request.");
+				return BadRequest();
+			}
+
             item.RegistrationDate = DateTimeOffset.Now.ToUnixTimeMilliseconds();
             item.Password = HashService.GetHashString(item.Password);
             _userRepo.Add(item);
 
-			_logRepository.Add(LoggingEvents.CREATE_ITEM, $"User {item.Id} {item.Login} created.");
+			_logRepository.Add(LoggingEvents.CREATE_ITEM, $"User {item.Id} [{item.Login}] created.");
 
 			return CreatedAtRoute("GetUser", new { Controller = "User", id = item.Id }, 
                 Mapper.Map<User, UserViewModel>(item));
@@ -153,15 +167,24 @@ namespace Messenger.Controllers
         [HttpPut("{id}")]
         public IActionResult Update(int id, [FromBody] User item)
         {
-            if (item == null) return BadRequest();
+			if (item == null)
+			{
+				_logRepository.Add(LoggingEvents.UPDATE_ITEM, $"Updating user {id}: Bad Request.");
+				return BadRequest();
+			}
         
             var userObj = _userRepo.Find(id);
 
-			if (userObj == null) return NotFound();
+			if (userObj == null)
+			{
+				_logRepository.Add(LoggingEvents.UPDATE_ITEM, $"Updating user {id}: Not Found.");
+				return NotFound();
+			}
+
 			if (item.Password != null) item.Password = HashService.GetHashString(item.Password);
 
 			_userRepo.Update(id, userObj, item);
-			_logRepository.Add(LoggingEvents.UPDATE_ITEM, $"User {id} {userObj.Login} updated.");
+			_logRepository.Add(LoggingEvents.UPDATE_ITEM, $"User {id} [{userObj.Login}] updated.");
 
             return new NoContentResult();
         }

@@ -35,12 +35,15 @@ namespace Messenger.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            IEnumerable<PersonalInfo>personalInfos = _personalInfoRepo.GetAll();
+            var personalInfos = _personalInfoRepo.GetAll();
             var paginationInfo = Request.Headers["Pagination"];
             var pagination = _personalInfoPaginationService.MakePagination(personalInfos, paginationInfo);
-            Response.AddPagination(pagination.Header);
-            IEnumerable<PersonalInfoViewModel> persInfosVM = Mapper.Map<IEnumerable<PersonalInfo>, IEnumerable<PersonalInfoViewModel>>(pagination.PageOfItems);
-            return new OkObjectResult(persInfosVM);
+
+			Response.AddPagination(pagination.Header);
+
+			var persInfosVM = Mapper.Map<IEnumerable<PersonalInfo>, IEnumerable<PersonalInfoViewModel>>(pagination.PageOfItems);
+
+			return new OkObjectResult(persInfosVM);
         }
 
         [Authorize]
@@ -49,24 +52,37 @@ namespace Messenger.Controllers
         {
             var persInfo = _personalInfoRepo.Find(id);
 
-			if (persInfo == null) return NotFound();
-			
+			if (persInfo == null)
+			{
+				_logRepository.Add(LoggingEvents.GET_ITEM, $"Getting personal info by id {id}: Not Found.");
+				return NotFound();
+			}
+
 			var persInfoVM = Mapper.Map<PersonalInfo, PersonalInfoViewModel>(persInfo);
-            return new OkObjectResult(persInfoVM);
+
+			return new OkObjectResult(persInfoVM);
         }
 
         [Authorize]
         [HttpPut("{id}")]
         public IActionResult Update(int id, [FromBody] PersonalInfo item)
         {
-            if (item == null) return BadRequest();
+			if (item == null)
+			{
+				_logRepository.Add(LoggingEvents.UPDATE_ITEM, $"Updating personal info {id}: Bad Request.");
+				return BadRequest();
+			}
 
             var persInfoObj = _personalInfoRepo.Find(id);
 
-            if (persInfoObj == null) return NotFound();
+			if (persInfoObj == null)
+			{
+				_logRepository.Add(LoggingEvents.UPDATE_ITEM, $"Updating personal info {id}: Not Found.");
+				return NotFound();
+			}
 
             _personalInfoRepo.Update(id, persInfoObj, item);
-			_logRepository.Add(LoggingEvents.UPDATE_ITEM, $"Personal info {id} updated.");
+			_logRepository.Add(LoggingEvents.UPDATE_ITEM, $"Personal info {id} updated: {item}.");
 
             return new NoContentResult();
         }

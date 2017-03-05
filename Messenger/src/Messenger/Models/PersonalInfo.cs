@@ -13,5 +13,11 @@ namespace Messenger.Models
 
         public int UserId { get; set; }
         public User User { get; set; }
-    }
+
+		public override string ToString()
+		{
+			return $"[Picture: {Picture}], [First name: {FirstName}], [Last name: {LastName}], [Phone number: {PhoneNumber}], "
+				+ $"[Birth date: {BirthDate}]";
+		}
+	}
 }

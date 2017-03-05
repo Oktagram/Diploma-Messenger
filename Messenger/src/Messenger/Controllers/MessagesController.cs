@@ -48,8 +48,12 @@ namespace Messenger.Controllers
         {
             var message = _messageRepository.Find(id);
 
-            if (message == null) return NotFound();
-			
+			if (message == null)
+			{
+				_logRepository.Add(LoggingEvents.GET_ITEM, $"Getting message by id {id}: Not Found.");
+				return NotFound();
+			}
+
             var messageVM = Mapper.Map<Message, MessageViewModel>(message);
             return new OkObjectResult(messageVM);
         }
@@ -72,8 +76,12 @@ namespace Messenger.Controllers
         [HttpPost]
         public IActionResult Create([FromBody] Message item)
         {
-            if (item == null) return BadRequest();
-            
+			if (item == null)
+			{
+				_logRepository.Add(LoggingEvents.CREATE_ITEM, $"Creating message: Bad Request.");
+				return BadRequest();
+			}
+
             item.SendDate = DateTimeOffset.Now.ToUnixTimeMilliseconds();
             _messageRepository.Add(item);
 
@@ -89,14 +97,20 @@ namespace Messenger.Controllers
         {
             if (item == null)
             {
-                return BadRequest();
+				_logRepository.Add(LoggingEvents.UPDATE_ITEM, $"Updating message: Bad Request.");
+				return BadRequest();
             }
+
             var messObj = _messageRepository.Find(id);
 
-			if (messObj == null) return NotFound();
-            
+			if (messObj == null)
+			{
+				_logRepository.Add(LoggingEvents.UPDATE_ITEM, $"Updating message {id}: Not Found.");
+				return NotFound();
+			}
+
             _messageRepository.Update(id, messObj, item);
-			_logRepository.Add(LoggingEvents.UPDATE_ITEM, $"Message {id} updated.");
+			_logRepository.Add(LoggingEvents.UPDATE_ITEM, $"Message {id} updated: [{item.Text}].");
 
 			return new NoContentResult();
         }

@@ -1,4 +1,4 @@
-package com.elekscamp.messenger_javafx_client.ui.Chat.ListCells;
+package com.elekscamp.messenger_javafx_client.ui.list_cells;
 
 import java.io.IOException;
 import java.lang.reflect.Field;

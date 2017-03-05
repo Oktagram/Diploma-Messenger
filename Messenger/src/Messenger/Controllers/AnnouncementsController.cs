@@ -42,6 +42,7 @@ namespace Messenger.Controllers
 		{
 			if (item == null || string.IsNullOrEmpty(item.Description) || item.UserId == 0)
 			{
+				_logRepository.Add(LoggingEvents.CREATE_ITEM, $"Creating announcement: Bad Request.");
 				return BadRequest();
 			}
 
@@ -50,7 +51,7 @@ namespace Messenger.Controllers
 			item.Description.Trim();
 			
 			_announcementRepository.Add(item);
-			_logRepository.Add(LoggingEvents.CREATE_ITEM, $"Announcement {item.Id} created.");
+			_logRepository.Add(LoggingEvents.CREATE_ITEM, $"Announcement {item.Id} [{item.Description}] created.");
 
 			return new OkObjectResult(_announcementRepository.Find(item.Id));
 		}
@@ -58,16 +59,25 @@ namespace Messenger.Controllers
 		[HttpPut("{id}")]
 		public IActionResult Update(int id, [FromBody] Announcement item)
 		{
-			if (item == null) return BadRequest();
+			if (item == null)
+			{
+				_logRepository.Add(LoggingEvents.UPDATE_ITEM, $"Updating announcement {id}: Bad Request.");
+				return BadRequest();
+			}
 			
 			var announcement = _announcementRepository.Find(id);
 
-			if (announcement == null) return NotFound();
+			if (announcement == null)
+			{
+				_logRepository.Add(LoggingEvents.UPDATE_ITEM, $"Updating announcement {id}: Not Found.");
+				return NotFound();
+			}
 			else _announcementRepository.Update(id, announcement, item);
-
-			_logRepository.Add(LoggingEvents.UPDATE_ITEM, $"Announcement {id} updated.");
-
+			
 			var temp = _announcementRepository.Find(id);
+
+			_logRepository.Add(LoggingEvents.UPDATE_ITEM, $"Announcement {id} updated: {temp}.");
+
 			return new OkObjectResult(temp);
 		}
 	}

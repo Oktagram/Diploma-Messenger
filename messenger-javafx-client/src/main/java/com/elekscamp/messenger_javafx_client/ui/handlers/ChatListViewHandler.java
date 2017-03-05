@@ -1,4 +1,4 @@
-package com.elekscamp.messenger_javafx_client.ui.Chat;
+package com.elekscamp.messenger_javafx_client.ui.handlers;
 
 import com.elekscamp.messenger_javafx_client.GlobalVariables;
 import com.elekscamp.messenger_javafx_client.dal.ContentProvider;
@@ -6,11 +6,12 @@ import com.elekscamp.messenger_javafx_client.entities.Announcement;
 import com.elekscamp.messenger_javafx_client.entities.Conversation;
 import com.elekscamp.messenger_javafx_client.entities.Message;
 import com.elekscamp.messenger_javafx_client.entities.User;
-import com.elekscamp.messenger_javafx_client.ui.Chat.ListCells.ActiveAnnouncementListCell;
-import com.elekscamp.messenger_javafx_client.ui.Chat.ListCells.ClosedAnnouncementsListCell;
-import com.elekscamp.messenger_javafx_client.ui.Chat.ListCells.ConversationListCell;
-import com.elekscamp.messenger_javafx_client.ui.Chat.ListCells.MessageListCell;
-import com.elekscamp.messenger_javafx_client.ui.Chat.ListCells.UserListCell;
+import com.elekscamp.messenger_javafx_client.ui.list_cells.ActiveAnnouncementListCell;
+import com.elekscamp.messenger_javafx_client.ui.list_cells.ClosedAnnouncementsListCell;
+import com.elekscamp.messenger_javafx_client.ui.list_cells.ConversationListCell;
+import com.elekscamp.messenger_javafx_client.ui.list_cells.MessageListCell;
+import com.elekscamp.messenger_javafx_client.ui.list_cells.UserListCell;
+
 import javafx.collections.ObservableList;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;

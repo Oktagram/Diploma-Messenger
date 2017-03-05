@@ -1,18 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using Messenger.Models;
 using Messenger.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Messenger.LogProvider;
 
-// For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace Messenger.Controllers
 {
-    [Route("api/[controller]")]
+	[Route("api/[controller]")]
     public class RegistrationController : Controller
     {
         private IUserRepository _userRepository;
@@ -39,10 +34,9 @@ namespace Messenger.Controllers
         
             if (item.Login == null) return BadRequest("Empty login field!");
             
-
             if (item.Login.Length > 30) return BadRequest("Login must have maximum 30 chars!");
   
-            Match matchLogin = _regexLogin.Match(item.Login);
+            var matchLogin = _regexLogin.Match(item.Login);
 
 			if (_userRepository.GetSingle(user => user.Login.Equals(item.Login)) != null)
 				return BadRequest("User with this login already exist!");
@@ -54,7 +48,7 @@ namespace Messenger.Controllers
             var matchPassword = _regexPassword.Match(item.Password);
 			var matchEmail = _regexEmail.Match(item.Email);
 			
-			if (item.Password.Length < 7) return BadRequest("Password should be not less 8 characters!");
+			if (item.Password.Length < 8) return BadRequest("Password should be not less 8 characters!");
 			if (!matchPassword.Success) return BadRequest("Password must have letters and numbers!");
 			if (item.Email == null) return BadRequest("Invalid email!");
 			if (!matchEmail.Success) return BadRequest("Invalid email!");
@@ -69,7 +63,7 @@ namespace Messenger.Controllers
             };
 
             _persInfoRepository.Add(info);
-			_logRepository.Add(LoggingEvents.CREATE_ITEM, $"User {item.Login} registered.");
+			_logRepository.Add(LoggingEvents.CREATE_ITEM, $"User [{item.Login}] registered.");
 
             return Content("Success registration : " + item.Login);
         }      

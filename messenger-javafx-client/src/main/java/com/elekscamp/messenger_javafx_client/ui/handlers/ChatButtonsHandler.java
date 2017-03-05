@@ -1,4 +1,4 @@
-package com.elekscamp.messenger_javafx_client.ui.Chat;
+package com.elekscamp.messenger_javafx_client.ui.handlers;
 
 import com.elekscamp.messenger_javafx_client.GlobalVariables;
 
@@ -6,14 +6,15 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Popup;
 
 public class ChatButtonsHandler {
 
 	public Button getRemoveAttachmentButton(Runnable action) {
-		
 		Button btnRemoveAttachment = new Button("", new ImageView("/images/remove.png"));
 		
 		btnRemoveAttachment.setTooltip(new Tooltip(GlobalVariables.languageDictionary.getRemove()));
@@ -31,8 +32,7 @@ public class ChatButtonsHandler {
 		return btnRemoveAttachment;
 	}
 	
-	public Button getSmileButton(String smileImage, double size, Runnable action) {
-		
+	public Button getSmileButton(TextArea textAreaMessage, Popup popup, String smileImage, double size, String smileStr) {
 		Button smileButton = new Button("", new ImageView(smileImage));
 		
 		smileButton.setPrefSize(size, size);
@@ -42,7 +42,9 @@ public class ChatButtonsHandler {
 		smileButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				action.run();
+				textAreaMessage.appendText(" " + smileStr + " ");
+				popup.hide();
+				textAreaMessage.requestFocus();
 			}
 		});
 		

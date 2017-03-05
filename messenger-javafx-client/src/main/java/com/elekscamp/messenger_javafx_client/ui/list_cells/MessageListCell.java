@@ -1,4 +1,4 @@
-package com.elekscamp.messenger_javafx_client.ui.Chat.ListCells;
+package com.elekscamp.messenger_javafx_client.ui.list_cells;
 
 import java.awt.Desktop;
 import java.awt.image.BufferedImage;

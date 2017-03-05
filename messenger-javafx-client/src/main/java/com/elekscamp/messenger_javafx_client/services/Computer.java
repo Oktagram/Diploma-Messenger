@@ -1,4 +1,4 @@
-package com.elekscamp.messenger_javafx_client.Services;
+package com.elekscamp.messenger_javafx_client.services;
 
 import javafx.geometry.Bounds;
 import javafx.scene.Scene;

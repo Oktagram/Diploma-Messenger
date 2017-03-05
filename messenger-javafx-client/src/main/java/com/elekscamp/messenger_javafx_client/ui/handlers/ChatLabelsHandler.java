@@ -1,4 +1,4 @@
-package com.elekscamp.messenger_javafx_client.ui.Chat;
+package com.elekscamp.messenger_javafx_client.ui.handlers;
 
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;

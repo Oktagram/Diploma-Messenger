@@ -44,7 +44,8 @@ namespace Messenger.Controllers
             }
             catch
             {
-                return NotFound();
+				_logRepository.Add(LoggingEvents.DOWNLOAD, $"Downloading atachment {messageId}: Not Found.");
+				return NotFound();
             }                      
         }
 
@@ -61,7 +62,8 @@ namespace Messenger.Controllers
             }
             catch
             {
-                return NotFound();
+				_logRepository.Add(LoggingEvents.DOWNLOAD, $"Downloading profile picture {personalInfoId}: Not Found.");
+				return NotFound();
             }
         }
 
@@ -70,9 +72,13 @@ namespace Messenger.Controllers
         [Route("uploadAttachment/{messageId}")]
         public IActionResult UploadAttachment(List<IFormFile> files, int messageId)
         {
-			if (files == null) return BadRequest();
+			if (files == null)
+			{
+				_logRepository.Add(LoggingEvents.DOWNLOAD, $"Uploading attachment for message {messageId}: Bad Request.");
+				return BadRequest();
+			}
 
-            string attachmentPath = UploadFile(files);
+            var attachmentPath = UploadFile(files);
             _messageRepository.AddAttachments(messageId, attachmentPath);
 
 			_logRepository.Add(LoggingEvents.UPLOAD, $"Uploaded attachment \"{files[0].FileName}\".");
@@ -85,7 +91,7 @@ namespace Messenger.Controllers
         [Route("uploadPicture/{personalInfoId}")]
         public IActionResult UploadPicture(List<IFormFile> files, int personalInfoId)
         {
-            string picturePath = UploadFile(files);
+            var picturePath = UploadFile(files);
             _persInfoRepository.AddPicture(personalInfoId, picturePath);
 
 			_logRepository.Add(LoggingEvents.UPLOAD, $"Uploaded profile picture \"{files[0].FileName}\".");
@@ -95,19 +101,20 @@ namespace Messenger.Controllers
 
         private IActionResult DownloadFile(string path)
         {
+            var fileName = Path.GetFileName(path).Substring(36);
+            var contentType = MimeTypeMap.GetMimeType(Path.GetExtension(fileName));
+            var fileBytes = System.IO.File.ReadAllBytes(path);
 
-            string fileName = Path.GetFileName(path).Substring(36);
-            string contentType = MimeTypeMap.GetMimeType(Path.GetExtension(fileName));
-            byte[] fileBytes = System.IO.File.ReadAllBytes(path);
-            return File(fileBytes, contentType, fileName);
+			return File(fileBytes, contentType, fileName);
         }
 
         private string UploadFile(List<IFormFile> files)
         {
-			System.IO.Directory.CreateDirectory(_env.ContentRootPath + "/Files");
+			Directory.CreateDirectory(_env.ContentRootPath + "/Files");
             var uploads = Path.Combine(_env.ContentRootPath, "Files");
-            List<string> filepath = new List<string>();
-            foreach (var file in files)
+            var filepath = new List<string>();
+
+			foreach (var file in files)
             {
                 if (file.Length > 0)
                 {
@@ -119,6 +126,7 @@ namespace Messenger.Controllers
                     }
                 }
             }
+
             var attachment = string.Join(",", filepath);
             return attachment;
         }
