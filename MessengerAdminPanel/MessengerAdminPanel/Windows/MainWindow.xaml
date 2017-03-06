@@ -4,9 +4,13 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MessengerAdminPanel"
-        xmlns:EventLogEnums="clr-namespace:MessengerAdminPanel.Mapping.EventLogEnums" xmlns:System="clr-namespace:System;assembly=mscorlib" x:Class="MessengerAdminPanel.MainWindow"
+        xmlns:EventLogEnums="clr-namespace:MessengerAdminPanel.Mapping.EventLogEnums" 
+        xmlns:System="clr-namespace:System;assembly=mscorlib" 
+        x:Class="MessengerAdminPanel.MainWindow"
         mc:Ignorable="d"
-        Title="MainWindow" Height="500" Width="1000">
+        Title="MainWindow" 
+        Height="500" 
+        Width="1000">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*" />
@@ -14,53 +18,161 @@
         </Grid.ColumnDefinitions>
 
         <Grid Grid.Column="0" >
-            <TabControl x:Name="tabControl">
+            <TabControl x:Name="tabControl" 
+                        Margin="10,10,5,10">
                 <TabControl.Resources>
                     <Style TargetType="{x:Type TabPanel}">
-                        <Setter Property="HorizontalAlignment" Value="Center" />
+                        <Setter Property="HorizontalAlignment" 
+                                Value="Center" />
                     </Style>
                 </TabControl.Resources>
-                <TabItem Header="Announcements" Width="100">
+                <TabItem Header="Announcements" 
+                         Width="100">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="40"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <ListView x:Name="listViewAnnouncements" 
+                                  Margin="5" Grid.Row="1" VerticalAlignment="Stretch"
+                                  HorizontalAlignment="Stretch">
+                            <ListView.View>
+                                <GridView>
+                                    <GridView.Columns>
+                                        <GridViewColumn Header="Id" 
+                                                        DisplayMemberBinding="{Binding Path=Id}" />
+                                        <GridViewColumn Header="Closed"
+                                                        DisplayMemberBinding="{Binding Path=ClosingDate}" />
+                                        <GridViewColumn Header="Created" 
+                                                        DisplayMemberBinding="{Binding Path=CreationDate}" />
+                                        <GridViewColumn Header="Description" 
+                                                        DisplayMemberBinding="{Binding Path=Description}" />
+                                        <GridViewColumn Header="Activity" 
+                                                        DisplayMemberBinding="{Binding Path=IsActive}" />
+                                        <GridViewColumn Header="Created By" 
+                                                        DisplayMemberBinding="{Binding Path=User}" />
+                                    </GridView.Columns>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+                        <RadioButton x:Name="radioButtonActiveAnnouncement" 
+                                     Content="Open" 
+                                     HorizontalAlignment="Left" 
+                                     Margin="10,15,0,0" 
+                                     VerticalAlignment="Top" 
+                                     IsChecked="True" Checked="radioButtonActiveAnnouncement_Checked"/>
+                        <RadioButton x:Name="radioButtonClosedAnnouncement" 
+                                     Content="Closed" 
+                                     HorizontalAlignment="Left" 
+                                     Margin="63,15,0,0" 
+                                     VerticalAlignment="Top" 
+                                     Checked="radioButtonClosedAnnouncement_Checked"/>
+                        <Button x:Name="btnNewAnnouncement" 
+                                Content="New" 
+                                VerticalAlignment="Top"
+                                Margin="133,10,282,0" 
+                                MaxWidth="60" 
+                                Height="25" Click="btnNewAnnouncement_Click" />
+                        <Button x:Name="btnOpenAnnouncement" 
+                                Content="Open" 
+                                VerticalAlignment="Top" 
+                                Margin="198,10,217,0" 
+                                MaxWidth="60" 
+                                Height="25" />
+                        <Button x:Name="btnCloseAnnouncement" 
+                                Content="Close" 
+                                VerticalAlignment="Top" 
+                                Margin="263,10,152,0" 
+                                MaxWidth="60" 
+                                Height="25" />
+                        <Button x:Name="btnEditAnnouncement" 
+                                Content="Edit" 
+                                VerticalAlignment="Top" 
+                                Margin="328,10,87,0" 
+                                MaxWidth="60" 
+                                Height="25" />
+                        <Button x:Name="btnDeleteAnnouncement" 
+                                Content="Delete" 
+                                VerticalAlignment="Top" 
+                                Margin="393,10,22,0"
+                                MaxWidth="60" 
+                                Height="25" />
+                    </Grid>
+                </TabItem>
+                <TabItem Header="Conversations" 
+                         Width="100">
                     <Grid />
                 </TabItem>
-                <TabItem Header="Conversations" Width="100">
+                <TabItem Header="Users" 
+                         Width="100">
                     <Grid />
                 </TabItem>
-                <TabItem Header="Users" Width="100">
-                    <Grid />
-                </TabItem>
-                <TabItem Header="Messages" Width="100">
+                <TabItem Header="Messages" 
+                         Width="100">
                     <Grid />
                 </TabItem>
             </TabControl>
         </Grid>
-        <Grid Grid.Column="1" VerticalAlignment="Top" Height="45" >
+        <Grid Grid.Column="1" 
+              VerticalAlignment="Top" 
+              Height="53" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <ComboBox Grid.Column="0" x:Name="comboBoxLogEntity" VerticalAlignment="Bottom" HorizontalAlignment="Center" Width="200" SelectionChanged="comboBoxLogEntity_SelectionChanged" SelectedIndex="6">
-                <EventLogEnums:EventLogEntity>ANNOUNCEMENT</EventLogEnums:EventLogEntity>
-                <EventLogEnums:EventLogEntity>CONVERSATION</EventLogEnums:EventLogEntity>
-                <EventLogEnums:EventLogEntity>MESSAGE</EventLogEnums:EventLogEntity>
-                <EventLogEnums:EventLogEntity>PERSONAL_INFO</EventLogEnums:EventLogEntity>
-                <EventLogEnums:EventLogEntity>USER</EventLogEnums:EventLogEntity>
-                <EventLogEnums:EventLogEntity>FILE</EventLogEnums:EventLogEntity>
-                ANY
-            </ComboBox>
-            <ComboBox Grid.Column="1" x:Name="comboBoxLogEntity_Copy" VerticalAlignment="Bottom" Width="200" HorizontalAlignment="Center" SelectionChanged="comboBoxLogEntity_Copy_SelectionChanged" SelectedIndex="6">
+            <ComboBox x:Name="comboBoxLogEvent" 
+                      Grid.Column="1" 
+                      VerticalAlignment="Bottom"
+                      HorizontalAlignment="Center"  
+                      Width="200" 
+                      SelectedIndex="6" 
+                      SelectionChanged="comboBoxEventLog_SelectionChanged">
                 <EventLogEnums:EventLogEvent>GET_ITEM</EventLogEnums:EventLogEvent>
                 <EventLogEnums:EventLogEvent>CREATE_ITEM</EventLogEnums:EventLogEvent>
                 <EventLogEnums:EventLogEvent>UPDATE_ITEM</EventLogEnums:EventLogEvent>
                 <EventLogEnums:EventLogEvent>DELETE_ITEM</EventLogEnums:EventLogEvent>
                 <EventLogEnums:EventLogEvent>UPLOAD</EventLogEnums:EventLogEvent>
                 <EventLogEnums:EventLogEvent>DOWNLOAD</EventLogEnums:EventLogEvent>
-                ANY
+                ALL
             </ComboBox>
+            <ComboBox x:Name="comboBoxLogEntity" 
+                      Grid.Column="0" 
+                      VerticalAlignment="Bottom" 
+                      HorizontalAlignment="Center" 
+                      Width="200" 
+                      SelectionChanged="comboBoxEventLog_SelectionChanged" 
+                      SelectedIndex="6">
+                <EventLogEnums:EventLogEntity>ANNOUNCEMENT</EventLogEnums:EventLogEntity>
+                <EventLogEnums:EventLogEntity>CONVERSATION</EventLogEnums:EventLogEntity>
+                <EventLogEnums:EventLogEntity>MESSAGE</EventLogEnums:EventLogEntity>
+                <EventLogEnums:EventLogEntity>PERSONAL_INFO</EventLogEnums:EventLogEntity>
+                <EventLogEnums:EventLogEntity>USER</EventLogEnums:EventLogEntity>
+                <EventLogEnums:EventLogEntity>FILE</EventLogEnums:EventLogEntity>
+                ALL
+            </ComboBox>
+            <Label x:Name="labelEntity" 
+                   Content="Entity" 
+                   HorizontalAlignment="Center" 
+                   Margin="0,0,160,20" 
+                   VerticalAlignment="Bottom"/>
+            <Label x:Name="labelEvent" 
+                   Content="Event" 
+                   Grid.Column="1" 
+                   HorizontalAlignment="Center" 
+                   Margin="0,0,160,20" 
+                   VerticalAlignment="Bottom"/>
         </Grid>
         <Grid Margin="0,50,0,0" Grid.Column="1">
-            <TextBox x:Name="textBox" Margin="10,10,10,0" TextWrapping="Wrap" Width="auto" VerticalAlignment="Top" Height="23" TextChanged="textBox_TextChanged"/>
-            <DataGrid x:Name="dataGridLog" Margin="10,43,10,10" IsReadOnly="True"/>
+            <TextBox x:Name="textBoxEventLogSearch" 
+                     Margin="5,13,10,0" 
+                     TextWrapping="Wrap" 
+                     Width="auto" 
+                     VerticalAlignment="Top" 
+                     Height="23" 
+                     TextChanged="textBox_TextChanged"/>
+            <DataGrid x:Name="dataGridLog" 
+                      Margin="5,46,10,10" 
+                      IsReadOnly="True"/>
         </Grid>
     </Grid>
 </Window>

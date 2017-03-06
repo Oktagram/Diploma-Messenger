@@ -81,7 +81,9 @@
     <Compile Include="Mapping\EventLogEnums\EventLogEntity.cs" />
     <Compile Include="Mapping\EventLogEnums\EventLogEvent.cs" />
     <Compile Include="Mapping\MapService.cs" />
+    <Compile Include="Repositories\AnnouncementRepository.cs" />
     <Compile Include="Repositories\EntityBaseRepository.cs" />
+    <Compile Include="Repositories\Interfaces\IAnnouncementsRepository.cs" />
     <Compile Include="Repositories\Interfaces\IEntityBaseRepository.cs" />
     <Compile Include="Message.cs">
       <DependentUpon>MessengerContext.tt</DependentUpon>
@@ -101,7 +103,11 @@
     <Compile Include="User.cs">
       <DependentUpon>MessengerContext.tt</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\AnnouncementViewModel.cs" />
     <Compile Include="ViewModels\EventLogViewModel.cs" />
+    <Compile Include="Windows\PromptWindow.xaml.cs">
+      <DependentUpon>PromptWindow.xaml</DependentUpon>
+    </Compile>
     <Page Include="Windows\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -115,6 +121,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Windows\PromptWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MessengerContext.Context.cs">

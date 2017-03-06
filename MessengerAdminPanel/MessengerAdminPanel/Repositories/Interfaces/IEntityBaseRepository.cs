@@ -14,7 +14,6 @@ namespace MessengerAdminPanel
 		T Find(int id);
 		IEnumerable<T> FindBy(Expression<Func<T, bool>> predicate);
 		void Remove(int id);
-		void Commit();
 		int Count();
 	}
 }

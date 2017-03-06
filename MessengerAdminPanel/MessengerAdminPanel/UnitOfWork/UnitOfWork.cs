@@ -1,5 +1,6 @@
 ﻿using MessengerAdminPanel.Repositories;
 using System;
+using MessengerAdminPanel.Repositories.Interfaces;
 
 namespace MessengerAdminPanel.UnitOfWork
 {
@@ -15,8 +16,30 @@ namespace MessengerAdminPanel.UnitOfWork
 			}
 		}
 
+		public IAnnouncementRepository AnnouncementRepository
+		{
+			get
+			{
+				if (_announcementRepository == null)
+					_announcementRepository = new AnnouncementRepository(_context);
+				return _announcementRepository;
+			}
+		}
+
+		public IEntityBaseRepository<User> UserRepository
+		{
+			get
+			{
+				if (_userRepository == null)
+					_userRepository = new EntityBaseRepository<User>(_context);
+				return _userRepository;
+			}
+		}
+
 		private readonly MessengerContext _context;
 		private IEntityBaseRepository<EventLog> _eventLogRepository;
+		private IAnnouncementRepository _announcementRepository;
+		private IEntityBaseRepository<User> _userRepository;
 		private bool _disposed;
 
 		public UnitOfWork(MessengerContext context)

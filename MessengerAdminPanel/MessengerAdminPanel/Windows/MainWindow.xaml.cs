@@ -1,9 +1,7 @@
 ﻿using MessengerAdminPanel.Contexts;
-using MessengerAdminPanel.Mapping.EventLogEnums;
 using MessengerAdminPanel.UnitOfWork;
 using MessengerAdminPanel.ViewModels;
 using MessengerAdminPanel.Windows;
-using System.Collections;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
@@ -13,6 +11,7 @@ namespace MessengerAdminPanel
 	public partial class MainWindow : Window, IMainWindowView
 	{
 		private readonly MainWindowController _controller;
+		private const int UNDEFINED_ENUM_VALUE = -1;
 		
 		public MainWindow()
 		{
@@ -23,18 +22,7 @@ namespace MessengerAdminPanel
 
 			InitializeComponent();
 
-			Loaded += MainWindow_Loaded;
-		}
-
-		private void MainWindow_Loaded(object sender, RoutedEventArgs e)
-		{
-			_controller.UpdateDataGridLog(x => true);
-		}
-
-		private void textBox_TextChanged(object sender, TextChangedEventArgs e)
-		{
-			var tbx = sender as TextBox;
-			_controller.UpdateDataGridLog(eventLog => eventLog.Message.Contains(tbx.Text));
+			Loaded += mainWindow_Loaded;
 		}
 
 		public void UpdateDataGridLog(IEnumerable<EventLogViewModel> eventLog)
@@ -42,14 +30,53 @@ namespace MessengerAdminPanel
 			dataGridLog.ItemsSource = eventLog;
 		}
 
-		private void comboBoxLogEntity_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		public void UpdateListViewAnnouncement(List<AnnouncementViewModel> list)
 		{
-			
+			listViewAnnouncements.ItemsSource = list;
 		}
 
-		private void comboBoxLogEntity_Copy_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		private void mainWindow_Loaded(object sender, RoutedEventArgs e)
 		{
+			requestUpdatingDataGridLog();
+			_controller.UpdateAnnouncementsListView(true);
+		}
 
+		private void textBox_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			requestUpdatingDataGridLog();
+		}
+
+		private void requestUpdatingDataGridLog()
+		{
+			var logEntitySelected = comboBoxLogEntity != null ? comboBoxLogEntity.SelectedIndex : UNDEFINED_ENUM_VALUE;
+			var logEventSelected = comboBoxLogEvent.SelectedIndex;
+
+			_controller.UpdateDataGridLog(
+				eventLog => eventLog.Message.Contains(textBoxEventLogSearch.Text),
+				logEntitySelected,
+				logEventSelected
+			);
+		}
+
+		private void comboBoxEventLog_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			requestUpdatingDataGridLog();
+		}
+
+		private void radioButtonActiveAnnouncement_Checked(object sender, RoutedEventArgs e)
+		{
+			_controller.UpdateAnnouncementsListView(true);
+		}
+
+		private void radioButtonClosedAnnouncement_Checked(object sender, RoutedEventArgs e)
+		{
+			_controller.UpdateAnnouncementsListView(false);
+		}
+
+		private void btnNewAnnouncement_Click(object sender, RoutedEventArgs e)
+		{
+			_controller.CreateNewAnnouncement();
+			radioButtonActiveAnnouncement_Checked(sender, e);
 		}
 	}
 }

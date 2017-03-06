@@ -19,14 +19,8 @@ namespace MessengerAdminPanel.Repositories
 		public void Add(T item)
 		{
 			_context.Set<T>().Add(item);
-			_context.SaveChanges();
 		}
-
-		public void Commit()
-		{
-			_context.SaveChanges();
-		}
-
+		
 		public virtual int Count()
 		{
 			return _context.Set<T>().Count();
@@ -81,7 +75,6 @@ namespace MessengerAdminPanel.Repositories
 			var dbEntityEntry = _context.Entry(Find(id));
 
 			dbEntityEntry.State = EntityState.Deleted;
-			_context.SaveChanges();
 		}
 	}
 }

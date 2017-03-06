@@ -2,7 +2,7 @@
 {
 	public enum LoggingEvents
 	{
-		GET_ITEM = 1000,
+		GET_ITEM,
 		CREATE_ITEM,
 		UPDATE_ITEM,
 		DELETE_ITEM,
