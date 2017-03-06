@@ -69,8 +69,7 @@ namespace Messenger
         }
 
         private static readonly string secretKey = "SuperMAGIKarp2461";
-
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+		
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
 		{
 			MessengerContext messengerContext = app.ApplicationServices.GetService<MessengerContext>();

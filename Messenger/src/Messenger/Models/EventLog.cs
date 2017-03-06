@@ -1,6 +1,6 @@
 ﻿namespace Messenger.Models
 {
-	public class EventLog
+	public class EventLog : IEntityBase
     {
 		public int Id { get; set; }
 		public int? EventId { get; set; }

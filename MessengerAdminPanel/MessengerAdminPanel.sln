@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessengerAdminPanel", "MessengerAdminPanel\MessengerAdminPanel.csproj", "{A7F09C29-C9CE-4A25-A19B-142363F666EF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A7F09C29-C9CE-4A25-A19B-142363F666EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A7F09C29-C9CE-4A25-A19B-142363F666EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A7F09C29-C9CE-4A25-A19B-142363F666EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A7F09C29-C9CE-4A25-A19B-142363F666EF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
