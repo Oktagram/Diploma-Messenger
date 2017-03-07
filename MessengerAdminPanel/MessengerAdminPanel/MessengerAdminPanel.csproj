@@ -69,7 +69,8 @@
     <Compile Include="Announcement.cs">
       <DependentUpon>MessengerContext.tt</DependentUpon>
     </Compile>
-    <Compile Include="Contexts\MessengerContextFactory.cs" />
+    <Compile Include="Extensions\ListViewExtension.cs" />
+    <Compile Include="Factories\MessengerContextFactory.cs" />
     <Compile Include="Conversation.cs">
       <DependentUpon>MessengerContext.tt</DependentUpon>
     </Compile>
@@ -78,6 +79,7 @@
     </Compile>
     <Compile Include="Controllers\IMainWindowController.cs" />
     <Compile Include="Controllers\MainWindowController.cs" />
+    <Compile Include="Factories\AnnouncementFactory.cs" />
     <Compile Include="Mapping\EventLogEnums\EventLogEntity.cs" />
     <Compile Include="Mapping\EventLogEnums\EventLogEvent.cs" />
     <Compile Include="Mapping\MapService.cs" />

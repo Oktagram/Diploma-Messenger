@@ -12,7 +12,7 @@ namespace MessengerAdminPanel
     using System;
     using System.Collections.Generic;
     
-    public partial class Announcement
+    public partial class Announcement : ICloneable
     {
         public int Id { get; set; }
         public long ClosingDate { get; set; }
@@ -22,5 +22,10 @@ namespace MessengerAdminPanel
         public int UserId { get; set; }
     
         public virtual User User { get; set; }
-    }
+
+		public object Clone()
+		{
+			return MemberwiseClone();
+		}
+	}
 }

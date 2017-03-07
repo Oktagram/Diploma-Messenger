@@ -1,7 +1,9 @@
-﻿using MessengerAdminPanel.Mapping;
+﻿using MessengerAdminPanel.Factories;
+using MessengerAdminPanel.Mapping;
 using MessengerAdminPanel.Mapping.EventLogEnums;
 using MessengerAdminPanel.Services;
 using MessengerAdminPanel.UnitOfWork;
+using MessengerAdminPanel.ViewModels;
 using MessengerAdminPanel.Windows;
 using System;
 using System.Linq;
@@ -27,7 +29,7 @@ namespace MessengerAdminPanel
 
 			_timer = new DispatcherTimer();
 			_timer.Tick += dispatcherTimer_Tick;
-			_timer.Interval = new TimeSpan(0,0,0,0,500);
+			_timer.Interval = new TimeSpan(0, 0, 0, 0, 500);
 		}
 
 		public void UpdateDataGridLog(Expression<Func<EventLog, bool>> predicate, int eventLogEntity, int eventLogEvent)
@@ -56,8 +58,8 @@ namespace MessengerAdminPanel
 
 		public void UpdateAnnouncementsListView(bool isActive)
 		{
-			var list = _uow.AnnouncementRepository.FindBy(a => a.IsActive == isActive);
-			var mappedAnnouncements = MapService.AnnouncementToViewModel(list, _uow).ToList();
+			var announcementsList = _uow.AnnouncementRepository.FindBy(a => a.IsActive == isActive);
+			var mappedAnnouncements = MapService.AnnouncementToViewModel(announcementsList, _uow).ToList();
 			_view.UpdateListViewAnnouncement(mappedAnnouncements);
 		}
 
@@ -65,19 +67,79 @@ namespace MessengerAdminPanel
 		{
 			var prompt = new PromptWindow("Enter announcement description: ");
 
-			if (prompt.ShowDialog().Value && !String.IsNullOrEmpty(prompt.ResponseText))
-			{
-				var item = new Announcement();
-				
-				item.CreationDate = DateService.GetCurrentUnixTimestampMillis();
-				item.IsActive = true;
-				item.Description = prompt.ResponseText;
-				item.Description.Trim();
-				item.UserId = 3;
+			if (!prompt.ShowDialog().Value) return;
 
-				_uow.AnnouncementRepository.Add(item);
-				_uow.Save();
+			if (String.IsNullOrEmpty(prompt.ResponseText))
+			{
+				MessageBox.Show("Description cannot be empty!");
+				return;
 			}
+
+			var announcement = AnnouncementFactory.Create(prompt.ResponseText);
+			
+			_uow.AnnouncementRepository.Add(announcement);
+			_uow.Save();
+		}
+
+		public void EditAnnouncement(AnnouncementViewModel a, bool activity)
+		{
+			if (CheckForNullWithErrorMessage(a, "Choose announcement!")) return;
+
+			var prompt = new PromptWindow("Edit announcement description: ");
+			prompt.ResponseText = a.Description;
+
+			if (!prompt.ShowDialog().Value) return;
+
+			if (String.IsNullOrEmpty(prompt.ResponseText))
+			{
+				MessageBox.Show("Description cannot be empty!");
+				return;
+			}
+
+			var newAnnouncement = AnnouncementFactory.Create(prompt.ResponseText);
+			var announcement = _uow.AnnouncementRepository.Find(a.Id);
+
+			_uow.AnnouncementRepository.Update(a.Id, announcement, newAnnouncement);
+			_uow.Save();
+
+			UpdateAnnouncementsListView(activity);
+		}
+
+		public void DeleteAnnouncement(AnnouncementViewModel a, bool activity)
+		{
+			if (CheckForNullWithErrorMessage(a, "Choose announcement!")) return;
+
+			var dialogResult = MessageBox.Show("Are you sure?", "Delete announcement", MessageBoxButton.YesNo);
+			if (dialogResult != MessageBoxResult.Yes) return;
+
+			_uow.AnnouncementRepository.Remove(a.Id);
+			_uow.Save();
+
+			UpdateAnnouncementsListView(activity);
+		}
+
+		public void ChangeAnnouncementStatus(AnnouncementViewModel a, bool activity)
+		{
+			if (CheckForNullWithErrorMessage(a, "Choose announcement!")) return;
+
+			a.IsActive = !a.IsActive;
+			
+			var announcement = _uow.AnnouncementRepository.Find(a.Id);
+			var newAnnouncement = (Announcement)announcement.Clone();
+			newAnnouncement.IsActive = !newAnnouncement.IsActive;
+
+			_uow.AnnouncementRepository.Update(a.Id, announcement, newAnnouncement);
+			_uow.Save();
+
+			UpdateAnnouncementsListView(activity);
+		}
+
+		private bool CheckForNullWithErrorMessage(object obj, string nullMsg)
+		{
+			if (obj != null) return false;
+
+			MessageBox.Show(nullMsg, "Message");
+			return true;
 		}
 	}
 }

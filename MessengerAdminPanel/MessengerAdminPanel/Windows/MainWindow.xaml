@@ -41,12 +41,12 @@
                                     <GridView.Columns>
                                         <GridViewColumn Header="Id" 
                                                         DisplayMemberBinding="{Binding Path=Id}" />
+                                        <GridViewColumn Header="Description" 
+                                                        DisplayMemberBinding="{Binding Path=Description}" />
                                         <GridViewColumn Header="Closed"
                                                         DisplayMemberBinding="{Binding Path=ClosingDate}" />
                                         <GridViewColumn Header="Created" 
                                                         DisplayMemberBinding="{Binding Path=CreationDate}" />
-                                        <GridViewColumn Header="Description" 
-                                                        DisplayMemberBinding="{Binding Path=Description}" />
                                         <GridViewColumn Header="Activity" 
                                                         DisplayMemberBinding="{Binding Path=IsActive}" />
                                         <GridViewColumn Header="Created By" 
@@ -55,6 +55,36 @@
                                 </GridView>
                             </ListView.View>
                         </ListView>
+                        <Button x:Name="btnNewAnnouncement" 
+                                Content="New" 
+                                VerticalAlignment="Top"
+                                Margin="133,10,282,0" 
+                                MaxWidth="60" 
+                                Height="25" Click="btnNewAnnouncement_Click" />
+                        <Button x:Name="btnOpenAnnouncement" 
+                                Content="Open" 
+                                VerticalAlignment="Top" 
+                                Margin="198,10,217,0" 
+                                MaxWidth="60" 
+                                Height="25" Click="btnOpenAnnouncement_Click" />
+                        <Button x:Name="btnCloseAnnouncement" 
+                                Content="Close" 
+                                VerticalAlignment="Top" 
+                                Margin="263,10,152,0" 
+                                MaxWidth="60" 
+                                Height="25" Click="btnCloseAnnouncement_Click" />
+                        <Button x:Name="btnEditAnnouncement" 
+                                Content="Edit" 
+                                VerticalAlignment="Top" 
+                                Margin="328,10,87,0" 
+                                MaxWidth="60" 
+                                Height="25" Click="btnEditAnnouncement_Click" />
+                        <Button x:Name="btnDeleteAnnouncement" 
+                                Content="Delete" 
+                                VerticalAlignment="Top" 
+                                Margin="393,10,22,0"
+                                MaxWidth="60" 
+                                Height="25" Click="btnDeleteAnnouncement_Click" />
                         <RadioButton x:Name="radioButtonActiveAnnouncement" 
                                      Content="Open" 
                                      HorizontalAlignment="Left" 
@@ -67,36 +97,6 @@
                                      Margin="63,15,0,0" 
                                      VerticalAlignment="Top" 
                                      Checked="radioButtonClosedAnnouncement_Checked"/>
-                        <Button x:Name="btnNewAnnouncement" 
-                                Content="New" 
-                                VerticalAlignment="Top"
-                                Margin="133,10,282,0" 
-                                MaxWidth="60" 
-                                Height="25" Click="btnNewAnnouncement_Click" />
-                        <Button x:Name="btnOpenAnnouncement" 
-                                Content="Open" 
-                                VerticalAlignment="Top" 
-                                Margin="198,10,217,0" 
-                                MaxWidth="60" 
-                                Height="25" />
-                        <Button x:Name="btnCloseAnnouncement" 
-                                Content="Close" 
-                                VerticalAlignment="Top" 
-                                Margin="263,10,152,0" 
-                                MaxWidth="60" 
-                                Height="25" />
-                        <Button x:Name="btnEditAnnouncement" 
-                                Content="Edit" 
-                                VerticalAlignment="Top" 
-                                Margin="328,10,87,0" 
-                                MaxWidth="60" 
-                                Height="25" />
-                        <Button x:Name="btnDeleteAnnouncement" 
-                                Content="Delete" 
-                                VerticalAlignment="Top" 
-                                Margin="393,10,22,0"
-                                MaxWidth="60" 
-                                Height="25" />
                     </Grid>
                 </TabItem>
                 <TabItem Header="Conversations" 

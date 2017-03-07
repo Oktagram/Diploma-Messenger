@@ -6,10 +6,20 @@
         xmlns:local="clr-namespace:MessengerAdminPanel.Windows"
         mc:Ignorable="d"
         Title="Window" Height="130.16" Width="422.667"
-        WindowStartupLocation="CenterScreen">
-    <StackPanel>
-        <TextBlock x:Name="textBlockTitle" Text="Title" Margin="5,5,5,0" FontSize="16" />
-        <TextBox x:Name="textBoxResponse" Margin="5" FontSize="16" />
-        <Button x:Name="btnOK" Content="OK" Click="OKButton_Click" Margin="5,0,5,5" FontSize="16" />
+        WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
+    <StackPanel FocusManager.FocusedElement="{Binding ElementName=textBoxResponse}">
+        <TextBlock x:Name="textBlockTitle" 
+                   Text="Title" 
+                   Margin="5,5,5,0" 
+                   FontSize="16" />
+        <TextBox x:Name="textBoxResponse" 
+                 Margin="5" 
+                 FontSize="16" />
+        <Button x:Name="btnOK" 
+                Content="OK"
+                IsDefault="True"
+                Click="OKButton_Click" 
+                Margin="5,0,5,5" 
+                FontSize="16" />
     </StackPanel>
 </Window>

@@ -1,4 +1,5 @@
 ﻿using MessengerAdminPanel.Contexts;
+using MessengerAdminPanel.Extensions;
 using MessengerAdminPanel.UnitOfWork;
 using MessengerAdminPanel.ViewModels;
 using MessengerAdminPanel.Windows;
@@ -10,8 +11,9 @@ namespace MessengerAdminPanel
 {
 	public partial class MainWindow : Window, IMainWindowView
 	{
-		private readonly MainWindowController _controller;
+		private readonly IMainWindowController _controller;
 		private const int UNDEFINED_ENUM_VALUE = -1;
+		private const string CLOSED_COLUMN_HEADER = "Closed";
 		
 		public MainWindow()
 		{
@@ -65,18 +67,52 @@ namespace MessengerAdminPanel
 
 		private void radioButtonActiveAnnouncement_Checked(object sender, RoutedEventArgs e)
 		{
+			radioButtonActiveAnnouncement.IsChecked = true;
+			btnOpenAnnouncement.IsEnabled = false;
+			btnCloseAnnouncement.IsEnabled = true;
 			_controller.UpdateAnnouncementsListView(true);
+			listViewAnnouncements.HideColumnByHeader(CLOSED_COLUMN_HEADER);
 		}
 
 		private void radioButtonClosedAnnouncement_Checked(object sender, RoutedEventArgs e)
 		{
+			radioButtonClosedAnnouncement.IsChecked = true;
+			btnOpenAnnouncement.IsEnabled = true;
+			btnCloseAnnouncement.IsEnabled = false;
 			_controller.UpdateAnnouncementsListView(false);
+			listViewAnnouncements.ShowColumnByHeader(CLOSED_COLUMN_HEADER, nameof(Announcement.ClosingDate));
 		}
 
 		private void btnNewAnnouncement_Click(object sender, RoutedEventArgs e)
 		{
 			_controller.CreateNewAnnouncement();
 			radioButtonActiveAnnouncement_Checked(sender, e);
+		}
+
+		private void btnEditAnnouncement_Click(object sender, RoutedEventArgs e)
+		{
+			var announcementVM = (AnnouncementViewModel)listViewAnnouncements.SelectedValue;
+			var activity = radioButtonActiveAnnouncement.IsChecked.Value;
+			_controller.EditAnnouncement(announcementVM, activity);
+		}
+
+		private void btnDeleteAnnouncement_Click(object sender, RoutedEventArgs e)
+		{
+			var announcementVM = (AnnouncementViewModel)listViewAnnouncements.SelectedValue;
+			var activity = radioButtonActiveAnnouncement.IsChecked.Value;
+			_controller.DeleteAnnouncement(announcementVM, activity);
+		}
+
+		private void btnCloseAnnouncement_Click(object sender, RoutedEventArgs e)
+		{
+			var announcementVM = (AnnouncementViewModel)listViewAnnouncements.SelectedValue;
+			_controller.ChangeAnnouncementStatus(announcementVM, true);
+		}
+
+		private void btnOpenAnnouncement_Click(object sender, RoutedEventArgs e)
+		{
+			var announcementVM = (AnnouncementViewModel)listViewAnnouncements.SelectedValue;
+			_controller.ChangeAnnouncementStatus(announcementVM, false);
 		}
 	}
 }

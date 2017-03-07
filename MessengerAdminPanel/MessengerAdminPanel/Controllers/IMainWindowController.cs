@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MessengerAdminPanel.ViewModels;
+using System;
 using System.Linq.Expressions;
 
 namespace MessengerAdminPanel
@@ -8,5 +9,8 @@ namespace MessengerAdminPanel
 		void UpdateDataGridLog(Expression<Func<EventLog, bool>> predicate, int eventLogEntity, int eventLogEvent);
 		void UpdateAnnouncementsListView(bool isActive);
 		void CreateNewAnnouncement();
+		void EditAnnouncement(AnnouncementViewModel a, bool activity);
+		void DeleteAnnouncement(AnnouncementViewModel a, bool activity);
+		void ChangeAnnouncementStatus(AnnouncementViewModel a, bool activity);
 	}
 }
