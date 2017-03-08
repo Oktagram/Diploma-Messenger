@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System;
 
 namespace MessengerAdminPanel
 {
@@ -37,6 +38,24 @@ namespace MessengerAdminPanel
 		public void UpdateListViewAnnouncement(List<AnnouncementViewModel> list)
 		{
 			listViewAnnouncements.ItemsSource = list;
+		}
+
+		public void UpdateConversationData(string name, string creationDate, string countOfMessages, string countOfUsers)
+		{
+			textBlockConversationName.Text = name;
+			textBlockCreationDate.Text = creationDate;
+			textBlockMessagesInConversationCount.Text = countOfMessages;
+			textBlockUsersInConversationCount.Text = countOfUsers;
+		}
+
+		public void UpdateConversationListViewWithUsersList(List<UserViewModel> list)
+		{
+			listViewUsersInConversation.ItemsSource = list;
+		}
+
+		public void UpdateConversationListViewWithMessagesList(List<MessageViewModel> list)
+		{
+			listViewUsersInConversation.ItemsSource = list;
 		}
 
 		private void mainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -120,6 +139,44 @@ namespace MessengerAdminPanel
 		private void textBoxConversationId_PreviewTextInput(object sender, TextCompositionEventArgs e)
 		{
 			e.Handled = ValidatorService.DoesTextContainsOnlyNumbers(e.Text);
+		}
+
+		private void textBoxConversationId_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			/*
+			 * 
+			 * 
+			 * 
+			 * 
+			 * 
+			 * 
+			 * Columns in listview
+			 * 
+			 * 
+			 * 
+			 * 
+			 * 
+			 * 
+			 * 
+			 */
+			var conversationIdStr = textBoxConversationId.Text;
+
+			if (radioButtonUsersInConversation.IsChecked.Value)
+				_controller.UpdateListViewUsersInConversation(conversationIdStr);
+			else
+				_controller.UpdateListViewMessagesInConversation(conversationIdStr);
+
+			_controller.UpdateConversationData(conversationIdStr);
+		}
+
+		private void radioButtonUsersInConversation_Checked(object sender, RoutedEventArgs e)
+		{
+			_controller.UpdateListViewUsersInConversation(textBoxConversationId.Text);
+		}
+
+		private void radioButtonMessagesInConversation_Checked(object sender, RoutedEventArgs e)
+		{
+			_controller.UpdateListViewMessagesInConversation(textBoxConversationId.Text);
 		}
 	}
 }

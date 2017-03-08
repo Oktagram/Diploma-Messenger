@@ -12,5 +12,8 @@ namespace MessengerAdminPanel
 		void EditAnnouncement(AnnouncementViewModel a, bool activity);
 		void DeleteAnnouncement(AnnouncementViewModel a, bool activity);
 		void ChangeAnnouncementStatus(AnnouncementViewModel a, bool activity);
+		void UpdateConversationData(string conversationId);
+		void UpdateListViewUsersInConversation(string conversationId);
+		void UpdateListViewMessagesInConversation(string conversationId);
 	}
 }

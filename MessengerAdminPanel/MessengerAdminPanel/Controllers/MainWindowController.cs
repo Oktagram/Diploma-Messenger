@@ -1,4 +1,5 @@
-﻿using MessengerAdminPanel.Factories;
+﻿using MessengerAdminPanel.Exceptions;
+using MessengerAdminPanel.Factories;
 using MessengerAdminPanel.Mapping;
 using MessengerAdminPanel.Mapping.EventLogEnums;
 using MessengerAdminPanel.Services;
@@ -6,6 +7,7 @@ using MessengerAdminPanel.UnitOfWork;
 using MessengerAdminPanel.ViewModels;
 using MessengerAdminPanel.Windows;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Windows;
@@ -59,7 +61,7 @@ namespace MessengerAdminPanel
 		public void UpdateAnnouncementsListView(bool isActive)
 		{
 			var announcementsList = _uow.AnnouncementRepository.FindBy(a => a.IsActive == isActive);
-			var mappedAnnouncements = MapService.AnnouncementToViewModel(announcementsList, _uow).ToList();
+			var mappedAnnouncements = MapService.AnnouncementToViewModel(announcementsList).ToList();
 			_view.UpdateListViewAnnouncement(mappedAnnouncements);
 		}
 
@@ -140,6 +142,70 @@ namespace MessengerAdminPanel
 
 			MessageBox.Show(nullMsg, "Message");
 			return true;
+		}
+
+		private void fillConversationDataWithEmptiness()
+		{
+			_view.UpdateConversationData(String.Empty, String.Empty, String.Empty, String.Empty);
+			_view.UpdateConversationListViewWithUsersList(null);
+		}
+		
+		private Conversation findConversation(string conversationIdStr)
+		{
+			int conversationId;
+			if (!int.TryParse(conversationIdStr, out conversationId))
+			{
+				fillConversationDataWithEmptiness();
+				throw new NotFoundException();
+			}
+
+			var conversation = _uow.ConversationRepository.Find(conversationId);
+			if (conversation == null)
+			{
+				fillConversationDataWithEmptiness();
+				throw new NotFoundException();
+			}
+
+			return conversation;
+		}
+
+		public void UpdateConversationData(string conversationIdStr)
+		{
+			try
+			{
+				var conversation = findConversation(conversationIdStr);
+				var creationDateStr = DateService.DateTimeFromUnixTimestampMillis(conversation.CreationDate).ToString();
+				var countOfMessagesStr = conversation.Message.Count.ToString();
+				var countOfUsersStr = conversation.User.Count.ToString();
+
+				_view.UpdateConversationData(conversation.Name, creationDateStr, countOfMessagesStr, countOfUsersStr);
+			}
+			catch (NotFoundException) { }
+		}
+
+		public void UpdateListViewUsersInConversation(string conversationIdStr)
+		{
+			try
+			{
+				var conversation = findConversation(conversationIdStr);
+				var users = conversation.User.ToList();
+				var mappedUsers = MapService.UserToViewModel(users).ToList();
+				
+				_view.UpdateConversationListViewWithUsersList(mappedUsers);
+			} catch (NotFoundException) { }
+		}
+
+		public void UpdateListViewMessagesInConversation(string conversationIdStr)
+		{
+			try
+			{
+				var conversation = findConversation(conversationIdStr);
+				var messages = conversation.Message.ToList();
+				var mappedMessages = MapService.MessageToViewModel(messages).ToList();
+		
+				_view.UpdateConversationListViewWithMessagesList(mappedMessages);
+			}
+			catch (NotFoundException) { }
 		}
 	}
 }

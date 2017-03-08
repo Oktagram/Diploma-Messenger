@@ -102,34 +102,89 @@
                 <TabItem Header="Conversations" 
                          Width="100">
                     <Grid>
-                        <TextBlock Text="Conversation Id:"
-                                   Margin="16,14,0,0" 
-                                   HorizontalAlignment="Left" 
-                                   VerticalAlignment="Top" FontSize="16"/>
                         <TextBox x:Name="textBoxConversationId"
                                  HorizontalAlignment="Left" 
                                  VerticalAlignment="Top" 
                                  Width="130" 
-                                 Margin="141,14,0,0" FontSize="16" PreviewTextInput="textBoxConversationId_PreviewTextInput" />
+                                 Margin="128,14,0,0" 
+                                 FontSize="14" 
+                                 PreviewTextInput="textBoxConversationId_PreviewTextInput" 
+                                 TextChanged="textBoxConversationId_TextChanged" />
+                        <TextBlock Text="Conversation Id:"
+                                   Margin="16,14,0,0" 
+                                   HorizontalAlignment="Left" 
+                                   VerticalAlignment="Top" FontSize="14"/>
                         <TextBlock Text="Name:" 
-                            Margin="84,42,0,0" 
+                            Margin="76,38,0,0" 
                             HorizontalAlignment="Left" 
-                            VerticalAlignment="Top" FontSize="16"/>
+                            VerticalAlignment="Top" FontSize="14"/>
                         <TextBlock x:Name="textBlockConversationName"
                             Text="conversation name" 
-                            Margin="141,42,0,0" 
+                            Margin="128,38,0,0" 
                             HorizontalAlignment="Left" 
-                            VerticalAlignment="Top" FontSize="16"/>
+                            VerticalAlignment="Top" FontSize="14"/>
                         <TextBlock Text="Created:" 
-                            Margin="71,68,0,0" 
+                            Margin="65,62,0,0" 
                             HorizontalAlignment="Left" 
-                            VerticalAlignment="Top" FontSize="16"/>
+                            VerticalAlignment="Top" FontSize="14"/>
                         <TextBlock x:Name="textBlockCreationDate"
                             Text="creation date" 
-                            Margin="141,68,0,0" 
+                            Margin="128,62,0,0" 
                             HorizontalAlignment="Left" 
-                            VerticalAlignment="Top" FontSize="16"/>
-                        <ListView Margin="5,100,5,5" />
+                            VerticalAlignment="Top" FontSize="14"/>
+                        <ListView x:Name="listViewUsersInConversation" 
+                                  Margin="5,100,5,5" VerticalAlignment="Stretch"
+                                  HorizontalAlignment="Stretch">
+                            <ListView.View>
+                                <GridView>
+                                    <GridView.Columns>
+                                        <GridViewColumn Header="Id" 
+                                                        DisplayMemberBinding="{Binding Path=Id}" />
+                                        <GridViewColumn Header="Login" 
+                                                        DisplayMemberBinding="{Binding Path=Login}" />
+                                        <GridViewColumn Header="Online" 
+                                                        DisplayMemberBinding="{Binding Path=IsOnline}" />
+                                        <GridViewColumn Header="Admin"
+                                                        DisplayMemberBinding="{Binding Path=IsAdmin}" />
+                                        <GridViewColumn Header="Banned" 
+                                                        DisplayMemberBinding="{Binding Path=IsBanned}" />
+                                        <GridViewColumn Header="Email" 
+                                                        DisplayMemberBinding="{Binding Path=Email}" />
+                                        <GridViewColumn Header="Registration Date" 
+                                                        DisplayMemberBinding="{Binding Path=RegistrationDate}" />
+                                    </GridView.Columns>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+                        <TextBlock Text="Messages:"
+                            Margin="317,38,0,0" 
+                            HorizontalAlignment="Left" 
+                            VerticalAlignment="Top" FontSize="14"/>
+                        <TextBlock x:Name="textBlockMessagesInConversationCount"
+                            Text="count" 
+                            Margin="385,38,0,0" 
+                            HorizontalAlignment="Left" 
+                            VerticalAlignment="Top" FontSize="14" Width="53"/>
+                        <TextBlock Text="Users:"
+                            Margin="344,62,0,0" 
+                            HorizontalAlignment="Left" 
+                            VerticalAlignment="Top" FontSize="14"/>
+                        <TextBlock x:Name="textBlockUsersInConversationCount"
+                            Text="count" 
+                            Margin="385,62,0,0" 
+                            HorizontalAlignment="Left" 
+                            VerticalAlignment="Top" FontSize="14" Width="53"/>
+                        <RadioButton x:Name="radioButtonUsersInConversation" 
+                                     Content="Users" 
+                                     HorizontalAlignment="Left" 
+                                     Margin="306,17,0,0" 
+                                     VerticalAlignment="Top" 
+                                     IsChecked="True" Checked="radioButtonUsersInConversation_Checked"/>
+                        <RadioButton x:Name="radioButtonMessagesInConversation" 
+                                     Content="Messages" 
+                                     HorizontalAlignment="Left" 
+                                     Margin="359,17,0,0" 
+                                     VerticalAlignment="Top" Checked="radioButtonMessagesInConversation_Checked" />
                     </Grid>
                 </TabItem>
                 <TabItem Header="Users" 

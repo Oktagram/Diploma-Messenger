@@ -6,6 +6,7 @@ namespace MessengerAdminPanel.UnitOfWork
 {
 	public class UnitOfWork : IUnitOfWork
 	{
+		private IEntityBaseRepository<EventLog> _eventLogRepository;
 		public IEntityBaseRepository<EventLog> EventLogRepositry
 		{
 			get
@@ -16,6 +17,7 @@ namespace MessengerAdminPanel.UnitOfWork
 			}
 		}
 
+		private IAnnouncementRepository _announcementRepository;
 		public IAnnouncementRepository AnnouncementRepository
 		{
 			get
@@ -26,6 +28,7 @@ namespace MessengerAdminPanel.UnitOfWork
 			}
 		}
 
+		private IUserRepository _userRepository;
 		public IUserRepository UserRepository
 		{
 			get
@@ -36,10 +39,29 @@ namespace MessengerAdminPanel.UnitOfWork
 			}
 		}
 
+		private IConversationRepository _conversationRepository;
+		public IConversationRepository ConversationRepository
+		{
+			get
+			{
+				if (_conversationRepository == null)
+					_conversationRepository = new ConversationRepository(_context);
+				return _conversationRepository;
+			}
+		}
+
+		private IMessageRepository _messageRepository;
+		public IMessageRepository MessageRepository
+		{
+			get
+			{
+				if (_messageRepository == null)
+					_messageRepository = new MessageRepository(_context);
+				return _messageRepository;
+			}
+		}
+
 		private readonly MessengerContext _context;
-		private IEntityBaseRepository<EventLog> _eventLogRepository;
-		private IAnnouncementRepository _announcementRepository;
-		private IUserRepository _userRepository;
 		private bool _disposed;
 
 		public UnitOfWork(MessengerContext context)

@@ -69,6 +69,7 @@
     <Compile Include="Announcement.cs">
       <DependentUpon>MessengerContext.tt</DependentUpon>
     </Compile>
+    <Compile Include="Exceptions\NotFoundException.cs" />
     <Compile Include="Extensions\ListViewExtension.cs" />
     <Compile Include="Factories\MessengerContextFactory.cs" />
     <Compile Include="Conversation.cs">
@@ -84,8 +85,10 @@
     <Compile Include="Mapping\EventLogEnums\EventLogEvent.cs" />
     <Compile Include="Mapping\MapService.cs" />
     <Compile Include="Repositories\AnnouncementRepository.cs" />
+    <Compile Include="Repositories\ConversationRepository.cs" />
     <Compile Include="Repositories\EntityBaseRepository.cs" />
     <Compile Include="Repositories\Interfaces\IAnnouncementsRepository.cs" />
+    <Compile Include="Repositories\Interfaces\IConversationRepository.cs" />
     <Compile Include="Repositories\Interfaces\IEntityBaseRepository.cs" />
     <Compile Include="Message.cs">
       <DependentUpon>MessengerContext.tt</DependentUpon>
@@ -98,7 +101,9 @@
     <Compile Include="PersonalInfo.cs">
       <DependentUpon>MessengerContext.tt</DependentUpon>
     </Compile>
+    <Compile Include="Repositories\Interfaces\IMessageRepository.cs" />
     <Compile Include="Repositories\Interfaces\IUserRepository.cs" />
+    <Compile Include="Repositories\MessageRepository.cs" />
     <Compile Include="Repositories\UserRepository.cs" />
     <Compile Include="Services\DateService.cs" />
     <Compile Include="Services\ValidatorService.cs" />
@@ -110,6 +115,8 @@
     </Compile>
     <Compile Include="ViewModels\AnnouncementViewModel.cs" />
     <Compile Include="ViewModels\EventLogViewModel.cs" />
+    <Compile Include="ViewModels\MessageViewModel.cs" />
+    <Compile Include="ViewModels\UserViewModel.cs" />
     <Compile Include="Windows\PromptWindow.xaml.cs">
       <DependentUpon>PromptWindow.xaml</DependentUpon>
     </Compile>
