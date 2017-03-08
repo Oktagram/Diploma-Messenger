@@ -7,7 +7,7 @@ namespace MessengerAdminPanel.UnitOfWork
 	{
 		IEntityBaseRepository<EventLog> EventLogRepositry { get; }
 		IAnnouncementRepository AnnouncementRepository { get; }
-		IEntityBaseRepository<User> UserRepository { get; }
+		IUserRepository UserRepository { get; }
 		void Save();
 		void Dispose(bool disposing);
 	}

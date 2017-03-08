@@ -101,7 +101,36 @@
                 </TabItem>
                 <TabItem Header="Conversations" 
                          Width="100">
-                    <Grid />
+                    <Grid>
+                        <TextBlock Text="Conversation Id:"
+                                   Margin="16,14,0,0" 
+                                   HorizontalAlignment="Left" 
+                                   VerticalAlignment="Top" FontSize="16"/>
+                        <TextBox x:Name="textBoxConversationId"
+                                 HorizontalAlignment="Left" 
+                                 VerticalAlignment="Top" 
+                                 Width="130" 
+                                 Margin="141,14,0,0" FontSize="16" PreviewTextInput="textBoxConversationId_PreviewTextInput" />
+                        <TextBlock Text="Name:" 
+                            Margin="84,42,0,0" 
+                            HorizontalAlignment="Left" 
+                            VerticalAlignment="Top" FontSize="16"/>
+                        <TextBlock x:Name="textBlockConversationName"
+                            Text="conversation name" 
+                            Margin="141,42,0,0" 
+                            HorizontalAlignment="Left" 
+                            VerticalAlignment="Top" FontSize="16"/>
+                        <TextBlock Text="Created:" 
+                            Margin="71,68,0,0" 
+                            HorizontalAlignment="Left" 
+                            VerticalAlignment="Top" FontSize="16"/>
+                        <TextBlock x:Name="textBlockCreationDate"
+                            Text="creation date" 
+                            Margin="141,68,0,0" 
+                            HorizontalAlignment="Left" 
+                            VerticalAlignment="Top" FontSize="16"/>
+                        <ListView Margin="5,100,5,5" />
+                    </Grid>
                 </TabItem>
                 <TabItem Header="Users" 
                          Width="100">

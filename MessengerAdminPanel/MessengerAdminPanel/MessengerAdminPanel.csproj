@@ -98,7 +98,10 @@
     <Compile Include="PersonalInfo.cs">
       <DependentUpon>MessengerContext.tt</DependentUpon>
     </Compile>
+    <Compile Include="Repositories\Interfaces\IUserRepository.cs" />
+    <Compile Include="Repositories\UserRepository.cs" />
     <Compile Include="Services\DateService.cs" />
+    <Compile Include="Services\ValidatorService.cs" />
     <Compile Include="UnitOfWork\IUnitOfWork.cs" />
     <Compile Include="UnitOfWork\UnitOfWork.cs" />
     <Compile Include="UnitOfWork\UnitOfWorkFactory.cs" />

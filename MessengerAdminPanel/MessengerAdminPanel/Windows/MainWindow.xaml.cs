@@ -1,11 +1,13 @@
 ﻿using MessengerAdminPanel.Contexts;
 using MessengerAdminPanel.Extensions;
+using MessengerAdminPanel.Services;
 using MessengerAdminPanel.UnitOfWork;
 using MessengerAdminPanel.ViewModels;
 using MessengerAdminPanel.Windows;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace MessengerAdminPanel
 {
@@ -113,6 +115,11 @@ namespace MessengerAdminPanel
 		{
 			var announcementVM = (AnnouncementViewModel)listViewAnnouncements.SelectedValue;
 			_controller.ChangeAnnouncementStatus(announcementVM, false);
+		}
+
+		private void textBoxConversationId_PreviewTextInput(object sender, TextCompositionEventArgs e)
+		{
+			e.Handled = ValidatorService.DoesTextContainsOnlyNumbers(e.Text);
 		}
 	}
 }

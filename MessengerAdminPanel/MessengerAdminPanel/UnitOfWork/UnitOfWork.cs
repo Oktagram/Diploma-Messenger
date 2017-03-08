@@ -26,12 +26,12 @@ namespace MessengerAdminPanel.UnitOfWork
 			}
 		}
 
-		public IEntityBaseRepository<User> UserRepository
+		public IUserRepository UserRepository
 		{
 			get
 			{
 				if (_userRepository == null)
-					_userRepository = new EntityBaseRepository<User>(_context);
+					_userRepository = new UserRepository(_context);
 				return _userRepository;
 			}
 		}
@@ -39,7 +39,7 @@ namespace MessengerAdminPanel.UnitOfWork
 		private readonly MessengerContext _context;
 		private IEntityBaseRepository<EventLog> _eventLogRepository;
 		private IAnnouncementRepository _announcementRepository;
-		private IEntityBaseRepository<User> _userRepository;
+		private IUserRepository _userRepository;
 		private bool _disposed;
 
 		public UnitOfWork(MessengerContext context)

@@ -6,10 +6,9 @@ using System.Linq.Expressions;
 
 namespace MessengerAdminPanel.Repositories
 {
-	public class EntityBaseRepository<T> : IEntityBaseRepository<T>
-		   where T : class, new()
+	public class EntityBaseRepository<T> : IEntityBaseRepository<T> where T : class, new()
 	{
-		private readonly MessengerContext _context;
+		protected readonly MessengerContext _context;
 
 		public EntityBaseRepository(MessengerContext context)
 		{
