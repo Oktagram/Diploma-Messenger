@@ -69,9 +69,9 @@
     <Compile Include="Announcement.cs">
       <DependentUpon>MessengerContext.tt</DependentUpon>
     </Compile>
+    <Compile Include="Columns.cs" />
     <Compile Include="Exceptions\NotFoundException.cs" />
     <Compile Include="Extensions\ListViewExtension.cs" />
-    <Compile Include="Factories\MessengerContextFactory.cs" />
     <Compile Include="Conversation.cs">
       <DependentUpon>MessengerContext.tt</DependentUpon>
     </Compile>
@@ -83,7 +83,8 @@
     <Compile Include="Factories\AnnouncementFactory.cs" />
     <Compile Include="Mapping\EventLogEnums\EventLogEntity.cs" />
     <Compile Include="Mapping\EventLogEnums\EventLogEvent.cs" />
-    <Compile Include="Mapping\MapService.cs" />
+    <Compile Include="Mapping\IMappingService.cs" />
+    <Compile Include="Mapping\MappingService.cs" />
     <Compile Include="Repositories\AnnouncementRepository.cs" />
     <Compile Include="Repositories\ConversationRepository.cs" />
     <Compile Include="Repositories\EntityBaseRepository.cs" />
@@ -102,20 +103,25 @@
       <DependentUpon>MessengerContext.tt</DependentUpon>
     </Compile>
     <Compile Include="Repositories\Interfaces\IMessageRepository.cs" />
+    <Compile Include="Repositories\Interfaces\IPersonalInfoRepository.cs" />
     <Compile Include="Repositories\Interfaces\IUserRepository.cs" />
     <Compile Include="Repositories\MessageRepository.cs" />
+    <Compile Include="Repositories\PersonalInfoRepository.cs" />
     <Compile Include="Repositories\UserRepository.cs" />
     <Compile Include="Services\DateService.cs" />
-    <Compile Include="Services\ValidatorService.cs" />
-    <Compile Include="UnitOfWork\IUnitOfWork.cs" />
-    <Compile Include="UnitOfWork\UnitOfWork.cs" />
-    <Compile Include="UnitOfWork\UnitOfWorkFactory.cs" />
+    <Compile Include="Services\FileService.cs" />
+    <Compile Include="Services\IFileService.cs" />
+    <Compile Include="Services\IValidationService.cs" />
+    <Compile Include="Services\ValidationService.cs" />
+    <Compile Include="UnitOfWorks\IUnitOfWork.cs" />
+    <Compile Include="UnitOfWorks\UnitOfWork.cs" />
     <Compile Include="User.cs">
       <DependentUpon>MessengerContext.tt</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\AnnouncementViewModel.cs" />
     <Compile Include="ViewModels\EventLogViewModel.cs" />
     <Compile Include="ViewModels\MessageViewModel.cs" />
+    <Compile Include="ViewModels\PersonalInfoViewModel.cs" />
     <Compile Include="ViewModels\UserViewModel.cs" />
     <Compile Include="Windows\PromptWindow.xaml.cs">
       <DependentUpon>PromptWindow.xaml</DependentUpon>

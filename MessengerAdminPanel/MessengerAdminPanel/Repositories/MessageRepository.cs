@@ -12,6 +12,8 @@ namespace MessengerAdminPanel.Repositories
 
 		public void Update(int id, Message messObj, Message item)
 		{
+			_context.Refresh();
+
 			messObj.UserId = item.UserId;
 			messObj.ConversationId = item.ConversationId;
 			messObj.Text = item.Text;
@@ -20,6 +22,8 @@ namespace MessengerAdminPanel.Repositories
 
 		public IEnumerable<int> GetOrderedConversationIds()
 		{
+			_context.Refresh();
+
 			IEnumerable<int> orderedConversationIds = GetAll().OrderByDescending(id => id.Id)
 															  .Select(m => m.ConversationId)
 															  .Distinct();
@@ -28,7 +32,9 @@ namespace MessengerAdminPanel.Repositories
 
 		public void AddAttachments(int id, string files)
 		{
-			Message message = Find(id);
+			_context.Refresh();
+
+			var message = Find(id);
 			message.Attachment = files;
 		}
 	}

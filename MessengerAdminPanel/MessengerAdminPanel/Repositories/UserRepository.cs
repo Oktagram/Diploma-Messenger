@@ -11,16 +11,17 @@ namespace MessengerAdminPanel.Repositories
 
 		public void Update(int id, User userObj, User item)
 		{
+			_context.Refresh();
+
 			userObj.Login = item.Login;
-
-			if (item.Password != null) userObj.Password = item.Password;
-
 			userObj.Email = item.Email;
 			userObj.IsOnline = item.IsOnline;
+			if (item.Password != null) userObj.Password = item.Password;
 		}
 
 		public IEnumerable<User> FindUsers(string login)
 		{
+			_context.Refresh();
 			return FindBy(u => u.Login.Contains(login));
 		}
 	}

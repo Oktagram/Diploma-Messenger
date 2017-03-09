@@ -2,9 +2,9 @@
 
 namespace MessengerAdminPanel.Services
 {
-	public class ValidatorService
+	public class ValidationService : IValidationService
 	{
-		public static bool DoesTextContainsOnlyNumbers(string text)
+		public bool DoesTextContainsOnlyNumbers(string text)
 		{
 			var regex = new Regex("[^0-9]+");
 			return regex.IsMatch(text);

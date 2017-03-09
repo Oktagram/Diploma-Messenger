@@ -1,30 +1,39 @@
-﻿using MessengerAdminPanel.Contexts;
-using MessengerAdminPanel.Extensions;
+﻿using MessengerAdminPanel.Extensions;
+using MessengerAdminPanel.Mapping;
 using MessengerAdminPanel.Services;
-using MessengerAdminPanel.UnitOfWork;
+using MessengerAdminPanel.UnitOfWorks;
 using MessengerAdminPanel.ViewModels;
 using MessengerAdminPanel.Windows;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System;
 
 namespace MessengerAdminPanel
 {
 	public partial class MainWindow : Window, IMainWindowView
 	{
 		private readonly IMainWindowController _controller;
+		private readonly IValidationService _validationService;
+		private readonly Columns _columns;
+
 		private const int UNDEFINED_ENUM_VALUE = -1;
-		private const string CLOSED_COLUMN_HEADER = "Closed";
-		
+
+		private string _messageAttachment;
+
 		public MainWindow()
 		{
-			var context = MessengerContextFactory.Create();
-			var uof = UnitOfWorkFactory.Create(context);
+			var context = new MessengerContext();
+			var uof = new UnitOfWork(context);
+			var fileService = new FileService();
+			var mappingService = new MappingService(fileService);
 
-			_controller = new MainWindowController(this, uof);
-
+			_controller = new MainWindowController(this, uof, mappingService, fileService);
+			_columns = new Columns();
+			_validationService = new ValidationService();
+			
 			InitializeComponent();
 
 			Loaded += mainWindow_Loaded;
@@ -56,6 +65,28 @@ namespace MessengerAdminPanel
 		public void UpdateConversationListViewWithMessagesList(List<MessageViewModel> list)
 		{
 			listViewUsersInConversation.ItemsSource = list;
+		}
+
+		public void UpdateMessageData(string user, string text, string conversation, string sendDate, string attachmentName, string attachmentPath)
+		{
+			textBlockMessageUserSent.Text = user;
+			textBlockMessageText.Text = text;
+			textBlockMessageConversationName.Text = conversation;
+			textBlockMessageSendDate.Text = sendDate;
+			textBlockMessageAttachment.Text = attachmentName;
+
+			_messageAttachment = attachmentPath;
+
+			if (String.IsNullOrEmpty(attachmentName))
+			{
+				buttonOpenAttachment.IsEnabled = false;
+				buttonOpenAttachment.Visibility = Visibility.Hidden;
+			}
+			else
+			{
+				buttonOpenAttachment.IsEnabled = true;
+				buttonOpenAttachment.Visibility = Visibility.Visible;
+			}
 		}
 
 		private void mainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -92,7 +123,7 @@ namespace MessengerAdminPanel
 			btnOpenAnnouncement.IsEnabled = false;
 			btnCloseAnnouncement.IsEnabled = true;
 			_controller.UpdateAnnouncementsListView(true);
-			listViewAnnouncements.HideColumnByHeader(CLOSED_COLUMN_HEADER);
+			listViewAnnouncements.RemoveColumnByHeader(_columns.AnnouncementClosedColumnHeader);
 		}
 
 		private void radioButtonClosedAnnouncement_Checked(object sender, RoutedEventArgs e)
@@ -101,7 +132,7 @@ namespace MessengerAdminPanel
 			btnOpenAnnouncement.IsEnabled = true;
 			btnCloseAnnouncement.IsEnabled = false;
 			_controller.UpdateAnnouncementsListView(false);
-			listViewAnnouncements.ShowColumnByHeader(CLOSED_COLUMN_HEADER, nameof(Announcement.ClosingDate));
+			listViewAnnouncements.AddColumnByHeader(_columns.AnnouncementClosedColumnHeader, nameof(Announcement.ClosingDate));
 		}
 
 		private void btnNewAnnouncement_Click(object sender, RoutedEventArgs e)
@@ -136,29 +167,13 @@ namespace MessengerAdminPanel
 			_controller.ChangeAnnouncementStatus(announcementVM, false);
 		}
 
-		private void textBoxConversationId_PreviewTextInput(object sender, TextCompositionEventArgs e)
+		private void textBox_HandleAllExceptNumbers_PreviewTextInput(object sender, TextCompositionEventArgs e)
 		{
-			e.Handled = ValidatorService.DoesTextContainsOnlyNumbers(e.Text);
+			e.Handled = _validationService.DoesTextContainsOnlyNumbers(e.Text);
 		}
 
 		private void textBoxConversationId_TextChanged(object sender, TextChangedEventArgs e)
 		{
-			/*
-			 * 
-			 * 
-			 * 
-			 * 
-			 * 
-			 * 
-			 * Columns in listview
-			 * 
-			 * 
-			 * 
-			 * 
-			 * 
-			 * 
-			 * 
-			 */
 			var conversationIdStr = textBoxConversationId.Text;
 
 			if (radioButtonUsersInConversation.IsChecked.Value)
@@ -172,11 +187,28 @@ namespace MessengerAdminPanel
 		private void radioButtonUsersInConversation_Checked(object sender, RoutedEventArgs e)
 		{
 			_controller.UpdateListViewUsersInConversation(textBoxConversationId.Text);
+
+			listViewUsersInConversation.RemoveColumnsByHeaders(_columns.MessageViewModelColumns.Keys.ToList());
+			listViewUsersInConversation.AddColumnsByHeaders(_columns.UserViewModelColumns);
 		}
 
 		private void radioButtonMessagesInConversation_Checked(object sender, RoutedEventArgs e)
 		{
 			_controller.UpdateListViewMessagesInConversation(textBoxConversationId.Text);
+
+			listViewUsersInConversation.RemoveColumnsByHeaders(_columns.UserViewModelColumns.Keys.ToList());
+			listViewUsersInConversation.AddColumnsByHeaders(_columns.MessageViewModelColumns);
+		}
+
+		private void textBoxMessageId_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			var messageIdStr = textBoxMessageId.Text;
+			_controller.UpdateMessageData(messageIdStr);
+		}
+
+		private void buttonOpenAttachment_Click(object sender, RoutedEventArgs e)
+		{
+			_controller.OpenFile(_messageAttachment);
 		}
 	}
 }

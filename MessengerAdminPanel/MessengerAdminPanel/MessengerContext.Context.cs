@@ -9,11 +9,13 @@
 
 namespace MessengerAdminPanel
 {
-    using System;
-    using System.Data.Entity;
-    using System.Data.Entity.Infrastructure;
-    
-    public partial class MessengerContext : DbContext
+	using System;
+	using System.Data.Entity;
+	using System.Data.Entity.Core.Objects;
+	using System.Data.Entity.Infrastructure;
+	using System.Linq;
+
+	public partial class MessengerContext : DbContext
     {
         public MessengerContext()
             : base("name=MessengerConnection")
@@ -31,5 +33,19 @@ namespace MessengerAdminPanel
         public virtual DbSet<Message> Message { get; set; }
         public virtual DbSet<PersonalInfo> PersonalInfo { get; set; }
         public virtual DbSet<User> User { get; set; }
-    }
+
+		public void Refresh()
+		{
+			var objectContext = ((IObjectContextAdapter)this).ObjectContext;
+			var objects = (from entry in objectContext.ObjectStateManager.GetObjectStateEntries(
+													   EntityState.Added
+													  | EntityState.Deleted
+													  | EntityState.Modified
+													  | EntityState.Unchanged)
+						   where entry.EntityKey != null
+						   select entry.Entity);
+
+			objectContext.Refresh(RefreshMode.StoreWins, objects);
+		}
+	}
 }

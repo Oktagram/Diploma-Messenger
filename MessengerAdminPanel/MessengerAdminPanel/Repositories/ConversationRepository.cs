@@ -10,6 +10,7 @@ namespace MessengerAdminPanel.Repositories
 
 		public void Update(int id, Conversation convObj, Conversation item)
 		{
+			_context.Refresh();
 			convObj.Name = item.Name;
 		}
 	}

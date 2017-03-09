@@ -1,7 +1,7 @@
 ﻿using MessengerAdminPanel.Repositories.Interfaces;
 using System;
 
-namespace MessengerAdminPanel.UnitOfWork
+namespace MessengerAdminPanel.UnitOfWorks
 {
 	public interface IUnitOfWork : IDisposable
 	{
@@ -10,6 +10,8 @@ namespace MessengerAdminPanel.UnitOfWork
 		IUserRepository UserRepository { get; }
 		IConversationRepository ConversationRepository { get; }
 		IMessageRepository MessageRepository { get; }
+		IPersonalInfoRepository PersonalInfoRepository { get; }
+
 		void Save();
 		void Dispose(bool disposing);
 	}

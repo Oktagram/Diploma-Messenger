@@ -1,11 +1,28 @@
-﻿using System.Windows.Controls;
+﻿using System.Collections.Generic;
+using System.Windows.Controls;
 using System.Windows.Data;
 
 namespace MessengerAdminPanel.Extensions
 {
 	public static class ListViewExtension
 	{
-		public static void HideColumnByHeader(this ListView listView, string header)
+		public static void AddColumnsByHeaders(this ListView listView, Dictionary<string, string> headersWithPath)
+		{
+			foreach (var pair in headersWithPath)
+			{
+				listView.AddColumnByHeader(pair.Key, pair.Value);
+			}
+		}
+
+		public static void RemoveColumnsByHeaders(this ListView listView, List<string> headers)
+		{
+			foreach (var header in headers)
+			{
+				listView.RemoveColumnByHeader(header);
+			}
+		}
+
+		public static void RemoveColumnByHeader(this ListView listView, string header)
 		{
 			var gridView = (GridView)listView.View;
 
@@ -19,7 +36,7 @@ namespace MessengerAdminPanel.Extensions
 			}
 		}
 
-		public static void ShowColumnByHeader(this ListView listView, string header, string bindingPath)
+		public static void AddColumnByHeader(this ListView listView, string header, string bindingPath)
 		{
 			var gridView = (GridView)listView.View;
 
@@ -28,7 +45,7 @@ namespace MessengerAdminPanel.Extensions
 				DisplayMemberBinding = new Binding(bindingPath)
 			};
 
-			gridView.Columns.Insert(1, column);
+			gridView.Columns.Add(column);
 		}
 	}
 }

@@ -3,11 +3,12 @@ using MessengerAdminPanel.Factories;
 using MessengerAdminPanel.Mapping;
 using MessengerAdminPanel.Mapping.EventLogEnums;
 using MessengerAdminPanel.Services;
-using MessengerAdminPanel.UnitOfWork;
+using MessengerAdminPanel.UnitOfWorks;
 using MessengerAdminPanel.ViewModels;
 using MessengerAdminPanel.Windows;
 using System;
-using System.Collections.Generic;
+using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Windows;
@@ -20,14 +21,19 @@ namespace MessengerAdminPanel
 		private readonly IMainWindowView _view;
 		private readonly IUnitOfWork _uow;
 		private readonly DispatcherTimer _timer;
+		private readonly IMappingService _mappingService;
+		private readonly IFileService _fileService;
+
 		private Expression<Func<EventLog, bool>> _predicate;
 		private int _eventLogEntity;
 		private int _eventLogEvent;
 
-		public MainWindowController(IMainWindowView view, IUnitOfWork uof)
+		public MainWindowController(IMainWindowView view, IUnitOfWork uof, IMappingService mappingService, IFileService fileService)
 		{
 			_view = view;
 			_uow = uof;
+			_mappingService = mappingService;
+			_fileService = fileService;
 
 			_timer = new DispatcherTimer();
 			_timer.Tick += dispatcherTimer_Tick;
@@ -53,7 +59,7 @@ namespace MessengerAdminPanel
 			if (Enum.IsDefined(typeof(EventLogEvent), _eventLogEvent))
 				eventLogList = eventLogList.Where(log => log.EventId == _eventLogEvent);
 
-			var mappedEventLogList = MapService.EventLogToViewModel(eventLogList);
+			var mappedEventLogList = _mappingService.EventLogToViewModel(eventLogList);
 			_view.UpdateDataGridLog(mappedEventLogList);
 			_timer.Stop();
 		}
@@ -61,7 +67,7 @@ namespace MessengerAdminPanel
 		public void UpdateAnnouncementsListView(bool isActive)
 		{
 			var announcementsList = _uow.AnnouncementRepository.FindBy(a => a.IsActive == isActive);
-			var mappedAnnouncements = MapService.AnnouncementToViewModel(announcementsList).ToList();
+			var mappedAnnouncements = _mappingService.AnnouncementToViewModel(announcementsList).ToList();
 			_view.UpdateListViewAnnouncement(mappedAnnouncements);
 		}
 
@@ -189,7 +195,7 @@ namespace MessengerAdminPanel
 			{
 				var conversation = findConversation(conversationIdStr);
 				var users = conversation.User.ToList();
-				var mappedUsers = MapService.UserToViewModel(users).ToList();
+				var mappedUsers = _mappingService.UserToViewModel(users).ToList();
 				
 				_view.UpdateConversationListViewWithUsersList(mappedUsers);
 			} catch (NotFoundException) { }
@@ -201,11 +207,43 @@ namespace MessengerAdminPanel
 			{
 				var conversation = findConversation(conversationIdStr);
 				var messages = conversation.Message.ToList();
-				var mappedMessages = MapService.MessageToViewModel(messages).ToList();
+				var mappedMessages = _mappingService.MessageToViewModel(messages).ToList();
 		
 				_view.UpdateConversationListViewWithMessagesList(mappedMessages);
 			}
 			catch (NotFoundException) { }
+		}
+
+		public void UpdateMessageData(string messageId)
+		{
+			int id;
+			if (!int.TryParse(messageId, out id))
+			{
+				_view.UpdateMessageData(String.Empty, String.Empty, String.Empty, String.Empty, String.Empty, String.Empty);
+				return;
+			}
+		
+			var message = _uow.MessageRepository.Find(id);
+			if (message == null)
+			{
+				_view.UpdateMessageData(String.Empty, String.Empty, String.Empty, String.Empty, String.Empty, String.Empty);
+				return;
+			}
+
+			var messageVM = _mappingService.MessageToViewModel(message);
+			_view.UpdateMessageData(messageVM.User, messageVM.Text, messageVM.Conversation, messageVM.SendDate.ToString(), messageVM.Attachment, message.Attachment);
+		}
+
+		public void OpenFile(string fileName)
+		{
+			try
+			{
+				_fileService.OpenFile(fileName);
+			} 
+			catch (Exception ex) when (ex is Win32Exception || ex is FileNotFoundException)
+			{
+				MessageBox.Show("File not found.", "Error");
+			}
 		}
 	}
 }

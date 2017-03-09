@@ -16,7 +16,6 @@
             <ColumnDefinition Width="1*" />
             <ColumnDefinition Width="1*" />
         </Grid.ColumnDefinitions>
-
         <Grid Grid.Column="0" >
             <TabControl x:Name="tabControl" 
                         Margin="10,10,5,10">
@@ -108,7 +107,7 @@
                                  Width="130" 
                                  Margin="128,14,0,0" 
                                  FontSize="14" 
-                                 PreviewTextInput="textBoxConversationId_PreviewTextInput" 
+                                 PreviewTextInput="textBox_HandleAllExceptNumbers_PreviewTextInput" 
                                  TextChanged="textBoxConversationId_TextChanged" />
                         <TextBlock Text="Conversation Id:"
                                    Margin="16,14,0,0" 
@@ -138,20 +137,7 @@
                             <ListView.View>
                                 <GridView>
                                     <GridView.Columns>
-                                        <GridViewColumn Header="Id" 
-                                                        DisplayMemberBinding="{Binding Path=Id}" />
-                                        <GridViewColumn Header="Login" 
-                                                        DisplayMemberBinding="{Binding Path=Login}" />
-                                        <GridViewColumn Header="Online" 
-                                                        DisplayMemberBinding="{Binding Path=IsOnline}" />
-                                        <GridViewColumn Header="Admin"
-                                                        DisplayMemberBinding="{Binding Path=IsAdmin}" />
-                                        <GridViewColumn Header="Banned" 
-                                                        DisplayMemberBinding="{Binding Path=IsBanned}" />
-                                        <GridViewColumn Header="Email" 
-                                                        DisplayMemberBinding="{Binding Path=Email}" />
-                                        <GridViewColumn Header="Registration Date" 
-                                                        DisplayMemberBinding="{Binding Path=RegistrationDate}" />
+
                                     </GridView.Columns>
                                 </GridView>
                             </ListView.View>
@@ -189,11 +175,210 @@
                 </TabItem>
                 <TabItem Header="Users" 
                          Width="100">
-                    <Grid />
+                    <Grid>
+                        <TextBlock Text="User id:"
+                            Margin="33,10,0,0" 
+                            HorizontalAlignment="Left" 
+                            VerticalAlignment="Top" FontSize="14"/>
+                        <TextBlock Text="Username:"
+                            Margin="240,10,0,0" 
+                            HorizontalAlignment="Left" 
+                            VerticalAlignment="Top" FontSize="14"/>
+                        <TextBox x:Name="textBoxUserId"
+                                 HorizontalAlignment="Left" 
+                                 VerticalAlignment="Top" 
+                                 Width="107" 
+                                 Margin="93,10,0,0" 
+                                 FontSize="14" 
+                                 PreviewTextInput="textBox_HandleAllExceptNumbers_PreviewTextInput" />
+                        <TextBox x:Name="textBoxUsername"
+                                 HorizontalAlignment="Left" 
+                                 VerticalAlignment="Top" 
+                                 Width="107" 
+                                 Margin="319,10,0,0" 
+                                 FontSize="14" 
+                                 PreviewTextInput="textBox_HandleAllExceptNumbers_PreviewTextInput" />
+                        <TextBlock Text="Email:"
+                            Margin="51,40,0,0" 
+                            HorizontalAlignment="Left" 
+                            VerticalAlignment="Top" FontSize="14"/>
+                        <TextBlock x:Name="textBlockEmail"
+                            Text="Email"
+                            Margin="101,40,0,0" 
+                            HorizontalAlignment="Left" 
+                            VerticalAlignment="Top" FontSize="14"/>
+                        <TextBlock Text="Registered:"
+                            Margin="19,64,0,0" 
+                            HorizontalAlignment="Left" 
+                            VerticalAlignment="Top" FontSize="14"/>
+                        <TextBlock x:Name="textBlockRegistrationDate"
+                            Text="Registration Date"
+                            Margin="101,64,0,0" 
+                            HorizontalAlignment="Left" 
+                            VerticalAlignment="Top" FontSize="14"/>
+                        <TextBlock Text="Banned:"
+                            Margin="37,112,0,0" 
+                            HorizontalAlignment="Left" 
+                            VerticalAlignment="Top" FontSize="14"/>
+                        <TextBlock Text="Online:"
+                            Margin="41,88,0,0" 
+                            HorizontalAlignment="Left" 
+                            VerticalAlignment="Top" FontSize="14"/>
+                        <TextBlock Text="Admin:"
+                            Margin="41,136,0,0" 
+                            HorizontalAlignment="Left" 
+                            VerticalAlignment="Top" FontSize="14"/>
+                        <RadioButton x:Name="radioButtonBannedTrue" 
+                                     Content="Yes" 
+                                     HorizontalAlignment="Left" 
+                                     Margin="101,115,0,0"
+                                     GroupName="Ban"
+                                     VerticalAlignment="Top"/>
+                        <RadioButton x:Name="radioButtonBannedFalse" 
+                            Content="No" 
+                            HorizontalAlignment="Left" 
+                            Margin="142,115,0,0"
+                            GroupName="Ban"
+                            VerticalAlignment="Top"/>
+                        <RadioButton x:Name="radioButtonAdminTrue" 
+                            Content="Yes" 
+                            HorizontalAlignment="Left" 
+                            Margin="101,139,0,0"
+                            GroupName="Admin"
+                            VerticalAlignment="Top"/>
+                        <RadioButton x:Name="radioButtonAdminFalse" 
+                            Content="No" 
+                            HorizontalAlignment="Left" 
+                            Margin="142,139,0,0"
+                            GroupName="Admin"
+                            VerticalAlignment="Top"/>
+                        <TextBlock x:Name="textBlockIsOnline"
+                            Text="Is Online"
+                            Margin="101,88,0,0" 
+                            HorizontalAlignment="Left" 
+                            VerticalAlignment="Top" FontSize="14"/>
+                        <TextBlock Text="Birth date:"
+                            Margin="242,40,0,0" 
+                            HorizontalAlignment="Left" 
+                            VerticalAlignment="Top" FontSize="14"/>
+                        <TextBlock x:Name="textBlockBirthdate"
+                            Text="Birth Date"
+                            Margin="319,40,0,0" 
+                            HorizontalAlignment="Left" 
+                            VerticalAlignment="Top" FontSize="14"/>
+                        <TextBlock Text="First name:"
+                            Margin="238,64,0,0" 
+                            HorizontalAlignment="Left" 
+                            VerticalAlignment="Top" FontSize="14"/>
+                        <TextBlock x:Name="textBlockFirstName"
+                            Text="First Name"
+                            Margin="319,64,0,0" 
+                            HorizontalAlignment="Left" 
+                            VerticalAlignment="Top" FontSize="14"/>
+                        <TextBlock Text="Last name:"
+                            Margin="238,88,0,0" 
+                            HorizontalAlignment="Left" 
+                            VerticalAlignment="Top" FontSize="14"/>
+                        <TextBlock x:Name="textBlockLastName"
+                            Text="Last Name"
+                            Margin="319,88,0,0" 
+                            HorizontalAlignment="Left" 
+                            VerticalAlignment="Top" FontSize="14"/>
+                        <TextBlock Text="Phone:"
+                            Margin="261,112,0,0" 
+                            HorizontalAlignment="Left" 
+                            VerticalAlignment="Top" FontSize="14"/>
+                        <TextBlock x:Name="textBlockPhoneNumber"
+                            Text="Phone number"
+                            Margin="319,112,0,0" 
+                            HorizontalAlignment="Left" 
+                            VerticalAlignment="Top" FontSize="14"/>
+                        <TextBlock Text="Picture:"
+                            Margin="258,136,0,0" 
+                            HorizontalAlignment="Left" 
+                            VerticalAlignment="Top" FontSize="14"/>
+                        <Button x:Name="buttonShowProfilePicture"
+                                Content="Open" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Margin="319,135,0,0" />
+                    </Grid>
                 </TabItem>
                 <TabItem Header="Messages" 
                          Width="100">
-                    <Grid />
+                    <Grid>
+                        <TextBox x:Name="textBoxMessageId"
+                                 HorizontalAlignment="Left" 
+                                 VerticalAlignment="Top" 
+                                 Width="130" 
+                                 Margin="100,14,0,0" 
+                                 FontSize="14" 
+                                 PreviewTextInput="textBox_HandleAllExceptNumbers_PreviewTextInput" TextChanged="textBoxMessageId_TextChanged" />
+                        <TextBlock Text="Message Id:"
+                                   Margin="16,14,0,0" 
+                                   HorizontalAlignment="Left" 
+                                   VerticalAlignment="Top" FontSize="14"/>
+                        <TextBlock Text="Text:" 
+                                   HorizontalAlignment="Left" 
+                                   VerticalAlignment="Top" 
+                                   Margin="16,47,0,0" 
+                                   FontSize="14"/>
+                        <TextBlock x:Name="textBlockMessageText"
+                                   TextWrapping="Wrap"
+                                   Text="" 
+                                   HorizontalAlignment="Left" 
+                                   VerticalAlignment="Top" 
+                                   Margin="48,47,0,0" 
+                                   Height="78" 
+                                   Width="417" 
+                                   FontSize="14"/>
+                        <TextBlock Text="User:" 
+                                   HorizontalAlignment="Left" 
+                                   VerticalAlignment="Top" 
+                                   Margin="272,14,0,0" 
+                                   FontSize="14"/>
+                        <TextBlock x:Name="textBlockMessageUserSent"
+                                   Text="" 
+                                   HorizontalAlignment="Left" 
+                                   VerticalAlignment="Top" 
+                                   Margin="308,14,0,0" 
+                                   FontSize="14"/>
+                        <TextBlock Text="Conversation:" 
+                                   HorizontalAlignment="Left" 
+                                   VerticalAlignment="Top" 
+                                   Margin="16,137,0,0" 
+                                   FontSize="14"/>
+                        <TextBlock x:Name="textBlockMessageConversationName"
+                                   Text="" 
+                                   HorizontalAlignment="Left" 
+                                   VerticalAlignment="Top" 
+                                   Margin="105,137,0,0" 
+                                   FontSize="14"/>
+                        <TextBlock Text="Send date:" 
+                                   HorizontalAlignment="Left" 
+                                   VerticalAlignment="Top" 
+                                   Margin="35,161,0,0" 
+                                   FontSize="14"/>
+                        <TextBlock x:Name="textBlockMessageSendDate"
+                                   Text="" 
+                                   HorizontalAlignment="Left" 
+                                   VerticalAlignment="Top" 
+                                   Margin="105,161,0,0" 
+                                   FontSize="14"/>
+                        <TextBlock Text="Attachment:" 
+                                   HorizontalAlignment="Left" 
+                                   VerticalAlignment="Top" 
+                                   Margin="25,185,0,0" 
+                                   FontSize="14"/>
+                        <TextBlock x:Name="textBlockMessageAttachment"
+                                   Text="" 
+                                   HorizontalAlignment="Left" 
+                                   VerticalAlignment="Top" 
+                                   Margin="105,185,0,0" 
+                                   FontSize="14"/>
+                        <Button x:Name="buttonOpenAttachment"
+                            Content="Open"
+                            Visibility="Hidden"
+                            HorizontalAlignment="Left" 
+                            VerticalAlignment="Top" Width="101" Margin="105,209,0,0" Click="buttonOpenAttachment_Click" />
+                    </Grid>
                 </TabItem>
             </TabControl>
         </Grid>

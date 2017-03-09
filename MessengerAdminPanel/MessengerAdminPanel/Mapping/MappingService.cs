@@ -1,32 +1,68 @@
 ﻿using MessengerAdminPanel.Mapping.EventLogEnums;
 using MessengerAdminPanel.Services;
 using MessengerAdminPanel.ViewModels;
+using System;
 using System.Collections.Generic;
 
 namespace MessengerAdminPanel.Mapping
 {
-	public class MapService
+	public class MappingService : IMappingService
 	{
-		public static IEnumerable<MessageViewModel> MessageToViewModel(IEnumerable<Message> messages)
+		private readonly IFileService _fileWorker;
+
+		public MappingService(IFileService fileWorker)
+		{
+			_fileWorker = fileWorker;
+		}
+
+		public PersonalInfoViewModel PersonalInfoToViewModel(PersonalInfo info)
+		{
+			var infoVM = new PersonalInfoViewModel();
+			var picture = String.Empty;
+
+			if (!String.IsNullOrEmpty(info.Picture))
+				picture = _fileWorker.GetFileNameByPath(info.Picture);
+
+			infoVM.Picture = picture;
+			infoVM.Id = info.Id;
+			infoVM.BirthDate = DateService.DateTimeFromUnixTimestampMillis(info.BirthDate.Value);
+			infoVM.FirstName = info.FirstName;
+			infoVM.LastName = info.LastName;
+			infoVM.PhoneNumber = info.PhoneNumber;
+			infoVM.User = $"[{info.UserId}] {info.User.Login}";
+
+			return infoVM;
+		}
+
+		public MessageViewModel MessageToViewModel(Message message)
+		{
+			var messageVM = new MessageViewModel();
+			var attachment = String.Empty;
+
+			if (!String.IsNullOrEmpty(message.Attachment))
+				attachment = _fileWorker.GetFileNameByPath(message.Attachment);
+			
+			messageVM.Attachment = attachment;
+			messageVM.Conversation = $"[{message.Conversation.Id}] {message.Conversation.Name}";
+			messageVM.Id = message.Id;
+			messageVM.SendDate = DateService.DateTimeFromUnixTimestampMillis(message.SendDate);
+			messageVM.Text = message.Text;
+			messageVM.User = $"[{message.UserId}] {message.User.Login}";
+
+			return messageVM;
+		}
+
+		public IEnumerable<MessageViewModel> MessageToViewModel(IEnumerable<Message> messages)
 		{
 			var result = new List<MessageViewModel>();
 
 			foreach (var message in messages)
-			{
-				var messageVM = new MessageViewModel();
-
-				messageVM.Attachment = message.Attachment;
-				messageVM.Conversation = $"[{message.Conversation.Id}] {message.Conversation.Name}";
-				messageVM.Id = message.Id;
-				messageVM.SendDate = DateService.DateTimeFromUnixTimestampMillis(message.SendDate);
-				messageVM.Text = message.Text;
-				messageVM.User = $"[{message.User.Id}] {message.User.Login}";
-			}
-
+				result.Add(MessageToViewModel(message));
+			
 			return result;
 		}
 
-		public static IEnumerable<UserViewModel> UserToViewModel(IEnumerable<User> users)
+		public IEnumerable<UserViewModel> UserToViewModel(IEnumerable<User> users)
 		{
 			var result = new List<UserViewModel>();
 
@@ -39,7 +75,7 @@ namespace MessengerAdminPanel.Mapping
 				userVM.IsAdmin = user.IsAdmin;
 				userVM.IsBanned = user.IsBanned;
 				userVM.IsOnline = user.IsOnline;
-				userVM.Login = user.Login;
+				userVM.Login = $"[{user.Id}] {user.Login}";
 				userVM.RegistrationDate = DateService.DateTimeFromUnixTimestampMillis(user.RegistrationDate);
 
 				result.Add(userVM);
@@ -48,7 +84,7 @@ namespace MessengerAdminPanel.Mapping
 			return result;
 		}
 
-		public static IEnumerable<AnnouncementViewModel> AnnouncementToViewModel(IEnumerable<Announcement> announcements)
+		public IEnumerable<AnnouncementViewModel> AnnouncementToViewModel(IEnumerable<Announcement> announcements)
 		{
 			var result = new List<AnnouncementViewModel>();
 
@@ -71,7 +107,7 @@ namespace MessengerAdminPanel.Mapping
 			return result;
 		}
 
-		public static IEnumerable<EventLogViewModel> EventLogToViewModel(IEnumerable<EventLog> eventLogs)
+		public IEnumerable<EventLogViewModel> EventLogToViewModel(IEnumerable<EventLog> eventLogs)
 		{
 			var result = new List<EventLogViewModel>();
 

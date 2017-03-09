@@ -30,7 +30,6 @@ namespace Messenger.Controllers
 		public IActionResult GetAll()
 		{
 			var announcements = _announcementRepository.GetAll();
-
 			var mappedAnnouncements = Mapper.Map<IEnumerable<Announcement>, IEnumerable<AnnouncementViewModel>>(announcements);
 			var orderderedAnnouncements = mappedAnnouncements.OrderByDescending(a => a.ClosingDate);
 

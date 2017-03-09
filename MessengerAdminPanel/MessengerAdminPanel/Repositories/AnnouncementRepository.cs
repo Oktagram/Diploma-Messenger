@@ -11,6 +11,8 @@ namespace MessengerAdminPanel.Repositories
 
 		public void Update(int id, Announcement announcement, Announcement newAnnouncement)
 		{
+			_context.Refresh();
+
 			if (announcement.IsActive && !newAnnouncement.IsActive)
 			{
 				announcement.ClosingDate = DateService.GetCurrentUnixTimestampMillis();

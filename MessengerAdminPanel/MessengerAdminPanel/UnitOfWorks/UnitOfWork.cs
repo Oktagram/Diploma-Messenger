@@ -2,7 +2,7 @@
 using System;
 using MessengerAdminPanel.Repositories.Interfaces;
 
-namespace MessengerAdminPanel.UnitOfWork
+namespace MessengerAdminPanel.UnitOfWorks
 {
 	public class UnitOfWork : IUnitOfWork
 	{
@@ -58,6 +58,17 @@ namespace MessengerAdminPanel.UnitOfWork
 				if (_messageRepository == null)
 					_messageRepository = new MessageRepository(_context);
 				return _messageRepository;
+			}
+		}
+
+		private IPersonalInfoRepository _personalInfoRepository;
+		public IPersonalInfoRepository PersonalInfoRepository
+		{
+			get
+			{
+				if (_personalInfoRepository == null)
+					_personalInfoRepository = new PersonalInfoRepository(_context);
+				return _personalInfoRepository;
 			}
 		}
 
