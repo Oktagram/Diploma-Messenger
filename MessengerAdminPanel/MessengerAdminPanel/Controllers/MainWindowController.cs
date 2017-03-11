@@ -36,8 +36,8 @@ namespace MessengerAdminPanel
 			_fileService = fileService;
 
 			_timer = new DispatcherTimer();
-			_timer.Tick += dispatcherTimer_Tick;
 			_timer.Interval = new TimeSpan(0, 0, 0, 0, 500);
+			_timer.Tick += dispatcherTimer_Tick;
 		}
 
 		public void UpdateDataGridLog(Expression<Func<EventLog, bool>> predicate, int eventLogEntity, int eventLogEvent)
@@ -162,14 +162,14 @@ namespace MessengerAdminPanel
 			if (!int.TryParse(conversationIdStr, out conversationId))
 			{
 				fillConversationDataWithEmptiness();
-				throw new NotFoundException();
+				throw new ArgumentException($"{conversationIdStr} cannot be resolved as conversation id.");
 			}
 
 			var conversation = _uow.ConversationRepository.Find(conversationId);
 			if (conversation == null)
 			{
 				fillConversationDataWithEmptiness();
-				throw new NotFoundException();
+				throw new NotFoundException($"Conversation with id {conversationId} not found.");
 			}
 
 			return conversation;
@@ -187,6 +187,7 @@ namespace MessengerAdminPanel
 				_view.UpdateConversationData(conversation.Name, creationDateStr, countOfMessagesStr, countOfUsersStr);
 			}
 			catch (NotFoundException) { }
+			catch (ArgumentException) { }
 		}
 
 		public void UpdateListViewUsersInConversation(string conversationIdStr)
@@ -198,7 +199,9 @@ namespace MessengerAdminPanel
 				var mappedUsers = _mappingService.UserToViewModel(users).ToList();
 				
 				_view.UpdateConversationListViewWithUsersList(mappedUsers);
-			} catch (NotFoundException) { }
+			}
+			catch (NotFoundException) { }
+			catch (ArgumentException) { }
 		}
 
 		public void UpdateListViewMessagesInConversation(string conversationIdStr)
@@ -212,6 +215,7 @@ namespace MessengerAdminPanel
 				_view.UpdateConversationListViewWithMessagesList(mappedMessages);
 			}
 			catch (NotFoundException) { }
+			catch (ArgumentException) { }
 		}
 
 		public void UpdateMessageData(string messageId)
@@ -219,19 +223,19 @@ namespace MessengerAdminPanel
 			int id;
 			if (!int.TryParse(messageId, out id))
 			{
-				_view.UpdateMessageData(String.Empty, String.Empty, String.Empty, String.Empty, String.Empty, String.Empty);
+				_view.UpdateMessageData(null, null);
 				return;
 			}
 		
 			var message = _uow.MessageRepository.Find(id);
 			if (message == null)
 			{
-				_view.UpdateMessageData(String.Empty, String.Empty, String.Empty, String.Empty, String.Empty, String.Empty);
+				_view.UpdateMessageData(null, null);
 				return;
 			}
 
 			var messageVM = _mappingService.MessageToViewModel(message);
-			_view.UpdateMessageData(messageVM.User, messageVM.Text, messageVM.Conversation, messageVM.SendDate.ToString(), messageVM.Attachment, message.Attachment);
+			_view.UpdateMessageData(messageVM, message.Attachment);
 		}
 
 		public void OpenFile(string fileName)
@@ -244,6 +248,47 @@ namespace MessengerAdminPanel
 			{
 				MessageBox.Show("File not found.", "Error");
 			}
+		}
+
+		public void UpdateUserDataById(string userId)
+		{
+			int id;
+			if (!int.TryParse(userId, out id))
+			{
+				_view.UpdateUserData(null, null, null);
+				return;
+			}
+
+			var user = _uow.UserRepository.Find(id);
+			var info = _uow.PersonalInfoRepository.Find(id);
+			if (user == null || info == null)
+			{
+				_view.UpdateUserData(null, null, null);
+				return;
+			}
+			
+			var messageVM = _mappingService.UserToViewModel(user);
+			var infoVM = _mappingService.PersonalInfoToViewModel(info);
+			_view.UpdateUserData(messageVM, infoVM, info.Picture);
+		}
+
+		public void UpdateUserDataByUsername(string username)
+		{
+			username = username.ToLower();
+			var userEnumerable = _uow.UserRepository.FindBy(u => u.Login.Equals(username.ToLower()));
+			
+			if (userEnumerable.Count() == 0)
+			{
+				_view.UpdateUserData(null, null, null);
+				return;
+			}
+
+			var user = userEnumerable.First();
+			var info = _uow.PersonalInfoRepository.Find(user.Id);
+
+			var messageVM = _mappingService.UserToViewModel(user);
+			var infoVM = _mappingService.PersonalInfoToViewModel(info);
+			_view.UpdateUserData(messageVM, infoVM, info.Picture);
 		}
 	}
 }

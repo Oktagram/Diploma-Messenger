@@ -10,6 +10,7 @@ namespace MessengerAdminPanel.Windows
 		void UpdateConversationData(string name, string creationDate, string countOfMessages, string countOfUsers);
 		void UpdateConversationListViewWithUsersList(List<UserViewModel> list);
 		void UpdateConversationListViewWithMessagesList(List<MessageViewModel> list);
-		void UpdateMessageData(string user, string text, string conversation, string sendDate, string attachmentName, string attachmentPath);
+		void UpdateMessageData(MessageViewModel messageVM, string attachmentPath);
+		void UpdateUserData(UserViewModel userVM, PersonalInfoViewModel infoVM, string profilePicturePath);
 	}
 }

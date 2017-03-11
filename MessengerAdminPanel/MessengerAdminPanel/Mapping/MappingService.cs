@@ -25,7 +25,15 @@ namespace MessengerAdminPanel.Mapping
 
 			infoVM.Picture = picture;
 			infoVM.Id = info.Id;
-			infoVM.BirthDate = DateService.DateTimeFromUnixTimestampMillis(info.BirthDate.Value);
+
+			if (info.BirthDate != null)
+			{
+				var birthDate = info.BirthDate.Value;
+				infoVM.BirthDate = DateService.DateTimeFromUnixTimestampMillis(birthDate);
+			}
+			else
+				infoVM.BirthDate = null;
+			
 			infoVM.FirstName = info.FirstName;
 			infoVM.LastName = info.LastName;
 			infoVM.PhoneNumber = info.PhoneNumber;
@@ -62,25 +70,28 @@ namespace MessengerAdminPanel.Mapping
 			return result;
 		}
 
+		public UserViewModel UserToViewModel(User user)
+		{
+			var userVM = new UserViewModel();
+
+			userVM.Id = user.Id;
+			userVM.Email = user.Email;
+			userVM.IsAdmin = user.IsAdmin;
+			userVM.IsBanned = user.IsBanned;
+			userVM.IsOnline = user.IsOnline;
+			userVM.Login = $"[{user.Id}] {user.Login}";
+			userVM.RegistrationDate = DateService.DateTimeFromUnixTimestampMillis(user.RegistrationDate);
+
+			return userVM;
+		}
+
 		public IEnumerable<UserViewModel> UserToViewModel(IEnumerable<User> users)
 		{
 			var result = new List<UserViewModel>();
 
 			foreach (var user in users)
-			{
-				var userVM = new UserViewModel();
-
-				userVM.Id = user.Id;
-				userVM.Email = user.Email;
-				userVM.IsAdmin = user.IsAdmin;
-				userVM.IsBanned = user.IsBanned;
-				userVM.IsOnline = user.IsOnline;
-				userVM.Login = $"[{user.Id}] {user.Login}";
-				userVM.RegistrationDate = DateService.DateTimeFromUnixTimestampMillis(user.RegistrationDate);
-
-				result.Add(userVM);
-			}
-
+				result.Add(UserToViewModel(user));
+			
 			return result;
 		}
 

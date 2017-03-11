@@ -21,7 +21,8 @@ namespace MessengerAdminPanel
 
 		private const int UNDEFINED_ENUM_VALUE = -1;
 
-		private string _messageAttachment;
+		private string _messageAttachmentPath;
+		private string _profilePicturePath;
 
 		public MainWindow()
 		{
@@ -33,7 +34,7 @@ namespace MessengerAdminPanel
 			_controller = new MainWindowController(this, uof, mappingService, fileService);
 			_columns = new Columns();
 			_validationService = new ValidationService();
-			
+
 			InitializeComponent();
 
 			Loaded += mainWindow_Loaded;
@@ -67,17 +68,9 @@ namespace MessengerAdminPanel
 			listViewUsersInConversation.ItemsSource = list;
 		}
 
-		public void UpdateMessageData(string user, string text, string conversation, string sendDate, string attachmentName, string attachmentPath)
+		public void UpdateMessageData(MessageViewModel messageVM, string attachmentPath)
 		{
-			textBlockMessageUserSent.Text = user;
-			textBlockMessageText.Text = text;
-			textBlockMessageConversationName.Text = conversation;
-			textBlockMessageSendDate.Text = sendDate;
-			textBlockMessageAttachment.Text = attachmentName;
-
-			_messageAttachment = attachmentPath;
-
-			if (String.IsNullOrEmpty(attachmentName))
+			if (String.IsNullOrEmpty(attachmentPath))
 			{
 				buttonOpenAttachment.IsEnabled = false;
 				buttonOpenAttachment.Visibility = Visibility.Hidden;
@@ -87,6 +80,80 @@ namespace MessengerAdminPanel
 				buttonOpenAttachment.IsEnabled = true;
 				buttonOpenAttachment.Visibility = Visibility.Visible;
 			}
+
+			if (messageVM == null)
+			{
+				textBlockMessageUserSent.Text = String.Empty;
+				textBlockMessageText.Text = String.Empty;
+				textBlockMessageConversationName.Text = String.Empty;
+				textBlockMessageSendDate.Text = String.Empty;
+				textBlockMessageAttachment.Text = String.Empty;
+
+				return;
+			}
+
+			textBlockMessageUserSent.Text = messageVM.User;
+			textBlockMessageText.Text = messageVM.Text;
+			textBlockMessageConversationName.Text = messageVM.Conversation;
+			textBlockMessageSendDate.Text = messageVM.SendDate.ToString();
+			textBlockMessageAttachment.Text = messageVM.Attachment;
+
+			_messageAttachmentPath = attachmentPath;
+		}
+
+		public void UpdateUserData(UserViewModel userVM, PersonalInfoViewModel infoVM, string profilePicturePath)
+		{
+			if (userVM == null || infoVM == null)
+			{
+				textBlockUser.Text = String.Empty;
+				textBlockEmail.Text = String.Empty;
+				textBlockRegistrationDate.Text = String.Empty;
+				textBlockIsOnline.Text = String.Empty;
+
+				textBlockBirthdate.Text = String.Empty;
+				textBlockFirstName.Text = String.Empty;
+				textBlockLastName.Text = String.Empty;
+				textBlockPhoneNumber.Text = String.Empty;
+
+				radioButtonBannedTrue.IsChecked = false;
+				radioButtonBannedFalse.IsChecked = false;
+
+				radioButtonAdminTrue.IsChecked = false;
+				radioButtonAdminFalse.IsChecked = false;
+
+				buttonShowProfilePicture.IsEnabled = false;
+
+				return;
+			}
+			
+			textBlockUser.Text = userVM.Login;
+			textBlockEmail.Text = userVM.Email;
+			textBlockRegistrationDate.Text = userVM.RegistrationDate.ToString();
+			textBlockIsOnline.Text = userVM.IsOnline.ToString();
+
+			var birthDate = infoVM.BirthDate;
+			var birthDateStr = birthDate == null ? String.Empty : birthDate.ToString();
+			textBlockBirthdate.Text = birthDateStr.Split(' ')[0];
+			textBlockFirstName.Text = infoVM.FirstName;
+			textBlockLastName.Text = infoVM.LastName;
+			textBlockPhoneNumber.Text = infoVM.PhoneNumber;
+
+			_profilePicturePath = profilePicturePath;
+
+			if (userVM.IsBanned)
+				radioButtonBannedTrue.IsChecked = true;
+			else
+				radioButtonBannedFalse.IsChecked = true;
+
+			if (userVM.IsAdmin)
+				radioButtonAdminTrue.IsChecked = true;
+			else
+				radioButtonAdminFalse.IsChecked = true;
+
+			if (String.IsNullOrEmpty(infoVM.Picture))
+				buttonShowProfilePicture.IsEnabled = false;
+			else
+				buttonShowProfilePicture.IsEnabled = true;
 		}
 
 		private void mainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -208,7 +275,28 @@ namespace MessengerAdminPanel
 
 		private void buttonOpenAttachment_Click(object sender, RoutedEventArgs e)
 		{
-			_controller.OpenFile(_messageAttachment);
+			_controller.OpenFile(_messageAttachmentPath);
+		}
+
+		private void textBoxUserId_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			if (!String.IsNullOrEmpty(textBoxUserId.Text)) textBoxUsername.Text = String.Empty;
+		
+			var userIdStr = textBoxUserId.Text;
+			_controller.UpdateUserDataById(userIdStr);
+		}
+
+		private void textBoxUsername_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			if (!String.IsNullOrEmpty(textBoxUsername.Text)) textBoxUserId.Text = String.Empty;
+
+			var username = textBoxUsername.Text;
+			_controller.UpdateUserDataByUsername(username);
+		}
+
+		private void buttonShowProfilePicture_Click(object sender, RoutedEventArgs e)
+		{
+			_controller.OpenFile(_profilePicturePath);
 		}
 	}
 }

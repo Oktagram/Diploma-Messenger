@@ -17,5 +17,7 @@ namespace MessengerAdminPanel
 		void UpdateListViewMessagesInConversation(string conversationId);
 		void UpdateMessageData(string messageId);
 		void OpenFile(string fileName);
+		void UpdateUserDataById(string userId);
+		void UpdateUserDataByUsername(string username);
 	}
 }

@@ -114,12 +114,12 @@
                                    HorizontalAlignment="Left" 
                                    VerticalAlignment="Top" FontSize="14"/>
                         <TextBlock Text="Name:" 
-                            Margin="76,38,0,0" 
+                            Margin="76,40,0,0" 
                             HorizontalAlignment="Left" 
                             VerticalAlignment="Top" FontSize="14"/>
                         <TextBlock x:Name="textBlockConversationName"
                             Text="conversation name" 
-                            Margin="128,38,0,0" 
+                            Margin="128,40,0,0" 
                             HorizontalAlignment="Left" 
                             VerticalAlignment="Top" FontSize="14"/>
                         <TextBlock Text="Created:" 
@@ -143,16 +143,16 @@
                             </ListView.View>
                         </ListView>
                         <TextBlock Text="Messages:"
-                            Margin="317,38,0,0" 
+                            Margin="317,40,0,0" 
                             HorizontalAlignment="Left" 
                             VerticalAlignment="Top" FontSize="14"/>
                         <TextBlock x:Name="textBlockMessagesInConversationCount"
                             Text="count" 
-                            Margin="385,38,0,0" 
+                            Margin="385,40,0,0" 
                             HorizontalAlignment="Left" 
                             VerticalAlignment="Top" FontSize="14" Width="53"/>
                         <TextBlock Text="Users:"
-                            Margin="344,62,0,0" 
+                            Margin="343,62,0,0" 
                             HorizontalAlignment="Left" 
                             VerticalAlignment="Top" FontSize="14"/>
                         <TextBlock x:Name="textBlockUsersInConversationCount"
@@ -181,7 +181,7 @@
                             HorizontalAlignment="Left" 
                             VerticalAlignment="Top" FontSize="14"/>
                         <TextBlock Text="Username:"
-                            Margin="240,10,0,0" 
+                            Margin="251,10,0,0" 
                             HorizontalAlignment="Left" 
                             VerticalAlignment="Top" FontSize="14"/>
                         <TextBox x:Name="textBoxUserId"
@@ -190,115 +190,130 @@
                                  Width="107" 
                                  Margin="93,10,0,0" 
                                  FontSize="14" 
-                                 PreviewTextInput="textBox_HandleAllExceptNumbers_PreviewTextInput" />
+                                 PreviewTextInput="textBox_HandleAllExceptNumbers_PreviewTextInput" 
+                                 TextChanged="textBoxUserId_TextChanged" />
                         <TextBox x:Name="textBoxUsername"
                                  HorizontalAlignment="Left" 
                                  VerticalAlignment="Top" 
-                                 Width="107" 
-                                 Margin="319,10,0,0" 
-                                 FontSize="14" 
-                                 PreviewTextInput="textBox_HandleAllExceptNumbers_PreviewTextInput" />
+                                 Width="135" 
+                                 Margin="330,10,0,0" 
+                                 FontSize="14" TextChanged="textBoxUsername_TextChanged" />
                         <TextBlock Text="Email:"
-                            Margin="51,40,0,0" 
+                            Margin="46,64,0,0" 
                             HorizontalAlignment="Left" 
                             VerticalAlignment="Top" FontSize="14"/>
                         <TextBlock x:Name="textBlockEmail"
                             Text="Email"
-                            Margin="101,40,0,0" 
+                            Margin="96,64,0,0" 
                             HorizontalAlignment="Left" 
                             VerticalAlignment="Top" FontSize="14"/>
                         <TextBlock Text="Registered:"
-                            Margin="19,64,0,0" 
+                            Margin="14,88,0,0" 
                             HorizontalAlignment="Left" 
                             VerticalAlignment="Top" FontSize="14"/>
                         <TextBlock x:Name="textBlockRegistrationDate"
                             Text="Registration Date"
-                            Margin="101,64,0,0" 
+                            Margin="96,88,0,0" 
                             HorizontalAlignment="Left" 
                             VerticalAlignment="Top" FontSize="14"/>
                         <TextBlock Text="Banned:"
-                            Margin="37,112,0,0" 
+                            Margin="32,137,0,0" 
                             HorizontalAlignment="Left" 
                             VerticalAlignment="Top" FontSize="14"/>
                         <TextBlock Text="Online:"
-                            Margin="41,88,0,0" 
+                            Margin="36,112,0,0" 
                             HorizontalAlignment="Left" 
                             VerticalAlignment="Top" FontSize="14"/>
                         <TextBlock Text="Admin:"
-                            Margin="41,136,0,0" 
+                            Margin="36,161,0,0" 
                             HorizontalAlignment="Left" 
                             VerticalAlignment="Top" FontSize="14"/>
                         <RadioButton x:Name="radioButtonBannedTrue" 
                                      Content="Yes" 
                                      HorizontalAlignment="Left" 
-                                     Margin="101,115,0,0"
+                                     Margin="96,140,0,0"
                                      GroupName="Ban"
                                      VerticalAlignment="Top"/>
                         <RadioButton x:Name="radioButtonBannedFalse" 
                             Content="No" 
                             HorizontalAlignment="Left" 
-                            Margin="142,115,0,0"
+                            Margin="137,140,0,0"
                             GroupName="Ban"
                             VerticalAlignment="Top"/>
                         <RadioButton x:Name="radioButtonAdminTrue" 
                             Content="Yes" 
                             HorizontalAlignment="Left" 
-                            Margin="101,139,0,0"
+                            Margin="96,164,0,0"
                             GroupName="Admin"
                             VerticalAlignment="Top"/>
                         <RadioButton x:Name="radioButtonAdminFalse" 
                             Content="No" 
                             HorizontalAlignment="Left" 
-                            Margin="142,139,0,0"
+                            Margin="137,164,0,0"
                             GroupName="Admin"
                             VerticalAlignment="Top"/>
                         <TextBlock x:Name="textBlockIsOnline"
                             Text="Is Online"
-                            Margin="101,88,0,0" 
+                            Margin="96,112,0,0" 
                             HorizontalAlignment="Left" 
                             VerticalAlignment="Top" FontSize="14"/>
                         <TextBlock Text="Birth date:"
-                            Margin="242,40,0,0" 
+                            Margin="253,40,0,0" 
                             HorizontalAlignment="Left" 
                             VerticalAlignment="Top" FontSize="14"/>
                         <TextBlock x:Name="textBlockBirthdate"
                             Text="Birth Date"
-                            Margin="319,40,0,0" 
+                            Margin="330,40,0,0" 
                             HorizontalAlignment="Left" 
                             VerticalAlignment="Top" FontSize="14"/>
                         <TextBlock Text="First name:"
-                            Margin="238,64,0,0" 
+                            Margin="249,64,0,0" 
                             HorizontalAlignment="Left" 
                             VerticalAlignment="Top" FontSize="14"/>
                         <TextBlock x:Name="textBlockFirstName"
                             Text="First Name"
-                            Margin="319,64,0,0" 
+                            Margin="330,64,0,0" 
                             HorizontalAlignment="Left" 
                             VerticalAlignment="Top" FontSize="14"/>
                         <TextBlock Text="Last name:"
-                            Margin="238,88,0,0" 
+                            Margin="249,88,0,0" 
                             HorizontalAlignment="Left" 
                             VerticalAlignment="Top" FontSize="14"/>
                         <TextBlock x:Name="textBlockLastName"
                             Text="Last Name"
-                            Margin="319,88,0,0" 
+                            Margin="330,88,0,0" 
                             HorizontalAlignment="Left" 
                             VerticalAlignment="Top" FontSize="14"/>
                         <TextBlock Text="Phone:"
-                            Margin="261,112,0,0" 
+                            Margin="272,112,0,0" 
                             HorizontalAlignment="Left" 
                             VerticalAlignment="Top" FontSize="14"/>
                         <TextBlock x:Name="textBlockPhoneNumber"
                             Text="Phone number"
-                            Margin="319,112,0,0" 
+                            Margin="330,112,0,0" 
                             HorizontalAlignment="Left" 
                             VerticalAlignment="Top" FontSize="14"/>
-                        <TextBlock Text="Picture:"
-                            Margin="258,136,0,0" 
+                        <TextBlock Text="Profile picture:"
+                            Margin="225,135,0,0" 
                             HorizontalAlignment="Left" 
                             VerticalAlignment="Top" FontSize="14"/>
                         <Button x:Name="buttonShowProfilePicture"
-                                Content="Open" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Margin="319,135,0,0" />
+                                Content="Open" 
+                                HorizontalAlignment="Left" 
+                                VerticalAlignment="Top" 
+                                Width="100" 
+                                IsEnabled="False"
+                                Margin="330,135,0,0" 
+                                Click="buttonShowProfilePicture_Click" />
+                        <TextBlock Text="User:"
+                            Margin="51,40,0,0" 
+                            HorizontalAlignment="Left" 
+                            VerticalAlignment="Top" FontSize="14"/>
+                        <TextBlock x:Name="textBlockUser"
+                            Text="User"
+                            Margin="96,40,0,0" 
+                            HorizontalAlignment="Left" 
+                            VerticalAlignment="Top" FontSize="14"/>
                     </Grid>
                 </TabItem>
                 <TabItem Header="Messages" 
