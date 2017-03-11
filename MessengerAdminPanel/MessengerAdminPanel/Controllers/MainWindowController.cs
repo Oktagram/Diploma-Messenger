@@ -91,11 +91,10 @@ namespace MessengerAdminPanel
 
 		public void EditAnnouncement(AnnouncementViewModel a, bool activity)
 		{
-			if (CheckForNullWithErrorMessage(a, "Choose announcement!")) return;
+			if (checkForNullWithErrorMessage(a, "Choose announcement!")) return;
 
-			var prompt = new PromptWindow("Edit announcement description: ");
-			prompt.ResponseText = a.Description;
-
+			var prompt = new PromptWindow("Edit announcement description: ", a.Description);
+			
 			if (!prompt.ShowDialog().Value) return;
 
 			if (String.IsNullOrEmpty(prompt.ResponseText))
@@ -115,7 +114,7 @@ namespace MessengerAdminPanel
 
 		public void DeleteAnnouncement(AnnouncementViewModel a, bool activity)
 		{
-			if (CheckForNullWithErrorMessage(a, "Choose announcement!")) return;
+			if (checkForNullWithErrorMessage(a, "Choose announcement!")) return;
 
 			var dialogResult = MessageBox.Show("Are you sure?", "Delete announcement", MessageBoxButton.YesNo);
 			if (dialogResult != MessageBoxResult.Yes) return;
@@ -128,7 +127,7 @@ namespace MessengerAdminPanel
 
 		public void ChangeAnnouncementStatus(AnnouncementViewModel a, bool activity)
 		{
-			if (CheckForNullWithErrorMessage(a, "Choose announcement!")) return;
+			if (checkForNullWithErrorMessage(a, "Choose announcement!")) return;
 
 			a.IsActive = !a.IsActive;
 			
@@ -142,7 +141,7 @@ namespace MessengerAdminPanel
 			UpdateAnnouncementsListView(activity);
 		}
 
-		private bool CheckForNullWithErrorMessage(object obj, string nullMsg)
+		private bool checkForNullWithErrorMessage(object obj, string nullMsg)
 		{
 			if (obj != null) return false;
 
@@ -152,7 +151,7 @@ namespace MessengerAdminPanel
 
 		private void fillConversationDataWithEmptiness()
 		{
-			_view.UpdateConversationData(String.Empty, String.Empty, String.Empty, String.Empty);
+			_view.UpdateConversationData(null);
 			_view.UpdateConversationListViewWithUsersList(null);
 		}
 		
@@ -180,11 +179,9 @@ namespace MessengerAdminPanel
 			try
 			{
 				var conversation = findConversation(conversationIdStr);
-				var creationDateStr = DateService.DateTimeFromUnixTimestampMillis(conversation.CreationDate).ToString();
-				var countOfMessagesStr = conversation.Message.Count.ToString();
-				var countOfUsersStr = conversation.User.Count.ToString();
+				var conversationVM = _mappingService.ConversationToViewModel(conversation);
 
-				_view.UpdateConversationData(conversation.Name, creationDateStr, countOfMessagesStr, countOfUsersStr);
+				_view.UpdateConversationData(conversationVM);
 			}
 			catch (NotFoundException) { }
 			catch (ArgumentException) { }
@@ -250,6 +247,21 @@ namespace MessengerAdminPanel
 			}
 		}
 
+		private void updateUserData(User user, PersonalInfo info)
+		{
+			if (user == null || info == null)
+			{
+				_view.UpdateUserData(null, null, null);
+				return;
+			}
+
+			var picture = info.Picture;
+			var messageVM = _mappingService.UserToViewModel(user);
+			var infoVM = _mappingService.PersonalInfoToViewModel(info);
+
+			_view.UpdateUserData(messageVM, infoVM, info.Picture);
+		}
+
 		public void UpdateUserDataById(string userId)
 		{
 			int id;
@@ -261,34 +273,93 @@ namespace MessengerAdminPanel
 
 			var user = _uow.UserRepository.Find(id);
 			var info = _uow.PersonalInfoRepository.Find(id);
-			if (user == null || info == null)
-			{
-				_view.UpdateUserData(null, null, null);
-				return;
-			}
-			
-			var messageVM = _mappingService.UserToViewModel(user);
-			var infoVM = _mappingService.PersonalInfoToViewModel(info);
-			_view.UpdateUserData(messageVM, infoVM, info.Picture);
+
+			updateUserData(user, info);
+		}
+
+		private User findUserByUsername(string username)
+		{
+			username = username.ToLower();
+
+			var userEnumerable = _uow.UserRepository.FindBy(u => u.Login.Equals(username.ToLower()));
+
+			if (userEnumerable.Count() == 0)
+				return null;
+
+			return userEnumerable.First();
 		}
 
 		public void UpdateUserDataByUsername(string username)
 		{
-			username = username.ToLower();
-			var userEnumerable = _uow.UserRepository.FindBy(u => u.Login.Equals(username.ToLower()));
-			
-			if (userEnumerable.Count() == 0)
+			var user = findUserByUsername(username);
+
+			if (user == null) _view.UpdateUserData(null, null, null);
+
+			var info = _uow.PersonalInfoRepository.Find(user.Id);
+
+			updateUserData(user, info);
+		}
+
+		public void ChangeUsername(string currentUsername)
+		{
+			var prompt = new PromptWindow("Username:", currentUsername);
+
+			if (!prompt.ShowDialog().Value) return;
+
+			if (String.IsNullOrEmpty(prompt.ResponseText))
 			{
-				_view.UpdateUserData(null, null, null);
+				MessageBox.Show("Username cannount by empty.");
 				return;
 			}
 
-			var user = userEnumerable.First();
+			if (prompt.ResponseText.Length < 5)
+			{
+				MessageBox.Show("Username length cannot be less than 5 characters.");
+				return;
+			}
+			
+			var user = findUserByUsername(currentUsername);
+			user.Login = prompt.ResponseText;
+			_uow.Save();
+
 			var info = _uow.PersonalInfoRepository.Find(user.Id);
 
-			var messageVM = _mappingService.UserToViewModel(user);
-			var infoVM = _mappingService.PersonalInfoToViewModel(info);
-			_view.UpdateUserData(messageVM, infoVM, info.Picture);
+			updateUserData(user, info);
+		}
+
+		public void ChangeUserBanStatus(string username, bool status)
+		{
+			var user = findUserByUsername(username);
+			user.IsBanned = status;
+			_uow.Save();
+		}
+
+		public void ChangeUserAdminStatus(string username, bool status)
+		{
+			var user = findUserByUsername(username);
+			user.IsAdmin = status;
+			_uow.Save();
+		}
+
+		public void ChangeConversationName(string conversaitonId, string currentName)
+		{
+			var id = Int32.Parse(conversaitonId);
+			var conversation = _uow.ConversationRepository.Find(id);
+			var prompt = new PromptWindow("Conversation name:", currentName);
+
+			if (!prompt.ShowDialog().Value) return;
+
+			if (String.IsNullOrEmpty(prompt.ResponseText))
+			{
+				MessageBox.Show("Username cannount by empty.");
+				return;
+			}
+
+			conversation.Name = prompt.ResponseText;
+			_uow.Save();
+
+			var conversationVM = _mappingService.ConversationToViewModel(conversation);
+			_view.UpdateConversationData(conversationVM);
 		}
 	}
 }

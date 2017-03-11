@@ -19,5 +19,9 @@ namespace MessengerAdminPanel
 		void OpenFile(string fileName);
 		void UpdateUserDataById(string userId);
 		void UpdateUserDataByUsername(string username);
+		void ChangeUsername(string currentUsername);
+		void ChangeUserBanStatus(string username, bool status);
+		void ChangeUserAdminStatus(string username, bool status);
+		void ChangeConversationName(string conversaitonId, string currentName);
 	}
 }

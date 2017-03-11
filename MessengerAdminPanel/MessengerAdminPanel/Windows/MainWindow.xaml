@@ -113,6 +113,15 @@
                                    Margin="16,14,0,0" 
                                    HorizontalAlignment="Left" 
                                    VerticalAlignment="Top" FontSize="14"/>
+                        <Button x:Name="buttonEditConversationName"
+                                VerticalAlignment="Top"
+                                HorizontalAlignment="Left"
+                                Margin="57,43,0,0"
+                                IsEnabled="False"
+                                Height="15"
+                                Width="15" Click="buttonEditConversationName_Click">
+                            <Image Source="..\Resources\Images\edit.png"/>
+                        </Button>
                         <TextBlock Text="Name:" 
                             Margin="76,40,0,0" 
                             HorizontalAlignment="Left" 
@@ -233,25 +242,25 @@
                                      HorizontalAlignment="Left" 
                                      Margin="96,140,0,0"
                                      GroupName="Ban"
-                                     VerticalAlignment="Top"/>
+                                     VerticalAlignment="Top" Checked="radioButtonBannedTrue_Checked"/>
                         <RadioButton x:Name="radioButtonBannedFalse" 
                             Content="No" 
                             HorizontalAlignment="Left" 
                             Margin="137,140,0,0"
                             GroupName="Ban"
-                            VerticalAlignment="Top"/>
+                            VerticalAlignment="Top" Checked="radioButtonBannedFalse_Checked"/>
                         <RadioButton x:Name="radioButtonAdminTrue" 
                             Content="Yes" 
                             HorizontalAlignment="Left" 
                             Margin="96,164,0,0"
                             GroupName="Admin"
-                            VerticalAlignment="Top"/>
+                            VerticalAlignment="Top" Checked="radioButtonAdminTrue_Checked"/>
                         <RadioButton x:Name="radioButtonAdminFalse" 
                             Content="No" 
                             HorizontalAlignment="Left" 
                             Margin="137,164,0,0"
                             GroupName="Admin"
-                            VerticalAlignment="Top"/>
+                            VerticalAlignment="Top" Checked="radioButtonAdminFalse_Checked"/>
                         <TextBlock x:Name="textBlockIsOnline"
                             Text="Is Online"
                             Margin="96,112,0,0" 
@@ -305,6 +314,15 @@
                                 IsEnabled="False"
                                 Margin="330,135,0,0" 
                                 Click="buttonShowProfilePicture_Click" />
+                        <Button x:Name="buttonEditUsername"
+                                VerticalAlignment="Top"
+                                HorizontalAlignment="Left"
+                                Margin="31,43,0,0"
+                                IsEnabled="False"
+                                Height="15"
+                                Width="15" Click="buttonEditUsername_Click">
+                            <Image Source="..\Resources\Images\edit.png"/>
+                        </Button>
                         <TextBlock Text="User:"
                             Margin="51,40,0,0" 
                             HorizontalAlignment="Left" 

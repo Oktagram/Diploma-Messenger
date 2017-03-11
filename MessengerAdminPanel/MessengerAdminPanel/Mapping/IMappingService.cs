@@ -12,5 +12,6 @@ namespace MessengerAdminPanel.Mapping
 		IEnumerable<AnnouncementViewModel> AnnouncementToViewModel(IEnumerable<Announcement> announcements);
 		IEnumerable<EventLogViewModel> EventLogToViewModel(IEnumerable<EventLog> eventLogs);
 		PersonalInfoViewModel PersonalInfoToViewModel(PersonalInfo info);
+		ConversationViewModel ConversationToViewModel(Conversation conversation);
 	}
 }

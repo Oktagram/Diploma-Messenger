@@ -50,12 +50,26 @@ namespace MessengerAdminPanel
 			listViewAnnouncements.ItemsSource = list;
 		}
 
-		public void UpdateConversationData(string name, string creationDate, string countOfMessages, string countOfUsers)
+		public void UpdateConversationData(ConversationViewModel conversaionVM)
 		{
-			textBlockConversationName.Text = name;
-			textBlockCreationDate.Text = creationDate;
-			textBlockMessagesInConversationCount.Text = countOfMessages;
-			textBlockUsersInConversationCount.Text = countOfUsers;
+			if (conversaionVM == null)
+			{
+				textBlockConversationName.Text = String.Empty;
+				textBlockCreationDate.Text = String.Empty;
+				textBlockMessagesInConversationCount.Text = String.Empty;
+				textBlockUsersInConversationCount.Text = String.Empty;
+
+				buttonEditConversationName.IsEnabled = false;
+
+				return;
+			}
+
+			textBlockConversationName.Text = conversaionVM.Name;
+			textBlockCreationDate.Text = conversaionVM.CreationDate;
+			textBlockMessagesInConversationCount.Text = conversaionVM.CounfOfMessages;
+			textBlockUsersInConversationCount.Text = conversaionVM.CountOfUsers;
+			
+			buttonEditConversationName.IsEnabled = true;
 		}
 
 		public void UpdateConversationListViewWithUsersList(List<UserViewModel> list)
@@ -105,7 +119,7 @@ namespace MessengerAdminPanel
 		{
 			if (userVM == null || infoVM == null)
 			{
-				textBlockUser.Text = String.Empty;
+				textBlockUser.Text = "Not Found";
 				textBlockEmail.Text = String.Empty;
 				textBlockRegistrationDate.Text = String.Empty;
 				textBlockIsOnline.Text = String.Empty;
@@ -122,6 +136,7 @@ namespace MessengerAdminPanel
 				radioButtonAdminFalse.IsChecked = false;
 
 				buttonShowProfilePicture.IsEnabled = false;
+				buttonEditUsername.IsEnabled = false;
 
 				return;
 			}
@@ -132,7 +147,7 @@ namespace MessengerAdminPanel
 			textBlockIsOnline.Text = userVM.IsOnline.ToString();
 
 			var birthDate = infoVM.BirthDate;
-			var birthDateStr = birthDate == null ? String.Empty : birthDate.ToString();
+			var birthDateStr = (birthDate == null) ? String.Empty : birthDate.ToString();
 			textBlockBirthdate.Text = birthDateStr.Split(' ')[0];
 			textBlockFirstName.Text = infoVM.FirstName;
 			textBlockLastName.Text = infoVM.LastName;
@@ -154,6 +169,13 @@ namespace MessengerAdminPanel
 				buttonShowProfilePicture.IsEnabled = false;
 			else
 				buttonShowProfilePicture.IsEnabled = true;
+
+			buttonEditUsername.IsEnabled = true;
+		}
+		
+		private string getUsernameByUsernameView(string usernameView)
+		{
+			return textBlockUser.Text.Substring(4);
 		}
 
 		private void mainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -297,6 +319,41 @@ namespace MessengerAdminPanel
 		private void buttonShowProfilePicture_Click(object sender, RoutedEventArgs e)
 		{
 			_controller.OpenFile(_profilePicturePath);
+		}
+
+		private void buttonEditUsername_Click(object sender, RoutedEventArgs e)
+		{
+			var username = getUsernameByUsernameView(textBlockUser.Text);
+			_controller.ChangeUsername(username);
+		}
+
+		private void radioButtonBannedTrue_Checked(object sender, RoutedEventArgs e)
+		{
+			var username = getUsernameByUsernameView(textBlockUser.Text);
+			_controller.ChangeUserBanStatus(username, true);
+		}
+
+		private void radioButtonBannedFalse_Checked(object sender, RoutedEventArgs e)
+		{
+			var username = getUsernameByUsernameView(textBlockUser.Text);
+			_controller.ChangeUserBanStatus(username, false);
+		}
+
+		private void radioButtonAdminTrue_Checked(object sender, RoutedEventArgs e)
+		{
+			var username = getUsernameByUsernameView(textBlockUser.Text);
+			_controller.ChangeUserAdminStatus(username, true);
+		}
+
+		private void radioButtonAdminFalse_Checked(object sender, RoutedEventArgs e)
+		{
+			var username = getUsernameByUsernameView(textBlockUser.Text);
+			_controller.ChangeUserAdminStatus(username, false);
+		}
+
+		private void buttonEditConversationName_Click(object sender, RoutedEventArgs e)
+		{
+			_controller.ChangeConversationName(textBoxConversationId.Text, textBlockConversationName.Text);
 		}
 	}
 }

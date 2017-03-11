@@ -14,6 +14,11 @@ namespace MessengerAdminPanel.Windows
 			textBlockTitle.Text = text;
 		}
 
+		public PromptWindow(string text, string defaultValue) : this(text)
+		{
+			ResponseText = defaultValue;
+		}
+
 		public string ResponseText
 		{
 			get { return textBoxResponse.Text; }

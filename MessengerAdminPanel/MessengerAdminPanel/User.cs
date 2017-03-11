@@ -12,7 +12,7 @@ namespace MessengerAdminPanel
     using System;
     using System.Collections.Generic;
     
-    public partial class User
+    public partial class User : ICloneable
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public User()
@@ -40,5 +40,10 @@ namespace MessengerAdminPanel
         public virtual ICollection<PersonalInfo> PersonalInfo { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Conversation> Conversation { get; set; }
-    }
+
+		public object Clone()
+		{
+			return MemberwiseClone();
+		}
+	}
 }

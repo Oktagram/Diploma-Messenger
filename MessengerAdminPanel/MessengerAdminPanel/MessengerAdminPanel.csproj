@@ -143,6 +143,7 @@
       <DependentUpon>MessengerContext.tt</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\AnnouncementViewModel.cs" />
+    <Compile Include="ViewModels\ConversationViewModel.cs" />
     <Compile Include="ViewModels\EventLogViewModel.cs" />
     <Compile Include="ViewModels\MessageViewModel.cs" />
     <Compile Include="ViewModels\PersonalInfoViewModel.cs" />
@@ -219,6 +220,7 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\Images\edit.png" />
     <Content Include="MessengerContext.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>MessengerContext.edmx</DependentUpon>

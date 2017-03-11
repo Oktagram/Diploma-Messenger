@@ -138,5 +138,17 @@ namespace MessengerAdminPanel.Mapping
 
 			return result;
 		}
+
+		public ConversationViewModel ConversationToViewModel(Conversation conversation)
+		{
+			var conversationVM = new ConversationViewModel();
+
+			conversationVM.Name = conversation.Name;
+			conversationVM.CreationDate = DateService.DateTimeFromUnixTimestampMillis(conversation.CreationDate).ToString();
+			conversationVM.CounfOfMessages = conversation.Message.Count.ToString();
+			conversationVM.CountOfUsers = conversation.User.Count.ToString();
+
+			return conversationVM;
+		}
 	}
 }
