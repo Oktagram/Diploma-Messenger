@@ -6,7 +6,6 @@ using MessengerAdminPanel.ViewModels;
 using MessengerAdminPanel.Windows;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -40,7 +39,7 @@ namespace MessengerAdminPanel
 			Loaded += mainWindow_Loaded;
 		}
 
-		public void UpdateDataGridLog(IEnumerable<EventLogViewModel> eventLog)
+		public void UpdateDataGridEventLog(IEnumerable<EventLogViewModel> eventLog)
 		{
 			dataGridLog.ItemsSource = eventLog;
 		}
@@ -60,26 +59,34 @@ namespace MessengerAdminPanel
 				textBlockUsersInConversationCount.Text = String.Empty;
 
 				buttonEditConversationName.IsEnabled = false;
+				buttonDeleteConversation.IsEnabled = false;
 
 				return;
 			}
 
 			textBlockConversationName.Text = conversaionVM.Name;
-			textBlockCreationDate.Text = conversaionVM.CreationDate;
+			textBlockCreationDate.Text = conversaionVM.CreationDate.ToString();
 			textBlockMessagesInConversationCount.Text = conversaionVM.CounfOfMessages;
 			textBlockUsersInConversationCount.Text = conversaionVM.CountOfUsers;
 			
 			buttonEditConversationName.IsEnabled = true;
+			buttonDeleteConversation.IsEnabled = true;
 		}
 
 		public void UpdateConversationListViewWithUsersList(List<UserViewModel> list)
 		{
-			listViewUsersInConversation.ItemsSource = list;
+			listViewConversationReferences.RemoveAllColumns();
+			listViewConversationReferences.AddColumnsByHeaders(_columns.UserViewModelColumns);
+	
+			listViewConversationReferences.ItemsSource = list;
 		}
 
 		public void UpdateConversationListViewWithMessagesList(List<MessageViewModel> list)
 		{
-			listViewUsersInConversation.ItemsSource = list;
+			listViewConversationReferences.RemoveAllColumns();
+			listViewConversationReferences.AddColumnsByHeaders(_columns.MessageViewModelColumns);
+
+			listViewConversationReferences.ItemsSource = list;
 		}
 
 		public void UpdateMessageData(MessageViewModel messageVM, string attachmentPath)
@@ -103,6 +110,8 @@ namespace MessengerAdminPanel
 				textBlockMessageSendDate.Text = String.Empty;
 				textBlockMessageAttachment.Text = String.Empty;
 
+				buttonDeleteMessage.IsEnabled = false;
+
 				return;
 			}
 
@@ -111,6 +120,8 @@ namespace MessengerAdminPanel
 			textBlockMessageConversationName.Text = messageVM.Conversation;
 			textBlockMessageSendDate.Text = messageVM.SendDate.ToString();
 			textBlockMessageAttachment.Text = messageVM.Attachment;
+
+			buttonDeleteMessage.IsEnabled = true;
 
 			_messageAttachmentPath = attachmentPath;
 		}
@@ -135,7 +146,7 @@ namespace MessengerAdminPanel
 				radioButtonAdminTrue.IsChecked = false;
 				radioButtonAdminFalse.IsChecked = false;
 
-				buttonShowProfilePicture.IsEnabled = false;
+				buttonOpenProfilePicture.IsEnabled = false;
 				buttonEditUsername.IsEnabled = false;
 
 				return;
@@ -166,13 +177,37 @@ namespace MessengerAdminPanel
 				radioButtonAdminFalse.IsChecked = true;
 
 			if (String.IsNullOrEmpty(infoVM.Picture))
-				buttonShowProfilePicture.IsEnabled = false;
+				buttonOpenProfilePicture.IsEnabled = false;
 			else
-				buttonShowProfilePicture.IsEnabled = true;
+				buttonOpenProfilePicture.IsEnabled = true;
 
 			buttonEditUsername.IsEnabled = true;
 		}
-		
+
+		public void UpdateUserListViewWithConversationsList(List<ConversationViewModel> list)
+		{
+			listViewUserReferences.RemoveAllColumns();
+			listViewUserReferences.AddColumnsByHeaders(_columns.ConversationViewModelColumns);
+
+			listViewUserReferences.ItemsSource = list;
+		}
+
+		public void UpdateUserListViewWithMessagesList(List<MessageViewModel> list)
+		{
+			listViewUserReferences.RemoveAllColumns();
+			listViewUserReferences.AddColumnsByHeaders(_columns.MessageViewModelColumns);
+	
+			listViewUserReferences.ItemsSource = list;
+		}
+
+		public void UpdateUserListViewWithUsersList(List<UserViewModel> list)
+		{
+			listViewUserReferences.RemoveAllColumns();
+			listViewUserReferences.AddColumnsByHeaders(_columns.UserViewModelColumns);
+			
+			listViewUserReferences.ItemsSource = list;
+		}
+
 		private string getUsernameByUsernameView(string usernameView)
 		{
 			return textBlockUser.Text.Substring(4);
@@ -191,10 +226,10 @@ namespace MessengerAdminPanel
 
 		private void requestUpdatingDataGridLog()
 		{
-			var logEntitySelected = comboBoxLogEntity != null ? comboBoxLogEntity.SelectedIndex : UNDEFINED_ENUM_VALUE;
+			var logEntitySelected = (comboBoxLogEntity != null) ? comboBoxLogEntity.SelectedIndex : UNDEFINED_ENUM_VALUE;
 			var logEventSelected = comboBoxLogEvent.SelectedIndex;
 
-			_controller.UpdateDataGridLog(
+			_controller.UpdateDataGridEventLog(
 				eventLog => eventLog.Message.Contains(textBoxEventLogSearch.Text),
 				logEntitySelected,
 				logEventSelected
@@ -276,17 +311,11 @@ namespace MessengerAdminPanel
 		private void radioButtonUsersInConversation_Checked(object sender, RoutedEventArgs e)
 		{
 			_controller.UpdateListViewUsersInConversation(textBoxConversationId.Text);
-
-			listViewUsersInConversation.RemoveColumnsByHeaders(_columns.MessageViewModelColumns.Keys.ToList());
-			listViewUsersInConversation.AddColumnsByHeaders(_columns.UserViewModelColumns);
 		}
 
 		private void radioButtonMessagesInConversation_Checked(object sender, RoutedEventArgs e)
 		{
 			_controller.UpdateListViewMessagesInConversation(textBoxConversationId.Text);
-
-			listViewUsersInConversation.RemoveColumnsByHeaders(_columns.UserViewModelColumns.Keys.ToList());
-			listViewUsersInConversation.AddColumnsByHeaders(_columns.MessageViewModelColumns);
 		}
 
 		private void textBoxMessageId_TextChanged(object sender, TextChangedEventArgs e)
@@ -306,6 +335,8 @@ namespace MessengerAdminPanel
 		
 			var userIdStr = textBoxUserId.Text;
 			_controller.UpdateUserDataById(userIdStr);
+
+			comboBoxUserListView_SelectionChanged(sender, null);
 		}
 
 		private void textBoxUsername_TextChanged(object sender, TextChangedEventArgs e)
@@ -314,6 +345,8 @@ namespace MessengerAdminPanel
 
 			var username = textBoxUsername.Text;
 			_controller.UpdateUserDataByUsername(username);
+
+			comboBoxUserListView_SelectionChanged(sender, null);
 		}
 
 		private void buttonShowProfilePicture_Click(object sender, RoutedEventArgs e)
@@ -354,6 +387,25 @@ namespace MessengerAdminPanel
 		private void buttonEditConversationName_Click(object sender, RoutedEventArgs e)
 		{
 			_controller.ChangeConversationName(textBoxConversationId.Text, textBlockConversationName.Text);
+		}
+
+		private void buttonDeleteConversation_Click(object sender, RoutedEventArgs e)
+		{
+			_controller.DeleteConversation(textBoxConversationId.Text);
+		}
+
+		private void buttonDeleteMessage_Click(object sender, RoutedEventArgs e)
+		{
+			_controller.DeleteMessage(textBoxMessageId.Text);
+		}
+
+		private void comboBoxUserListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			var userId = textBoxUserId.Text;
+			var username = textBoxUsername.Text;
+			var selectedTypeIndex = comboBoxUserListView.SelectedIndex;
+
+			_controller.UpdateUserListView(userId, username, selectedTypeIndex);
 		}
 	}
 }

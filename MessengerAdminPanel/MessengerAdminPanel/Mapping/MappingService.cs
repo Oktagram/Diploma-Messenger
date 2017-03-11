@@ -29,7 +29,7 @@ namespace MessengerAdminPanel.Mapping
 			if (info.BirthDate != null)
 			{
 				var birthDate = info.BirthDate.Value;
-				infoVM.BirthDate = DateService.DateTimeFromUnixTimestampMillis(birthDate);
+				infoVM.BirthDate = DateTimeOffset.FromUnixTimeMilliseconds(birthDate).DateTime.ToLocalTime();
 			}
 			else
 				infoVM.BirthDate = null;
@@ -53,7 +53,7 @@ namespace MessengerAdminPanel.Mapping
 			messageVM.Attachment = attachment;
 			messageVM.Conversation = $"[{message.Conversation.Id}] {message.Conversation.Name}";
 			messageVM.Id = message.Id;
-			messageVM.SendDate = DateService.DateTimeFromUnixTimestampMillis(message.SendDate);
+			messageVM.SendDate = DateTimeOffset.FromUnixTimeMilliseconds(message.SendDate).DateTime.ToLocalTime();
 			messageVM.Text = message.Text;
 			messageVM.User = $"[{message.UserId}] {message.User.Login}";
 
@@ -80,7 +80,7 @@ namespace MessengerAdminPanel.Mapping
 			userVM.IsBanned = user.IsBanned;
 			userVM.IsOnline = user.IsOnline;
 			userVM.Login = $"[{user.Id}] {user.Login}";
-			userVM.RegistrationDate = DateService.DateTimeFromUnixTimestampMillis(user.RegistrationDate);
+			userVM.RegistrationDate = DateTimeOffset.FromUnixTimeMilliseconds(user.RegistrationDate).DateTime.ToLocalTime();
 
 			return userVM;
 		}
@@ -102,8 +102,8 @@ namespace MessengerAdminPanel.Mapping
 			foreach (var announcement in announcements)
 			{
 				var announcementVM = new AnnouncementViewModel();
-				var closingDate = DateService.DateTimeFromUnixTimestampMillis(announcement.ClosingDate);
-				var createdDate = DateService.DateTimeFromUnixTimestampMillis(announcement.CreationDate);
+				var closingDate = DateTimeOffset.FromUnixTimeMilliseconds(announcement.ClosingDate).DateTime.ToLocalTime();
+				var createdDate = DateTimeOffset.FromUnixTimeMilliseconds(announcement.CreationDate).DateTime.ToLocalTime();
 			
 				announcementVM.Id = announcement.Id;
 				announcementVM.ClosingDate = closingDate;
@@ -125,7 +125,7 @@ namespace MessengerAdminPanel.Mapping
 			foreach(var eventLog in eventLogs)
 			{
 				var mapped = new EventLogViewModel();
-				var createdDate = DateService.DateTimeFromUnixTimestampMillis(eventLog.CreatedTime.Value);
+				var createdDate = DateTimeOffset.FromUnixTimeMilliseconds(eventLog.CreatedTime.Value).DateTime.ToLocalTime();
 
 				mapped.Id = eventLog.Id;
 				mapped.Message = eventLog.Message;
@@ -143,12 +143,23 @@ namespace MessengerAdminPanel.Mapping
 		{
 			var conversationVM = new ConversationViewModel();
 
+			conversationVM.Id = conversation.Id;
 			conversationVM.Name = conversation.Name;
-			conversationVM.CreationDate = DateService.DateTimeFromUnixTimestampMillis(conversation.CreationDate).ToString();
+			conversationVM.CreationDate = DateTimeOffset.FromUnixTimeMilliseconds(conversation.CreationDate).DateTime.ToLocalTime();
 			conversationVM.CounfOfMessages = conversation.Message.Count.ToString();
 			conversationVM.CountOfUsers = conversation.User.Count.ToString();
 
 			return conversationVM;
+		}
+
+		public IEnumerable<ConversationViewModel> ConversationToViewModel(IEnumerable<Conversation> conversations)
+		{
+			var result = new List<ConversationViewModel>();
+
+			foreach(var conversation in conversations)
+				result.Add(ConversationToViewModel(conversation));
+
+			return result;
 		}
 	}
 }

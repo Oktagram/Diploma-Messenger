@@ -13,7 +13,13 @@ namespace MessengerAdminPanel.Extensions
 				listView.AddColumnByHeader(pair.Key, pair.Value);
 			}
 		}
-
+		
+		public static void RemoveAllColumns(this ListView listView)
+		{
+			var gridView = (GridView)listView.View;
+			gridView.Columns.Clear();
+		}
+		
 		public static void RemoveColumnsByHeaders(this ListView listView, List<string> headers)
 		{
 			foreach (var header in headers)
@@ -35,7 +41,7 @@ namespace MessengerAdminPanel.Extensions
 				}
 			}
 		}
-
+		
 		public static void AddColumnByHeader(this ListView listView, string header, string bindingPath)
 		{
 			var gridView = (GridView)listView.View;

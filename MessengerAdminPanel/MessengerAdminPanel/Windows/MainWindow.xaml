@@ -118,9 +118,20 @@
                                 HorizontalAlignment="Left"
                                 Margin="57,43,0,0"
                                 IsEnabled="False"
+                                ToolTip="Rename conversation"
                                 Height="15"
                                 Width="15" Click="buttonEditConversationName_Click">
                             <Image Source="..\Resources\Images\edit.png"/>
+                        </Button>
+                        <Button x:Name="buttonDeleteConversation"
+                                VerticalAlignment="Top"
+                                HorizontalAlignment="Left"
+                                Margin="39,43,0,0"
+                                IsEnabled="False"
+                                ToolTip="Delete conversation"
+                                Height="15"
+                                Width="15" Click="buttonDeleteConversation_Click">
+                            <Image Source="..\Resources\Images\delete.png"/>
                         </Button>
                         <TextBlock Text="Name:" 
                             Margin="76,40,0,0" 
@@ -140,7 +151,7 @@
                             Margin="128,62,0,0" 
                             HorizontalAlignment="Left" 
                             VerticalAlignment="Top" FontSize="14"/>
-                        <ListView x:Name="listViewUsersInConversation" 
+                        <ListView x:Name="listViewConversationReferences" 
                                   Margin="5,100,5,5" VerticalAlignment="Stretch"
                                   HorizontalAlignment="Stretch">
                             <ListView.View>
@@ -306,7 +317,7 @@
                             Margin="225,135,0,0" 
                             HorizontalAlignment="Left" 
                             VerticalAlignment="Top" FontSize="14"/>
-                        <Button x:Name="buttonShowProfilePicture"
+                        <Button x:Name="buttonOpenProfilePicture"
                                 Content="Open" 
                                 HorizontalAlignment="Left" 
                                 VerticalAlignment="Top" 
@@ -332,6 +343,27 @@
                             Margin="96,40,0,0" 
                             HorizontalAlignment="Left" 
                             VerticalAlignment="Top" FontSize="14"/>
+                        <ListView x:Name="listViewUserReferences" 
+                                  Margin="5,187,5,5" VerticalAlignment="Stretch"
+                                  HorizontalAlignment="Stretch">
+                            <ListView.View>
+                                <GridView>
+                                    <GridView.Columns>
+
+                                    </GridView.Columns>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+                        <ComboBox x:Name="comboBoxUserListView" 
+                                  HorizontalAlignment="Left" 
+                                  Margin="253,159,0,0" 
+                                  SelectedIndex="0"
+                                  VerticalAlignment="Top" 
+                                  Width="150" SelectionChanged="comboBoxUserListView_SelectionChanged">
+                            <ComboBoxItem Content="Conversations"/>
+                            <ComboBoxItem Content="Messages"/>
+                            <ComboBoxItem Content="Friends"/>
+                        </ComboBox>
                     </Grid>
                 </TabItem>
                 <TabItem Header="Messages" 
@@ -344,6 +376,16 @@
                                  Margin="100,14,0,0" 
                                  FontSize="14" 
                                  PreviewTextInput="textBox_HandleAllExceptNumbers_PreviewTextInput" TextChanged="textBoxMessageId_TextChanged" />
+                        <Button x:Name="buttonDeleteMessage"
+                                VerticalAlignment="Top"
+                                HorizontalAlignment="Left"
+                                Margin="235,17,0,0"
+                                IsEnabled="False"
+                                ToolTip="Delete conversation"
+                                Height="15"
+                                Width="15" Click="buttonDeleteMessage_Click">
+                            <Image Source="..\Resources\Images\delete.png"/>
+                        </Button>
                         <TextBlock Text="Message Id:"
                                    Margin="16,14,0,0" 
                                    HorizontalAlignment="Left" 

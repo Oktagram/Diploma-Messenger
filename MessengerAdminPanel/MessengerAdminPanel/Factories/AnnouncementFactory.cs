@@ -1,4 +1,4 @@
-﻿using MessengerAdminPanel.Services;
+﻿using System;
 
 namespace MessengerAdminPanel.Factories
 {
@@ -10,7 +10,7 @@ namespace MessengerAdminPanel.Factories
 
 			var item = new Announcement();
 
-			item.CreationDate = DateService.GetCurrentUnixTimestampMillis();
+			item.CreationDate = DateTimeOffset.Now.ToUnixTimeMilliseconds();
 			item.IsActive = true;
 			item.Description = description;
 			item.UserId = 3; // Current user

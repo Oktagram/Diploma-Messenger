@@ -37,6 +37,21 @@ namespace MessengerAdminPanel
 				};
 			}
 		}
+		
+		public Dictionary<string, string> ConversationViewModelColumns
+		{
+			get
+			{
+				return new Dictionary<string, string>()
+				{
+					{ "Id", nameof(ConversationViewModel.Id) },
+					{ "Name", nameof(ConversationViewModel.Name) },
+					{ "Created", nameof(ConversationViewModel.CreationDate) },
+					{ "Count of messages", nameof(ConversationViewModel.CounfOfMessages) },
+					{ "Count of users", nameof(ConversationViewModel.CountOfUsers) }
+				};
+			}
+		}
 
 		public string AnnouncementClosedColumnHeader
 		{

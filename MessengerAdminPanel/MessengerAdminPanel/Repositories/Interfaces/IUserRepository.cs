@@ -6,5 +6,6 @@ namespace MessengerAdminPanel.Repositories.Interfaces
 	{
 		void Update(int id, User findById, User item);
 		IEnumerable<User> FindUsers(string login);
+		IEnumerable<User> FindFriends(int userId);
 	}
 }

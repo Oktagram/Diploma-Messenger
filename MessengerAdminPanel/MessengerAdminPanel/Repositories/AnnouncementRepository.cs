@@ -1,5 +1,5 @@
 ﻿using MessengerAdminPanel.Repositories.Interfaces;
-using MessengerAdminPanel.Services;
+using System;
 
 namespace MessengerAdminPanel.Repositories
 {
@@ -15,13 +15,13 @@ namespace MessengerAdminPanel.Repositories
 
 			if (announcement.IsActive && !newAnnouncement.IsActive)
 			{
-				announcement.ClosingDate = DateService.GetCurrentUnixTimestampMillis();
+				announcement.ClosingDate = DateTimeOffset.Now.ToUnixTimeMilliseconds();
 			}
 
 			if (!announcement.IsActive && newAnnouncement.IsActive)
 			{
 				announcement.ClosingDate = 0;
-				announcement.CreationDate = DateService.GetCurrentUnixTimestampMillis();
+				announcement.CreationDate = DateTimeOffset.Now.ToUnixTimeMilliseconds();
 
 				if (newAnnouncement.UserId != 0) announcement.UserId = newAnnouncement.UserId;
 			}
