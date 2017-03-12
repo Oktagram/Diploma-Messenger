@@ -1,6 +1,7 @@
 ﻿using MessengerAdminPanel.ViewModels;
 using System;
 using System.Linq.Expressions;
+using System.Windows.Controls;
 
 namespace MessengerAdminPanel
 {
@@ -32,5 +33,6 @@ namespace MessengerAdminPanel
 		void ChangeUserAdminStatus(string username, bool status);
 
 		void OpenFile(string fileName);
+		void SaveDataGridToPdf(DataGrid dataGrid, string fileName);
 	}
 }

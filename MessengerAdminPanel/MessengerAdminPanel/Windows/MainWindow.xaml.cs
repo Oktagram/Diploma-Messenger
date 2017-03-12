@@ -1,4 +1,6 @@
-﻿using MessengerAdminPanel.Extensions;
+﻿using iTextSharp.text;
+using iTextSharp.text.pdf;
+using MessengerAdminPanel.Extensions;
 using MessengerAdminPanel.Mapping;
 using MessengerAdminPanel.Services;
 using MessengerAdminPanel.UnitOfWorks;
@@ -6,6 +8,8 @@ using MessengerAdminPanel.ViewModels;
 using MessengerAdminPanel.Windows;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -29,8 +33,9 @@ namespace MessengerAdminPanel
 			var uof = new UnitOfWork(context);
 			var fileService = new FileService();
 			var mappingService = new MappingService(fileService);
+			var reportsSaver = new PdfReportsSaver();
 
-			_controller = new MainWindowController(this, uof, mappingService, fileService);
+			_controller = new MainWindowController(this, uof, mappingService, fileService, reportsSaver);
 			_columns = new Columns();
 			_validationService = new ValidationService();
 
@@ -41,7 +46,7 @@ namespace MessengerAdminPanel
 
 		public void UpdateDataGridEventLog(IEnumerable<EventLogViewModel> eventLog)
 		{
-			dataGridLog.ItemsSource = eventLog;
+			dataGridEventLog.ItemsSource = eventLog;
 		}
 
 		public void UpdateListViewAnnouncement(List<AnnouncementViewModel> list)
@@ -406,6 +411,16 @@ namespace MessengerAdminPanel
 			var selectedTypeIndex = comboBoxUserListView.SelectedIndex;
 
 			_controller.UpdateUserListView(userId, username, selectedTypeIndex);
+		}
+
+		private void buttonUpdateEventLog_Click(object sender, RoutedEventArgs e)
+		{
+			requestUpdatingDataGridLog();
+		}
+
+		private void buttonPrintEventLog_Click(object sender, RoutedEventArgs e)
+		{
+			_controller.SaveDataGridToPdf(dataGridEventLog, "EventLogReport");
 		}
 	}
 }

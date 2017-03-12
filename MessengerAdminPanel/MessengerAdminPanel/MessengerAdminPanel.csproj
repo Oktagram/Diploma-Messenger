@@ -44,11 +44,16 @@
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="itextsharp, Version=5.5.10.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\iTextSharp.5.5.10\lib\itextsharp.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -96,7 +101,7 @@
     </Compile>
     <Compile Include="Columns.cs" />
     <Compile Include="Exceptions\NotFoundException.cs" />
-    <Compile Include="Extensions\ListViewExtension.cs" />
+    <Compile Include="Extensions\ListViewExtensions.cs" />
     <Compile Include="Conversation.cs">
       <DependentUpon>MessengerContext.tt</DependentUpon>
     </Compile>
@@ -134,8 +139,10 @@
     <Compile Include="Repositories\PersonalInfoRepository.cs" />
     <Compile Include="Repositories\UserRepository.cs" />
     <Compile Include="Services\FileService.cs" />
-    <Compile Include="Services\IFileService.cs" />
-    <Compile Include="Services\IValidationService.cs" />
+    <Compile Include="Services\Interfaces\IFileService.cs" />
+    <Compile Include="Services\Interfaces\IReportsSaver.cs" />
+    <Compile Include="Services\Interfaces\IValidationService.cs" />
+    <Compile Include="Services\PdfReportsSaver.cs" />
     <Compile Include="Services\ValidationService.cs" />
     <Compile Include="UnitOfWorks\IUnitOfWork.cs" />
     <Compile Include="UnitOfWorks\UnitOfWork.cs" />
@@ -220,6 +227,8 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\Images\printer.png" />
+    <Resource Include="Resources\Images\update.png" />
     <Resource Include="Resources\Images\delete.png" />
     <Resource Include="Resources\Images\edit.png" />
     <Content Include="MessengerContext.Context.tt">

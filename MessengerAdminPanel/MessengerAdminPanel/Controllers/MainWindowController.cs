@@ -13,6 +13,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Windows;
 using System.Windows.Threading;
+using System.Windows.Controls;
 
 namespace MessengerAdminPanel
 {
@@ -26,6 +27,7 @@ namespace MessengerAdminPanel
 		private readonly IUnitOfWork _uow;
 		private readonly IMappingService _mappingService;
 		private readonly IFileService _fileService;
+		private readonly IReportsSaver _reportsSaver;
 
 		private Expression<Func<EventLog, bool>> _predicate;
 		private int _eventLogEntity;
@@ -38,12 +40,13 @@ namespace MessengerAdminPanel
 		private string _username;
 		private int _userData;
 
-		public MainWindowController(IMainWindowView view, IUnitOfWork uof, IMappingService mappingService, IFileService fileService)
+		public MainWindowController(IMainWindowView view, IUnitOfWork uof, IMappingService mappingService, IFileService fileService, IReportsSaver reportsSaver)
 		{
 			_view = view;
 			_uow = uof;
 			_mappingService = mappingService;
 			_fileService = fileService;
+			_reportsSaver = reportsSaver;
 
 			_updateDataGridEventLogTimer = new DispatcherTimer();
 			_updateDataGridEventLogTimer.Interval = new TimeSpan(0, 0, 0, 0, 500);
@@ -70,6 +73,8 @@ namespace MessengerAdminPanel
 
 		private void userListViewTimer_Tick(object sender, EventArgs e)
 		{
+			_updateUserListViewTimer.Stop();
+
 			if (String.IsNullOrEmpty(_userId) && String.IsNullOrEmpty(_username))
 			{
 				_view.UpdateUserListViewWithUsersList(null);
@@ -124,6 +129,7 @@ namespace MessengerAdminPanel
 			var infoVM = _mappingService.PersonalInfoToViewModel(_info);
 
 			_view.UpdateUserData(messageVM, infoVM, _info.Picture);
+			_updateUserDataTimer.Stop();
 		}
 
 		private void eventLogTimer_Tick(object sender, EventArgs e)
@@ -488,6 +494,17 @@ namespace MessengerAdminPanel
 
 			_updateUserListViewTimer.Stop();
 			_updateUserListViewTimer.Start();
+		}
+
+		public void SaveDataGridToPdf(DataGrid dataGrid, string fileName)
+		{
+			var path = _fileService.GetPath("Path to save PDF");
+			var data = dataGrid.ItemsSource;
+
+			if (_reportsSaver.Save(path, fileName, data))
+				MessageBox.Show("File successfully saved.");
+			else
+				MessageBox.Show("File was not saved.");
 		}
 	}
 }

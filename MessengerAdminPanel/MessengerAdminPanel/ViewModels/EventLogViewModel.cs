@@ -9,5 +9,10 @@ namespace MessengerAdminPanel.ViewModels
 		public string Entity { get; set; }
 		public string Event { get; set; }
 		public string Message { get; set; }
+
+		public override string ToString()
+		{
+			return $"{Id}: [{CreatedTime}], [{Entity}], [{Event}], \"{Message}\"";
+		}
 	}
 }

@@ -4,7 +4,7 @@ using System.Windows.Data;
 
 namespace MessengerAdminPanel.Extensions
 {
-	public static class ListViewExtension
+	public static class ListViewExtensions
 	{
 		public static void AddColumnsByHeaders(this ListView listView, Dictionary<string, string> headersWithPath)
 		{
@@ -47,7 +47,7 @@ namespace MessengerAdminPanel.Extensions
 			var gridView = (GridView)listView.View;
 
 			var column = new GridViewColumn() {
-				Header = header,
+				Header = header, 
 				DisplayMemberBinding = new Binding(bindingPath)
 			};
 

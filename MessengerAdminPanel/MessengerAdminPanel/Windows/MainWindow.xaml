@@ -152,7 +152,7 @@
                             HorizontalAlignment="Left" 
                             VerticalAlignment="Top" FontSize="14"/>
                         <ListView x:Name="listViewConversationReferences" 
-                                  Margin="5,100,5,5" VerticalAlignment="Stretch"
+                                  Margin="5,90,5,5" VerticalAlignment="Stretch"
                                   HorizontalAlignment="Stretch">
                             <ListView.View>
                                 <GridView>
@@ -344,7 +344,8 @@
                             HorizontalAlignment="Left" 
                             VerticalAlignment="Top" FontSize="14"/>
                         <ListView x:Name="listViewUserReferences" 
-                                  Margin="5,187,5,5" VerticalAlignment="Stretch"
+                                  Margin="5,187,5,5" 
+                                  VerticalAlignment="Stretch"
                                   HorizontalAlignment="Stretch">
                             <ListView.View>
                                 <GridView>
@@ -461,8 +462,10 @@
               VerticalAlignment="Top" 
               Height="53" >
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="7*" />
+                <ColumnDefinition Width="7*" />
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
             </Grid.ColumnDefinitions>
             <ComboBox x:Name="comboBoxLogEvent" 
                       Grid.Column="1" 
@@ -470,7 +473,7 @@
                       HorizontalAlignment="Center"  
                       Width="200" 
                       SelectedIndex="6" 
-                      SelectionChanged="comboBoxEventLog_SelectionChanged">
+                      SelectionChanged="comboBoxEventLog_SelectionChanged" Height="22">
                 <EventLogEnums:EventLogEvent>GET_ITEM</EventLogEnums:EventLogEvent>
                 <EventLogEnums:EventLogEvent>CREATE_ITEM</EventLogEnums:EventLogEvent>
                 <EventLogEnums:EventLogEvent>UPDATE_ITEM</EventLogEnums:EventLogEvent>
@@ -485,7 +488,8 @@
                       HorizontalAlignment="Center" 
                       Width="200" 
                       SelectionChanged="comboBoxEventLog_SelectionChanged" 
-                      SelectedIndex="6">
+                      SelectedIndex="6"
+                      Height="22" Margin="6,0,7,0">
                 <EventLogEnums:EventLogEntity>ANNOUNCEMENT</EventLogEnums:EventLogEntity>
                 <EventLogEnums:EventLogEntity>CONVERSATION</EventLogEnums:EventLogEntity>
                 <EventLogEnums:EventLogEntity>MESSAGE</EventLogEnums:EventLogEntity>
@@ -497,14 +501,32 @@
             <Label x:Name="labelEntity" 
                    Content="Entity" 
                    HorizontalAlignment="Center" 
-                   Margin="0,0,160,20" 
-                   VerticalAlignment="Bottom"/>
+                   Margin="6,0,167,22" 
+                   VerticalAlignment="Bottom" Height="26" Width="40"/>
             <Label x:Name="labelEvent" 
                    Content="Event" 
                    Grid.Column="1" 
                    HorizontalAlignment="Center" 
-                   Margin="0,0,160,20" 
-                   VerticalAlignment="Bottom"/>
+                   Margin="10,0,165,22" 
+                   VerticalAlignment="Bottom" Height="26" Width="38"/>
+            <Button x:Name="buttonPrintEventLog" 
+                    Grid.Column="2" 
+                    HorizontalAlignment="Center" 
+                    VerticalAlignment="Bottom" 
+                    Width="20"
+                    ToolTip="Print"
+                    Height="20" Click="buttonPrintEventLog_Click" Margin="6,0,5,1">
+                <Image Source="..\Resources\Images\printer.png"/>
+            </Button>
+            <Button x:Name="buttonUpdateEventLog" 
+                Grid.Column="3" 
+                HorizontalAlignment="Center" 
+                VerticalAlignment="Bottom" 
+                Width="20"
+                    ToolTip="Update"
+                Height="20" Click="buttonUpdateEventLog_Click" Margin="5,0,6,1">
+                <Image Source="..\Resources\Images\update.png"/>
+            </Button>
         </Grid>
         <Grid Margin="0,50,0,0" Grid.Column="1">
             <TextBox x:Name="textBoxEventLogSearch" 
@@ -514,7 +536,7 @@
                      VerticalAlignment="Top" 
                      Height="23" 
                      TextChanged="textBox_TextChanged"/>
-            <DataGrid x:Name="dataGridLog" 
+            <DataGrid x:Name="dataGridEventLog" VirtualizingStackPanel.IsVirtualizing="False"
                       Margin="5,46,10,10" 
                       IsReadOnly="True"/>
         </Grid>
