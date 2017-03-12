@@ -92,15 +92,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="App.xaml">
+    <Page Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </ApplicationDefinition>
+    </Page>
     <Compile Include="Announcement.cs">
       <DependentUpon>MessengerContext.tt</DependentUpon>
     </Compile>
     <Compile Include="Columns.cs" />
+    <Compile Include="CurrentUser.cs" />
+    <Compile Include="Exceptions\IllegalCredentialsException.cs" />
     <Compile Include="Exceptions\NotFoundException.cs" />
+    <Compile Include="Exceptions\PermissionException.cs" />
     <Compile Include="Extensions\ListViewExtensions.cs" />
     <Compile Include="Conversation.cs">
       <DependentUpon>MessengerContext.tt</DependentUpon>
@@ -132,16 +135,20 @@
     <Compile Include="PersonalInfo.cs">
       <DependentUpon>MessengerContext.tt</DependentUpon>
     </Compile>
+    <Compile Include="Services\Interfaces\IHashingService.cs" />
     <Compile Include="Repositories\Interfaces\IMessageRepository.cs" />
     <Compile Include="Repositories\Interfaces\IPersonalInfoRepository.cs" />
     <Compile Include="Repositories\Interfaces\IUserRepository.cs" />
     <Compile Include="Repositories\MessageRepository.cs" />
     <Compile Include="Repositories\PersonalInfoRepository.cs" />
     <Compile Include="Repositories\UserRepository.cs" />
+    <Compile Include="Services\Authenticator.cs" />
     <Compile Include="Services\FileService.cs" />
+    <Compile Include="Services\Interfaces\IAuthenticator.cs" />
     <Compile Include="Services\Interfaces\IFileService.cs" />
     <Compile Include="Services\Interfaces\IReportsSaver.cs" />
     <Compile Include="Services\Interfaces\IValidationService.cs" />
+    <Compile Include="Services\MD5HashingService.cs" />
     <Compile Include="Services\PdfReportsSaver.cs" />
     <Compile Include="Services\ValidationService.cs" />
     <Compile Include="UnitOfWorks\IUnitOfWork.cs" />
@@ -155,9 +162,16 @@
     <Compile Include="ViewModels\MessageViewModel.cs" />
     <Compile Include="ViewModels\PersonalInfoViewModel.cs" />
     <Compile Include="ViewModels\UserViewModel.cs" />
+    <Compile Include="Windows\AuthenticationWindow.xaml.cs">
+      <DependentUpon>AuthenticationWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\PromptWindow.xaml.cs">
       <DependentUpon>PromptWindow.xaml</DependentUpon>
     </Compile>
+    <Page Include="Windows\AuthenticationWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

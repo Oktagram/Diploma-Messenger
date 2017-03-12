@@ -23,7 +23,13 @@ namespace MessengerAdminPanel.Repositories
 				announcement.ClosingDate = 0;
 				announcement.CreationDate = DateTimeOffset.Now.ToUnixTimeMilliseconds();
 
-				if (newAnnouncement.UserId != 0) announcement.UserId = newAnnouncement.UserId;
+				if (newAnnouncement.UserId != 0)
+				{
+	//				var user = _context.User.Find(newAnnouncement.UserId);
+
+					announcement.UserId = newAnnouncement.UserId;
+	//				announcement.User = user;
+				}
 			}
 
 			announcement.Description = newAnnouncement.Description;

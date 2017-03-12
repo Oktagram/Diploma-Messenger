@@ -11,7 +11,6 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Windows;
 using System.Windows.Threading;
 using System.Windows.Controls;
 
@@ -71,6 +70,31 @@ namespace MessengerAdminPanel
 			_eventLogEvent = eventLogEvent;
 		}
 
+		private void updateUserListView(User user)
+		{
+			switch (_userData)
+			{
+				case 0:
+					var conversations = user.Conversation;
+					var mappedConversations = _mappingService.ConversationToViewModel(conversations).ToList();
+
+					_view.UpdateUserListViewWithConversationsList(mappedConversations);
+					break;
+				case 1:
+					var messages = user.Message;
+					var mappedMessages = _mappingService.MessageToViewModel(messages).ToList();
+
+					_view.UpdateUserListViewWithMessagesList(mappedMessages);
+					break;
+				case 2:
+					var friends = _uow.UserRepository.FindFriends(user.Id);
+					var mappedFriends = _mappingService.UserToViewModel(friends).ToList();
+
+					_view.UpdateUserListViewWithUsersList(mappedFriends);
+					break;
+			}
+		}
+
 		private void userListViewTimer_Tick(object sender, EventArgs e)
 		{
 			_updateUserListViewTimer.Stop();
@@ -90,27 +114,7 @@ namespace MessengerAdminPanel
 				else
 					user = findUser(_userId);
 
-				switch (_userData)
-				{
-					case 0:
-						var conversations = user.Conversation;
-						var mappedConversations = _mappingService.ConversationToViewModel(conversations).ToList();
-
-						_view.UpdateUserListViewWithConversationsList(mappedConversations);
-						break;
-					case 1:
-						var messages = user.Message;
-						var mappedMessages = _mappingService.MessageToViewModel(messages).ToList();
-
-						_view.UpdateUserListViewWithMessagesList(mappedMessages);
-						break;
-					case 2:
-						var friends = _uow.UserRepository.FindFriends(user.Id);
-						var mappedFriends = _mappingService.UserToViewModel(friends).ToList();
-
-						_view.UpdateUserListViewWithUsersList(mappedFriends);
-						break;
-				}
+				updateUserListView(user);
 			}
 			catch (NotFoundException) { _view.UpdateUserListViewWithUsersList(null); }
 			catch (ArgumentException) { }
@@ -155,17 +159,15 @@ namespace MessengerAdminPanel
 
 		public void CreateNewAnnouncement()
 		{
-			var prompt = new PromptWindow("Enter announcement description: ");
-
-			if (!prompt.ShowDialog().Value) return;
-
-			if (String.IsNullOrEmpty(prompt.ResponseText))
+			var response = _view.ShowPromptWindow("Enter announcement description: ");
+			
+			if (String.IsNullOrEmpty(response))
 			{
-				MessageBox.Show("Description cannot be empty!");
+				_view.ShowMessageBox("Description cannot be empty!");
 				return;
 			}
 
-			var announcement = AnnouncementFactory.Create(prompt.ResponseText);
+			var announcement = AnnouncementFactory.Create(response);
 			
 			_uow.AnnouncementRepository.Add(announcement);
 			_uow.Save();
@@ -175,17 +177,15 @@ namespace MessengerAdminPanel
 		{
 			if (checkForNullWithErrorMessage(a, "Choose announcement!")) return;
 
-			var prompt = new PromptWindow("Edit announcement description: ", a.Description);
+			var response = _view.ShowPromptWindow("Edit announcement description: ", a.Description);
 			
-			if (!prompt.ShowDialog().Value) return;
-
-			if (String.IsNullOrEmpty(prompt.ResponseText))
+			if (String.IsNullOrEmpty(response))
 			{
-				MessageBox.Show("Description cannot be empty!");
+				_view.ShowMessageBox("Description cannot be empty!");
 				return;
 			}
 
-			var newAnnouncement = AnnouncementFactory.Create(prompt.ResponseText);
+			var newAnnouncement = AnnouncementFactory.Create(response);
 			var announcement = _uow.AnnouncementRepository.Find(a.Id);
 
 			_uow.AnnouncementRepository.Update(a.Id, announcement, newAnnouncement);
@@ -198,8 +198,9 @@ namespace MessengerAdminPanel
 		{
 			if (checkForNullWithErrorMessage(a, "Choose announcement!")) return;
 
-			var dialogResult = MessageBox.Show("Are you sure?", "Delete announcement", MessageBoxButton.YesNo);
-			if (dialogResult != MessageBoxResult.Yes) return;
+			var dialogResult = _view.ShowMessageBoxYesNo("Are you sure?", "Delete announcement");
+
+			if (!dialogResult) return;
 
 			_uow.AnnouncementRepository.Remove(a.Id);
 			_uow.Save();
@@ -210,12 +211,11 @@ namespace MessengerAdminPanel
 		public void ChangeAnnouncementStatus(AnnouncementViewModel a, bool activity)
 		{
 			if (checkForNullWithErrorMessage(a, "Choose announcement!")) return;
-
-			a.IsActive = !a.IsActive;
 			
 			var announcement = _uow.AnnouncementRepository.Find(a.Id);
 			var newAnnouncement = (Announcement)announcement.Clone();
 			newAnnouncement.IsActive = !newAnnouncement.IsActive;
+			newAnnouncement.UserId = CurrentUser.Id;
 
 			_uow.AnnouncementRepository.Update(a.Id, announcement, newAnnouncement);
 			_uow.Save();
@@ -227,7 +227,7 @@ namespace MessengerAdminPanel
 		{
 			if (obj != null) return false;
 
-			MessageBox.Show(nullMsg, "Message");
+			_view.ShowMessageBox(nullMsg, "Message");
 			return true;
 		}
 
@@ -325,7 +325,7 @@ namespace MessengerAdminPanel
 			} 
 			catch (Exception ex) when (ex is Win32Exception || ex is FileNotFoundException)
 			{
-				MessageBox.Show("File not found.", "Error");
+				_view.ShowMessageBox("File not found.", "Error");
 			}
 		}
 
@@ -379,26 +379,24 @@ namespace MessengerAdminPanel
 
 		public void ChangeUsername(string currentUsername)
 		{
-			var prompt = new PromptWindow("Username:", currentUsername);
-
-			if (!prompt.ShowDialog().Value) return;
-
-			if (String.IsNullOrEmpty(prompt.ResponseText))
+			var response = _view.ShowPromptWindow("Username:", currentUsername);
+			
+			if (String.IsNullOrEmpty(response))
 			{
-				MessageBox.Show("Username cannount by empty.");
+				_view.ShowMessageBox("Username cannount by empty.");
 				return;
 			}
 
-			if (prompt.ResponseText.Length < 5)
+			if (response.Length < 5)
 			{
-				MessageBox.Show("Username length cannot be less than 5 characters.");
+				_view.ShowMessageBox("Username length cannot be less than 5 characters.");
 				return;
 			}
 
 			try
 			{
 				var user = findUserByUsername(currentUsername);
-				user.Login = prompt.ResponseText;
+				user.Login = response;
 				_uow.Save();
 
 				var info = _uow.PersonalInfoRepository.Find(user.Id);
@@ -426,17 +424,15 @@ namespace MessengerAdminPanel
 		{
 			var id = Int32.Parse(conversaitonId);
 			var conversation = _uow.ConversationRepository.Find(id);
-			var prompt = new PromptWindow("Conversation name:", currentName);
-
-			if (!prompt.ShowDialog().Value) return;
-
-			if (String.IsNullOrEmpty(prompt.ResponseText))
+			var response = _view.ShowPromptWindow("Conversation name:", currentName);
+			
+			if (String.IsNullOrEmpty(response))
 			{
-				MessageBox.Show("Username cannount by empty.");
+				_view.ShowMessageBox("Username cannount by empty.");
 				return;
 			}
 
-			conversation.Name = prompt.ResponseText;
+			conversation.Name = response;
 			_uow.Save();
 
 			var conversationVM = _mappingService.ConversationToViewModel(conversation);
@@ -445,8 +441,9 @@ namespace MessengerAdminPanel
 
 		public void DeleteConversation(string conversationId)
 		{
-			var dialogResult = MessageBox.Show("Are you sure?", "Delete conversation", MessageBoxButton.YesNo);
-			if (dialogResult != MessageBoxResult.Yes) return;
+			var dialogResult = _view.ShowMessageBoxYesNo("Are you sure?", "Delete conversation");
+
+			if (!dialogResult) return;
 
 			var id = Int32.Parse(conversationId);
 			_uow.ConversationRepository.Remove(id);
@@ -457,8 +454,9 @@ namespace MessengerAdminPanel
 
 		public void DeleteMessage(string messageId)
 		{
-			var dialogResult = MessageBox.Show("Are you sure?", "Delete message", MessageBoxButton.YesNo);
-			if (dialogResult != MessageBoxResult.Yes) return;
+			var dialogResult = _view.ShowMessageBoxYesNo("Are you sure?", "Delete message");
+
+			if (!dialogResult) return;
 
 			var id = Int32.Parse(messageId);
 			_uow.MessageRepository.Remove(id);
@@ -502,9 +500,9 @@ namespace MessengerAdminPanel
 			var data = dataGrid.ItemsSource;
 
 			if (_reportsSaver.Save(path, fileName, data))
-				MessageBox.Show("File successfully saved.");
+				_view.ShowMessageBox("File successfully saved.");
 			else
-				MessageBox.Show("File was not saved.");
+				_view.ShowMessageBox("File was not saved.");
 		}
 	}
 }

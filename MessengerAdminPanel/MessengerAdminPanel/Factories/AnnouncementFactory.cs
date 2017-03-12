@@ -13,7 +13,7 @@ namespace MessengerAdminPanel.Factories
 			item.CreationDate = DateTimeOffset.Now.ToUnixTimeMilliseconds();
 			item.IsActive = true;
 			item.Description = description;
-			item.UserId = 3; // Current user
+			item.UserId = CurrentUser.Id;
 
 			return item;
 		}

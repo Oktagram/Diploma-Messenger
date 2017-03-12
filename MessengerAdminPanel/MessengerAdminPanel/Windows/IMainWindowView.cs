@@ -19,5 +19,10 @@ namespace MessengerAdminPanel.Windows
 		void UpdateUserListViewWithConversationsList(List<ConversationViewModel> list);
 		void UpdateUserListViewWithMessagesList(List<MessageViewModel> list);
 		void UpdateUserListViewWithUsersList(List<UserViewModel> list);
+
+		void ShowMessageBox(string message, string title = "Message");
+		bool ShowMessageBoxYesNo(string message, string title);
+
+		string ShowPromptWindow(string text, string defaultValue = "");
 	}
 }

@@ -26,16 +26,16 @@ namespace MessengerAdminPanel
 
 		private string _messageAttachmentPath;
 		private string _profilePicturePath;
-
+		
 		public MainWindow()
 		{
 			var context = new MessengerContext();
-			var uof = new UnitOfWork(context);
+			var uow = new UnitOfWork(context);
 			var fileService = new FileService();
 			var mappingService = new MappingService(fileService);
 			var reportsSaver = new PdfReportsSaver();
 
-			_controller = new MainWindowController(this, uof, mappingService, fileService, reportsSaver);
+			_controller = new MainWindowController(this, uow, mappingService, fileService, reportsSaver);
 			_columns = new Columns();
 			_validationService = new ValidationService();
 
@@ -211,6 +211,25 @@ namespace MessengerAdminPanel
 			listViewUserReferences.AddColumnsByHeaders(_columns.UserViewModelColumns);
 			
 			listViewUserReferences.ItemsSource = list;
+		}
+
+		public void ShowMessageBox(string message, string title = "Message")
+		{
+			MessageBox.Show(message, title);
+		}
+
+		public bool ShowMessageBoxYesNo(string message, string title)
+		{
+			return MessageBox.Show(message, title, MessageBoxButton.YesNo) == MessageBoxResult.Yes;
+		}
+
+		public string ShowPromptWindow(string text, string defaultValue = "")
+		{
+			var prompt = new PromptWindow(text, defaultValue);
+
+			if (!prompt.ShowDialog().Value) return null;
+
+			return prompt.ResponseText;
 		}
 
 		private string getUsernameByUsernameView(string usernameView)
