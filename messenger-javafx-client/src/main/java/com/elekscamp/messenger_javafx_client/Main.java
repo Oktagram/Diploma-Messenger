@@ -29,7 +29,7 @@ public class Main extends Application {
 		
 		Scene scene = new Scene(root);
 		
-		primaryStage.setMinWidth(700);
+		primaryStage.setMinWidth(500);
 		primaryStage.setMinHeight(300);
 		primaryStage.setTitle("Language");
 		primaryStage.setResizable(false);

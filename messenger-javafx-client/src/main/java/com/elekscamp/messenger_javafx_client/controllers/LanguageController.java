@@ -30,13 +30,13 @@ public class LanguageController implements Initializable {
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		
-		Rectangle shape = new Rectangle(300, 150);
+		Rectangle shape = new Rectangle(150, 75);
 		shape.setArcWidth(20);
 		shape.setArcHeight(20);
 		
 		ukrainianImageView.setClip(shape);
 		
-		shape = new Rectangle(300, 150);
+		shape = new Rectangle(150, 75);
 		shape.setArcWidth(20);
 		shape.setArcHeight(20);
 		

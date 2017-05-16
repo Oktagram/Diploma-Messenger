@@ -43,6 +43,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -139,8 +140,15 @@ public class ChatController implements Initializable {
 				}); 
 			} 
 		}, 2000, 3000);
-		
 
+		timer.scheduleAtFixedRate(new TimerTask() {
+			@Override public void run() { 
+				Platform.runLater(() -> { 
+					updateAnnouncementsListViews();
+				}); 
+			} 
+		}, 10000, 10000);
+		
 		initializeAttachmentControls();
 	}
 	
@@ -152,10 +160,33 @@ public class ChatController implements Initializable {
 	}
 
 	public void btnSmilesOnAction() {
+		double smileSize = 30;
+		int countOfSmiles = 5;
+		int borderWidth = 4;
 		Bounds btnSmilesBounds = btnSmiles.getBoundsInLocal();
 		Bounds localToSceneBounds = btnSmiles.localToScene(btnSmiles.getBoundsInLocal());
 		Scene btnSmilesScene = btnSmiles.getScene();
-
+		smilesHBox = new HBox();
+		
+		smilesHBox.setPrefSize(smileSize * countOfSmiles + borderWidth, smileSize + borderWidth);
+		smilesHBox.setAlignment(Pos.CENTER);
+		smilesHBox.setStyle("-fx-background-color: " + Colors.SMILES_POPUP_BORDER);
+		
+		Popup popup =  new Popup();
+		
+		popup.setAutoHide(true);
+		popup.setHideOnEscape(true);
+		popup.setAutoFix(true);
+		popup.getContent().add(smilesHBox);
+		
+		Button btnFirstSmile = buttonsHandler.getSmileButton(txtAreaMessage, popup, "images/friendly-smile.jpg", smileSize, "=)");
+		Button btnSecondSmile = buttonsHandler.getSmileButton(txtAreaMessage, popup, "images/sad-smile.jpg", smileSize, "=(");
+		Button btnThirdSmile = buttonsHandler.getSmileButton(txtAreaMessage, popup, "images/happy-smile.jpg", smileSize, "=D");
+		Button btnFourthSmile = buttonsHandler.getSmileButton(txtAreaMessage, popup, "images/very-sad-smile.jpg", smileSize, "='(");
+		Button btnFifthSmile = buttonsHandler.getSmileButton(txtAreaMessage, popup, "images/angry-smile.jpg", smileSize, "X-(");
+		
+		smilesHBox.getChildren().addAll(btnFirstSmile, btnSecondSmile, btnThirdSmile, btnFourthSmile, btnFifthSmile);
+		
 		double posX = computer.computePosXForSmilesPopup(btnSmilesBounds, localToSceneBounds, btnSmilesScene, btnSmiles, smilesHBox);
 		double posY = computer.computerPosYForSmilesPopup(btnSmilesBounds, localToSceneBounds, btnSmilesScene, smilesHBox);
 
@@ -255,7 +286,7 @@ public class ChatController implements Initializable {
 		listViewHandler.customizeChatListView(listViewChat, currentUserId);
 		listViewHandler.customizeListViewUsers(listViewUsers, provider);
 		listViewHandler.customizeListViewConversations(listViewConversations, provider, currentUserId, conversationsObservableList);
-		listViewHandler.customizeListViewActiveAnnouncements(listViewActiveAnnouncements, provider, 
+		listViewHandler.customizeListViewActiveAnnouncements(listViewActiveAnnouncements, provider, currentUserId, 
 				activeAnnouncementsObservableList, closedAnnouncementsObservableList);
 		listViewHandler.customizeListViewClosedAnnouncements(listViewClosedAnnouncements, provider, currentUserId, 
 				activeAnnouncementsObservableList, closedAnnouncementsObservableList);
@@ -391,8 +422,10 @@ public class ChatController implements Initializable {
 			
 			if (activeAnnouncementsList.size() != listViewActiveAnnouncements.getItems().size())
 				fillActiveAnnouncementListView(activeAnnouncementsList);
+		
 			if (closedAnnouncemetsList.size() != listViewClosedAnnouncements.getItems().size())
 				fillClosedAnnouncementListView(closedAnnouncemetsList);
+	
 		} catch (HttpErrorCodeException | IOException e) {
 			e.printStackTrace();
 		}
@@ -526,6 +559,7 @@ public class ChatController implements Initializable {
 	}
 
 	private void fillActiveAnnouncementListView(List<Announcement> active) {
+		Collections.reverse(active);
 		activeAnnouncementsObservableList = FXCollections.observableArrayList();
 		activeAnnouncementsObservableList.addAll(active);
 		listViewActiveAnnouncements.setItems(activeAnnouncementsObservableList);

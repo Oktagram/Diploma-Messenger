@@ -38,7 +38,7 @@ public class ChatListViewHandler {
 		});
 	}
 	
-	public void customizeListViewActiveAnnouncements(ListView<Announcement> listViewActiveAnnouncements, ContentProvider provider,
+	public void customizeListViewActiveAnnouncements(ListView<Announcement> listViewActiveAnnouncements, ContentProvider provider, int currentUserId,
 			ObservableList<Announcement> activeAnnouncementsObservableList, ObservableList<Announcement> closedAnnouncementsObservableList) {
 		
 		listViewActiveAnnouncements.setCellFactory(new Callback<ListView<Announcement>, ListCell<Announcement>>() {
@@ -50,6 +50,7 @@ public class ChatListViewHandler {
 
 				listCell.prefWidthProperty().bind(listViewActiveAnnouncements.widthProperty().subtract(50));
 				listCell.initData(activeAnnouncementsObservableList, closedAnnouncementsObservableList);
+				ActiveAnnouncementListCell.SetCurrentUserId(currentUserId);
 				
 				return listCell;
 			}

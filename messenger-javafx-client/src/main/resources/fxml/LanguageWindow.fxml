@@ -7,13 +7,13 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="700.0" style="-fx-background-color: #175087;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.elekscamp.messenger_javafx_client.controllers.LanguageController">
+<HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="500.0" style="-fx-background-color: #175087;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.elekscamp.messenger_javafx_client.controllers.LanguageController">
    <children>
-      <VBox alignment="CENTER" maxHeight="181.0" prefHeight="181.0" prefWidth="300.0">
+      <VBox alignment="CENTER" maxHeight="181.0" prefHeight="181.0" prefWidth="210.0">
          <children>
-            <Button alignment="CENTER" maxHeight="145.0" maxWidth="300.0" minHeight="145.0" minWidth="300.0" mnemonicParsing="false" onAction="#btnUkraineLanguageOnAction" stylesheets="@../css/buttons/language-button.css" textAlignment="CENTER">
+            <Button alignment="CENTER" maxHeight="70.0" maxWidth="145.0" minHeight="70.0" minWidth="145.0" mnemonicParsing="false" onAction="#btnUkraineLanguageOnAction" stylesheets="@../css/buttons/language-button.css" textAlignment="CENTER">
                <graphic>
-                  <ImageView fx:id="ukrainianImageView" fitHeight="150.0" fitWidth="300.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="ukrainianImageView" fitHeight="75.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../images/ukraine-flag.jpg" />
                      </image>
@@ -36,11 +36,11 @@
             <Insets right="10.0" />
          </HBox.margin>
       </VBox>
-      <VBox alignment="CENTER" maxHeight="181.0" prefHeight="181.0" prefWidth="300.0">
+      <VBox alignment="CENTER" maxHeight="181.0" prefHeight="181.0" prefWidth="210.0">
          <children>
-            <Button alignment="CENTER" maxHeight="145.0" maxWidth="300.0" minHeight="145.0" minWidth="300.0" mnemonicParsing="false" onAction="#btnEnglishLanguageOnAction" stylesheets="@../css/buttons/language-button.css">
+            <Button alignment="CENTER" maxHeight="70.0" maxWidth="145.0" minHeight="70.0" minWidth="145.0" mnemonicParsing="false" onAction="#btnEnglishLanguageOnAction" stylesheets="@../css/buttons/language-button.css">
                <graphic>
-                  <ImageView fx:id="englishImageView" fitHeight="150.0" fitWidth="300.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="englishImageView" fitHeight="75.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../images/english-flag.png" />
                      </image>

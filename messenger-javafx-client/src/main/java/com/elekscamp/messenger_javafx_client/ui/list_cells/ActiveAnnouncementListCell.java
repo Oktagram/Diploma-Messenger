@@ -36,6 +36,7 @@ import javafx.util.Duration;
 
 public class ActiveAnnouncementListCell extends ListCell<Announcement> {
 
+	private static int currentUserId;
 	private ContentProvider provider;
 	private SimpleDateFormat formatter;
 	private ObservableList<Announcement> activeAnnouncementList;
@@ -46,6 +47,7 @@ public class ActiveAnnouncementListCell extends ListCell<Announcement> {
 	private final String EDIT;
 	private final String CLOSE;
 	private final String MESSAGE;
+	private final String NOT_ANNOUNCEMENT_CREATOR;
 	
 	public ActiveAnnouncementListCell(ContentProvider provider) {
 		
@@ -59,6 +61,7 @@ public class ActiveAnnouncementListCell extends ListCell<Announcement> {
 			EDIT = "Edit";
 			CLOSE = "Close";
 			MESSAGE = "Message";
+			NOT_ANNOUNCEMENT_CREATOR = "Only creator can delete the announcement.";
 		} else {
 			EDIT_ANNOUNCEMENT = "Редагувати Оголошення";
 			ANNOUNCEMENT_DESCRIPTION = "Опис оголошення:";
@@ -66,7 +69,12 @@ public class ActiveAnnouncementListCell extends ListCell<Announcement> {
 			EDIT = "Редагувати";
 			CLOSE = "Закрити";
 			MESSAGE = "Повідомлення";
+			NOT_ANNOUNCEMENT_CREATOR = "Ви не можете видалити чуже оголошення.";
 		}
+	}
+	
+	public static void SetCurrentUserId(int userId){
+		currentUserId = userId;
 	}
 	
 	public void initData(ObservableList<Announcement> activeAnnouncementList, ObservableList<Announcement> closedAnnouncementList) {
@@ -162,6 +170,14 @@ public class ActiveAnnouncementListCell extends ListCell<Announcement> {
 		    btnCloseAnnouncement.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
+					if (announcement.getUserId() != currentUserId){
+						Alert alert = new Alert(AlertType.INFORMATION);
+						alert.setTitle(MESSAGE);
+						alert.setHeaderText(null);
+						alert.setContentText(NOT_ANNOUNCEMENT_CREATOR);
+						alert.showAndWait();
+						return;
+					}
 					try {
 						announcement.setIsActive(false);
 						Announcement updatedAnnouncement = provider.getAnnouncementProvider().update(announcement.getId(), announcement);

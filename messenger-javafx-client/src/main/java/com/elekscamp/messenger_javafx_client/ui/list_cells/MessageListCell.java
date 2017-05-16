@@ -102,7 +102,12 @@ public class MessageListCell extends ListCell<Message> {
 			mainHBox.getStyleClass().add("hbox");
 			
 			user = searchUserInListById(userId);
-
+			
+			if (user == null){
+				user = new User();
+				user.setLogin("Unknown");
+			}
+			
 			username = new Label(user.getLogin());
 			username.setStyle("-fx-font-weight: bold; -fx-font-size: 16px;");
 
@@ -323,7 +328,7 @@ public class MessageListCell extends ListCell<Message> {
 
 	private List<Node> messageTextIntoNodes(String text) {
 
-		String[] splittedText = text.split(" ");
+		String[] splittedText = text.split("(?<= )");
 		List<Node> result = new ArrayList<>();
 		Label wordLabel;
 		double wordMaxWidth = getPrefWidth() - imageView.getBoundsInParent().getWidth();
@@ -353,6 +358,7 @@ public class MessageListCell extends ListCell<Message> {
 
 	private Image getSmileImage(String str) {
 
+		str = str.trim();
 		switch (str) {
 		case "=)":
 			return new Image("images/friendly-smile.jpg");
@@ -388,7 +394,7 @@ public class MessageListCell extends ListCell<Message> {
 				return userWithImg.getUser();
 		}
 
-		throw new NullPointerException("User is null in MessageListCell.");
+		return null;
 	}
 
 	private String getFileName(String attachmentPath) {
@@ -406,6 +412,6 @@ public class MessageListCell extends ListCell<Message> {
 				return userWithImg.getImage();
 		}
 
-		throw new NullPointerException("User image is null in MessageListCell.");
+		return new Image("images/default_user_image.png");
 	}
 }
