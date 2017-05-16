@@ -104,7 +104,6 @@ public class ChatController implements Initializable {
 	private Tooltip attachmentTooltip;
 	private AnchorPane attachmentAnchor;
 	private Label lbAttachmentName;
-	private Popup popup;
 	private ObservableList<Announcement> activeAnnouncementsObservableList;
 	private ObservableList<Announcement> closedAnnouncementsObservableList;
 	private ChatButtonsHandler buttonsHandler;
@@ -128,7 +127,6 @@ public class ChatController implements Initializable {
 		listViewHandler = new ChatListViewHandler();
 		announcementsHandler = new AnnouncementsHandler();
 		alert = dialogsHandler.getAlert();
-		popup = dialogsHandler.getSmilesPopup(txtAreaMessage, buttonsHandler);
 		
 		timer = new Timer();
 		
@@ -376,22 +374,25 @@ public class ChatController implements Initializable {
 	private void updateMessagesListView() {
 
 		List<Message> messagesList = null;
+		
 		try {
 			messagesList = provider.getMessageProvider().getByConversationId(currentConversationId);	
-			int countOfItems = listViewChat.getItems().size();
 			
-			if (countOfItems != messagesList.size()) {
+			ObservableList<Message> listViewItems = listViewChat.getItems();
+			List<Message> tempList = new ArrayList<>(listViewItems);
+
+			if (!messagesList.equals(tempList)) {
 				Collections.reverse(messagesList);
 				ObservableList<Message> messagesObservableList = FXCollections.observableArrayList();
 				
 				messagesObservableList.setAll(messagesList);
 				listViewChat.setItems(messagesObservableList);
 				
-				countOfItems = listViewChat.getItems().size();
+				int countOfItems = listViewChat.getItems().size();
 				listViewChat.scrollTo(countOfItems);
 			}
 		
-			if (countOfItems == 0)
+			if (listViewChat.getItems().size() == 0)
 				listViewChat.setPlaceholder(new Text(GlobalVariables.languageDictionary.getSendFirstMessage()));
 		} catch (HttpErrorCodeException | IOException e) {
 			e.printStackTrace();

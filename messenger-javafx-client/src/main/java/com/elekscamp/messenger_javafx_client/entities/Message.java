@@ -30,6 +30,27 @@ public class Message {
 				+ ", attachment=" + attachment + ", sendDate=" + new Timestamp(sendDate) + "]";
 	}
 
+	public boolean equals(Object obj) { 
+	    if (obj instanceof Message) {
+	    	Message message = (Message)obj;
+	    	
+	    	if (((attachment == null && message.attachment != null) || 
+	    			(attachment != null && message.attachment == null)) &&
+	    			(!attachment.equals(message.attachment)) ||
+	    			((text == null && message.text != null) ||
+	    			(text != null && message.text == null)) &&
+	    			(!text.equals(message.text))) {
+	    		return false;
+	    	}
+	    	
+	        return id == message.id &&
+	        		userId == message.userId &&
+	        		conversationId == message.conversationId &&
+	        		sendDate == message.sendDate;
+	    }
+	    return false; 
+	} 
+	
 	public int getId() {
 		return id;
 	}
