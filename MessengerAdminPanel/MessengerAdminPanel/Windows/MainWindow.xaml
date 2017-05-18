@@ -8,7 +8,7 @@
         xmlns:System="clr-namespace:System;assembly=mscorlib" 
         x:Class="MessengerAdminPanel.MainWindow"
         mc:Ignorable="d"
-        Title="MainWindow" 
+        Title="Admin Panel" 
         Height="500" 
         Width="1000">
     <Grid>
