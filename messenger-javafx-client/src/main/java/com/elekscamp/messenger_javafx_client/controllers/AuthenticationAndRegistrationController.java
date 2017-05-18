@@ -131,7 +131,12 @@ public class AuthenticationAndRegistrationController implements Initializable {
 
 			openChatWindow();
 		} catch (Exception e) {
-			signInStatusText.setText(e.getMessage());
+			String errorMessage = e.getMessage();
+			
+			if (GlobalVariables.language == Language.UKRAINIAN && errorMessage.equals("Incorrect Login or Password."))
+				errorMessage = "Ім'я користувача або пароль введено не вірно.";
+			
+			signInStatusText.setText(errorMessage);
 			loginSignInTextField.requestFocus();
 			e.printStackTrace();
 		}
