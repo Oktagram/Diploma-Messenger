@@ -26,7 +26,10 @@ namespace MessengerAdminPanel
 
 		private string _messageAttachmentPath;
 		private string _profilePicturePath;
-		
+
+		private bool _firstLoadRequest;
+		private bool _secondLoadRequest;
+
 		public MainWindow()
 		{
 			var context = new MessengerContext();
@@ -38,6 +41,9 @@ namespace MessengerAdminPanel
 			_controller = new MainWindowController(this, uow, mappingService, fileService, reportsSaver);
 			_columns = new Columns();
 			_validationService = new ValidationService();
+
+			_firstLoadRequest = true;
+			_secondLoadRequest = true;
 
 			InitializeComponent();
 
@@ -239,7 +245,6 @@ namespace MessengerAdminPanel
 
 		private void mainWindow_Loaded(object sender, RoutedEventArgs e)
 		{
-			requestUpdatingDataGridLog();
 			_controller.UpdateAnnouncementsListView(true);
 		}
 
@@ -262,7 +267,15 @@ namespace MessengerAdminPanel
 
 		private void comboBoxEventLog_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			requestUpdatingDataGridLog();
+			if (!_firstLoadRequest && !_secondLoadRequest)
+				requestUpdatingDataGridLog();
+			else
+			{
+				if (!_firstLoadRequest)
+					_secondLoadRequest = false;
+
+				_firstLoadRequest = false;
+			}
 		}
 
 		private void radioButtonActiveAnnouncement_Checked(object sender, RoutedEventArgs e)
