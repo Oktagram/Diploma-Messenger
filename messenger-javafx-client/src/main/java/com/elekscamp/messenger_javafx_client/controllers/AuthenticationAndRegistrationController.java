@@ -225,7 +225,7 @@ public class AuthenticationAndRegistrationController implements Initializable {
 		try {
 			registrationProvider = new RegistrationProvider(new RequestManager<User>(User.class));
 			response = registrationProvider.register(new User(username, password, email));
-			signUpStatusText.setFill(Color.GREEN);
+			signUpStatusText.setFill(Color.WHITE);
 			signUpStatusText.setText(response);
 		} catch (Exception e) {
 			signUpStatusText.setText(e.getMessage());
