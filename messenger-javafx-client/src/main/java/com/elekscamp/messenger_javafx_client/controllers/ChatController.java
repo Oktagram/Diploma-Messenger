@@ -373,6 +373,8 @@ public class ChatController implements Initializable {
 
 	private void updateMessagesListView() {
 
+		if (currentConversation == null) return;
+		
 		List<Message> messagesList = null;
 		
 		try {
