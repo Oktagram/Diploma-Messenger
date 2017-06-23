@@ -379,10 +379,12 @@ public class ChatController implements Initializable {
 		
 		try {
 			messagesList = provider.getMessageProvider().getByConversationId(currentConversationId);	
-			
+	
 			ObservableList<Message> listViewItems = listViewChat.getItems();
 			List<Message> tempList = new ArrayList<>(listViewItems);
 
+			Collections.reverse(tempList);
+			
 			if (!messagesList.equals(tempList)) {
 				Collections.reverse(messagesList);
 				ObservableList<Message> messagesObservableList = FXCollections.observableArrayList();

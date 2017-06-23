@@ -36,10 +36,10 @@ public class Message {
 	    	
 	    	if (((attachment == null && message.attachment != null) || 
 	    			(attachment != null && message.attachment == null)) &&
-	    			(!attachment.equals(message.attachment)) ||
+	    			(attachment != null && !attachment.equals(message.attachment)) ||
 	    			((text == null && message.text != null) ||
 	    			(text != null && message.text == null)) &&
-	    			(!text.equals(message.text))) {
+	    			(text != null && !text.equals(message.text))) {
 	    		return false;
 	    	}
 	    	

@@ -21,7 +21,7 @@ namespace MessengerAdminPanel
 		private readonly DispatcherTimer _updateDataGridEventLogTimer;
 		private readonly DispatcherTimer _updateUserDataTimer;
 		private readonly DispatcherTimer _updateUserListViewTimer;
-
+		
 		private readonly IMainWindowView _view;
 		private readonly IUnitOfWork _uow;
 		private readonly IMappingService _mappingService;
@@ -503,6 +503,66 @@ namespace MessengerAdminPanel
 				_view.ShowMessageBox("File successfully saved.");
 			else
 				_view.ShowMessageBox("File was not saved.");
+		}
+
+		public void ClearFiles(PeriodOfTime periodOfTime)
+		{
+			var date = DateTime.Now;
+
+			switch (periodOfTime)
+			{
+				case PeriodOfTime.Week:
+					date = date.AddDays(-7);
+					break;
+				case PeriodOfTime.Month:
+					date = date.AddMonths(-1);
+					break;
+				case PeriodOfTime.HalfYear:
+					date = date.AddMonths(-6);
+
+					break;
+				case PeriodOfTime.Year:
+					date = date.AddYears(-1);
+					break;
+			}
+
+			long dateLong = new DateTimeOffset(date).ToUnixTimeMilliseconds();
+			var filesToDelete = _uow.MessageRepository.FindBy(m => m.Attachment != null && m.SendDate < dateLong)
+				.Select(m => new { m.Id, m.Attachment });
+
+			foreach (var file in filesToDelete)
+				File.Delete(file.Attachment);
+		}
+
+		public void ClearLogs(PeriodOfTime periodOfTime)
+		{
+			var date = DateTime.Now;
+
+			switch (periodOfTime)
+			{
+				case PeriodOfTime.Week:
+					date = date.AddDays(-7);
+					break;
+				case PeriodOfTime.Month:
+					date = date.AddMonths(-1);
+					break;
+				case PeriodOfTime.HalfYear:
+					date = date.AddMonths(-6);
+					
+					break;
+				case PeriodOfTime.Year:
+					date = date.AddYears(-1);
+					break;
+			}
+
+			long dateLong = new DateTimeOffset(date).ToUnixTimeMilliseconds();
+			var idsToClear = _uow.EventLogRepositry.FindBy(e => e.CreatedTime < dateLong).Select(e => e.Id);
+
+			foreach (var id in idsToClear)
+			{
+				_uow.EventLogRepositry.Remove(id);
+				_uow.Save();
+			}
 		}
 	}
 }

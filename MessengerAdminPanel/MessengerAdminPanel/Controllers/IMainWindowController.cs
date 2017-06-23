@@ -34,5 +34,8 @@ namespace MessengerAdminPanel
 
 		void OpenFile(string fileName);
 		void SaveDataGridToPdf(DataGrid dataGrid, string fileName);
+
+		void ClearFiles(PeriodOfTime periodOfTime);
+		void ClearLogs(PeriodOfTime periodOfTime);
 	}
 }

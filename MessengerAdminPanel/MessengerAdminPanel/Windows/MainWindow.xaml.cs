@@ -1,28 +1,32 @@
-﻿using iTextSharp.text;
-using iTextSharp.text.pdf;
-using MessengerAdminPanel.Extensions;
+﻿using MessengerAdminPanel.Extensions;
 using MessengerAdminPanel.Mapping;
 using MessengerAdminPanel.Services;
 using MessengerAdminPanel.UnitOfWorks;
 using MessengerAdminPanel.ViewModels;
 using MessengerAdminPanel.Windows;
-using System;
 using System.Collections.Generic;
-using System.Data;
-using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using static System.String;
 
 namespace MessengerAdminPanel
 {
+	public enum PeriodOfTime
+	{
+		Week,
+		Month,
+		HalfYear,
+		Year
+	}
+
 	public partial class MainWindow : Window, IMainWindowView
 	{
 		private readonly IMainWindowController _controller;
 		private readonly IValidationService _validationService;
 		private readonly Columns _columns;
 
-		private const int UNDEFINED_ENUM_VALUE = -1;
+		private const int UndefinedEnumValue = -1;
 
 		private string _messageAttachmentPath;
 		private string _profilePicturePath;
@@ -64,10 +68,10 @@ namespace MessengerAdminPanel
 		{
 			if (conversaionVM == null)
 			{
-				textBlockConversationName.Text = String.Empty;
-				textBlockCreationDate.Text = String.Empty;
-				textBlockMessagesInConversationCount.Text = String.Empty;
-				textBlockUsersInConversationCount.Text = String.Empty;
+				textBlockConversationName.Text = Empty;
+				textBlockCreationDate.Text = Empty;
+				textBlockMessagesInConversationCount.Text = Empty;
+				textBlockUsersInConversationCount.Text = Empty;
 
 				buttonEditConversationName.IsEnabled = false;
 				buttonDeleteConversation.IsEnabled = false;
@@ -102,7 +106,7 @@ namespace MessengerAdminPanel
 
 		public void UpdateMessageData(MessageViewModel messageVM, string attachmentPath)
 		{
-			if (String.IsNullOrEmpty(attachmentPath))
+			if (IsNullOrEmpty(attachmentPath))
 			{
 				buttonOpenAttachment.IsEnabled = false;
 				buttonOpenAttachment.Visibility = Visibility.Hidden;
@@ -115,11 +119,11 @@ namespace MessengerAdminPanel
 
 			if (messageVM == null)
 			{
-				textBlockMessageUserSent.Text = String.Empty;
-				textBlockMessageText.Text = String.Empty;
-				textBlockMessageConversationName.Text = String.Empty;
-				textBlockMessageSendDate.Text = String.Empty;
-				textBlockMessageAttachment.Text = String.Empty;
+				textBlockMessageUserSent.Text = Empty;
+				textBlockMessageText.Text = Empty;
+				textBlockMessageConversationName.Text = Empty;
+				textBlockMessageSendDate.Text = Empty;
+				textBlockMessageAttachment.Text = Empty;
 
 				buttonDeleteMessage.IsEnabled = false;
 
@@ -142,14 +146,14 @@ namespace MessengerAdminPanel
 			if (userVM == null || infoVM == null)
 			{
 				textBlockUser.Text = "Not Found";
-				textBlockEmail.Text = String.Empty;
-				textBlockRegistrationDate.Text = String.Empty;
-				textBlockIsOnline.Text = String.Empty;
+				textBlockEmail.Text = Empty;
+				textBlockRegistrationDate.Text = Empty;
+				textBlockIsOnline.Text = Empty;
 
-				textBlockBirthdate.Text = String.Empty;
-				textBlockFirstName.Text = String.Empty;
-				textBlockLastName.Text = String.Empty;
-				textBlockPhoneNumber.Text = String.Empty;
+				textBlockBirthdate.Text = Empty;
+				textBlockFirstName.Text = Empty;
+				textBlockLastName.Text = Empty;
+				textBlockPhoneNumber.Text = Empty;
 
 				radioButtonBannedTrue.IsChecked = false;
 				radioButtonBannedFalse.IsChecked = false;
@@ -169,7 +173,7 @@ namespace MessengerAdminPanel
 			textBlockIsOnline.Text = userVM.IsOnline.ToString();
 
 			var birthDate = infoVM.BirthDate;
-			var birthDateStr = (birthDate == null) ? String.Empty : birthDate.ToString();
+			var birthDateStr = (birthDate == null) ? Empty : birthDate.ToString();
 			textBlockBirthdate.Text = birthDateStr.Split(' ')[0];
 			textBlockFirstName.Text = infoVM.FirstName;
 			textBlockLastName.Text = infoVM.LastName;
@@ -187,7 +191,7 @@ namespace MessengerAdminPanel
 			else
 				radioButtonAdminFalse.IsChecked = true;
 
-			if (String.IsNullOrEmpty(infoVM.Picture))
+			if (IsNullOrEmpty(infoVM.Picture))
 				buttonOpenProfilePicture.IsEnabled = false;
 			else
 				buttonOpenProfilePicture.IsEnabled = true;
@@ -255,7 +259,7 @@ namespace MessengerAdminPanel
 
 		private void requestUpdatingDataGridLog()
 		{
-			var logEntitySelected = (comboBoxLogEntity != null) ? comboBoxLogEntity.SelectedIndex : UNDEFINED_ENUM_VALUE;
+			var logEntitySelected = (comboBoxLogEntity != null) ? comboBoxLogEntity.SelectedIndex : UndefinedEnumValue;
 			var logEventSelected = comboBoxLogEvent.SelectedIndex;
 
 			_controller.UpdateDataGridEventLog(
@@ -368,7 +372,7 @@ namespace MessengerAdminPanel
 
 		private void textBoxUserId_TextChanged(object sender, TextChangedEventArgs e)
 		{
-			if (!String.IsNullOrEmpty(textBoxUserId.Text)) textBoxUsername.Text = String.Empty;
+			if (!IsNullOrEmpty(textBoxUserId.Text)) textBoxUsername.Text = Empty;
 		
 			var userIdStr = textBoxUserId.Text;
 			_controller.UpdateUserDataById(userIdStr);
@@ -378,7 +382,7 @@ namespace MessengerAdminPanel
 
 		private void textBoxUsername_TextChanged(object sender, TextChangedEventArgs e)
 		{
-			if (!String.IsNullOrEmpty(textBoxUsername.Text)) textBoxUserId.Text = String.Empty;
+			if (!IsNullOrEmpty(textBoxUsername.Text)) textBoxUserId.Text = Empty;
 
 			var username = textBoxUsername.Text;
 			_controller.UpdateUserDataByUsername(username);
@@ -453,6 +457,24 @@ namespace MessengerAdminPanel
 		private void buttonPrintEventLog_Click(object sender, RoutedEventArgs e)
 		{
 			_controller.SaveDataGridToPdf(dataGridEventLog, "EventLogReport");
+		}
+
+		private void Button_Click(object sender, RoutedEventArgs e)
+		{
+			var window = new ClearingDataWindow();
+			window.ShowDialog();
+
+			if (window.Completed)
+				_controller.ClearFiles(window.PeriodOfTime);
+		}
+
+		private void Button_Click_1(object sender, RoutedEventArgs e)
+		{
+			var window = new ClearingDataWindow();
+			window.ShowDialog();
+
+			if (window.Completed)
+				_controller.ClearLogs(window.PeriodOfTime);
 		}
 	}
 }

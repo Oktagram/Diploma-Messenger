@@ -57,6 +57,13 @@ import javafx.util.Pair;
 
 public class PersonalInfoDialog {
 
+	private static final String EMAIL_PATTERN = 
+			"^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+			+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+	private static final String NAME_PATTERN = "^[a-zA-Zа-яА-Я\\s]+";
+	private static final String PHONE_PATTER = 
+			"^(([(]?(\\d{2,4})[)]?)|(\\d{2,4})|([+1-9]+\\d{1,2}))?[-\\s]?(\\d{2,3})?[-\\s]?((\\d{7,8})|(\\d{3,4}[-\\s]\\d{3,4}))$";
+	
 	private SimpleDateFormat dateFormat;
 	private Dialog<Pair<User, PersonalInfo>> dialog;
 	private GridPane gridPane;
@@ -382,9 +389,40 @@ public class PersonalInfoDialog {
 						alert.setContentText(PASSWORD_LENGTH);
 
 					alert.showAndWait();
-					return null;
+					throw new NullPointerException();
 				}
 
+				if ((firstName != null && !firstName.isEmpty() && !firstName.matches(NAME_PATTERN)) 
+						|| (lastName != null && !lastName.isEmpty() && !lastName.matches(NAME_PATTERN))){
+			    	alert = new Alert(AlertType.INFORMATION);
+					alert.setTitle("Message");
+					alert.setHeaderText(null);
+					alert.getDialogPane().setStyle("-fx-background-color: " + backgroundColor);
+					alert.setContentText("Ім'я або прізвище не валідне!");
+					alert.showAndWait();
+					throw new NullPointerException();
+			    }
+			    	
+			    if (phoneNumber != null && !phoneNumber.isEmpty() && !phoneNumber.matches(PHONE_PATTER)){
+			    	alert = new Alert(AlertType.INFORMATION);
+					alert.setTitle("Message");
+					alert.setHeaderText(null);
+					alert.getDialogPane().setStyle("-fx-background-color: " + backgroundColor);
+					alert.setContentText("Номер телефону не валідний!");
+					alert.showAndWait();
+					throw new NullPointerException();
+			    }
+			    	
+			    if (!email.matches(EMAIL_PATTERN)){
+			    	alert = new Alert(AlertType.INFORMATION);
+					alert.setTitle("Message");
+					alert.setHeaderText(null);
+					alert.getDialogPane().setStyle("-fx-background-color: " + backgroundColor);
+					alert.setContentText("Емейл не валідний!");
+					alert.showAndWait();
+					throw new NullPointerException();
+			   	}
+				
 				user.setLogin(username);
 				user.setEmail(email);
 				if (!password.isEmpty())

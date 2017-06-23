@@ -165,10 +165,17 @@
     <Compile Include="Windows\AuthenticationWindow.xaml.cs">
       <DependentUpon>AuthenticationWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Windows\ClearingDataWindow.xaml.cs">
+      <DependentUpon>ClearingDataWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\PromptWindow.xaml.cs">
       <DependentUpon>PromptWindow.xaml</DependentUpon>
     </Compile>
     <Page Include="Windows\AuthenticationWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\ClearingDataWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
