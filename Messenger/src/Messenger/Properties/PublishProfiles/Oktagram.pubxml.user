@@ -6,11 +6,11 @@ by editing this MSBuild file. In order to learn more about this please visit htt
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <TimeStampOfAssociatedLegacyPublishXmlFile />
-    <_PublishTargetUrl>D:\Server</_PublishTargetUrl>
+    <_PublishTargetUrl>C:\Users\Ad\Desktop\Messenger</_PublishTargetUrl>
   </PropertyGroup>
   <ItemGroup>
     <DestinationConnectionStrings Include="DefaultConnection">
-      <Value>Server=.\SQLEXPRESS;Database=Messenger;Trusted_Connection=True;MultipleActiveResultSets=true</Value>
+      <Value>Server=DESKTOP-CHC9B4V%3bDatabase=Messenger%3bTrusted_Connection=True%3bMultipleActiveResultSets=true</Value>
     </DestinationConnectionStrings>
   </ItemGroup>
 </Project>

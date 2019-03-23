@@ -87,7 +87,7 @@ namespace Messenger.Controllers
 
 			_logRepository.Add(LoggingEvents.CREATE_ITEM, $"Message {item.Id} created.");
 
-			return CreatedAtRoute("GetMessage", new { Controller = "Message", id = item.Id },
+			return CreatedAtRoute("GetMessage", new { Controller = "Messages", id = item.Id },
                 Mapper.Map<Message, MessageViewModel>(item));
         }
 

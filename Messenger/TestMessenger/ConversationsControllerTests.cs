@@ -28,12 +28,15 @@ namespace TestMessenger
             var mockUserConvRepository = new Mock<IUserConversationRepository>();
             var mockMessRepository = new Mock<IMessageRepository>();
             var mockConvPagService = new Mock<IConversationPaginationService>();
+            var mockEvenLogRepository = new Mock<IEventLogRepository>();
+
             Mapper.Initialize(m => m.AddProfile<MappingProfile>());
+
             mockConvRepository.Setup(x => x.Find(2))
                 .Returns(new Conversation { Id = 2 });
 
-            var controller = new ConversationsController(mockConvRepository.Object, mockUserConvRepository.Object,
-                mockMessRepository.Object, mockConvPagService.Object);
+            var controller = new ConversationsController(mockEvenLogRepository.Object, mockConvRepository.Object,
+                mockUserConvRepository.Object, mockMessRepository.Object, mockConvPagService.Object);
 
             // Act
             OkObjectResult objectResult = controller.GetById(2) as OkObjectResult;
@@ -52,8 +55,10 @@ namespace TestMessenger
             var mockUserConvRepository = new Mock<IUserConversationRepository>();
             var mockMessRepository = new Mock<IMessageRepository>();
             var mockConvPagService = new Mock<IConversationPaginationService>();
-            var controller = new ConversationsController(mockConvRepository.Object, mockUserConvRepository.Object,
-                mockMessRepository.Object, mockConvPagService.Object);
+            var mockEventLogRepoisotry = new Mock<IEventLogRepository>();
+
+            var controller = new ConversationsController(mockEventLogRepoisotry.Object, mockConvRepository.Object, 
+                mockUserConvRepository.Object, mockMessRepository.Object, mockConvPagService.Object);
             controller.ModelState.AddModelError("error", "some error");
 
             // Act

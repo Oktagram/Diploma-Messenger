@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.271
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{A8B43374-DC92-471D-A081-767D7F1C3196}"
 EndProject
@@ -10,11 +10,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		global.json = global.json
 	EndProjectSection
 EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Messenger", "src\Messenger\Messenger.xproj", "{92266CE6-D266-489B-8BA8-F6277F33E2E8}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{5C81D2E5-C1F2-4812-A475-D112769FA5AF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Messenger", "src\Messenger\Messenger.csproj", "{92266CE6-D266-489B-8BA8-F6277F33E2E8}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestMessenger", "TestMessenger\TestMessenger.csproj", "{0CEA4D2E-0BD9-4B4D-8E6D-5F3519130EB4}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "TestMessenger", "TestMessenger\TestMessenger.xproj", "{0CEA4D2E-0BD9-4B4D-8E6D-5F3519130EB4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,8 +37,5 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{92266CE6-D266-489B-8BA8-F6277F33E2E8} = {A8B43374-DC92-471D-A081-767D7F1C3196}
 		{0CEA4D2E-0BD9-4B4D-8E6D-5F3519130EB4} = {5C81D2E5-C1F2-4812-A475-D112769FA5AF}
-	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {7BFC442C-4FC6-45E0-A5F4-631145B9E654}
 	EndGlobalSection
 EndGlobal
